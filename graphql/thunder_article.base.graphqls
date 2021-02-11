@@ -1,0 +1,12 @@
+type Article implements ContentType {
+  id: Int!
+  uuid: String!
+  bundle: String!
+  title: String!
+  url: String!
+  created: String!
+  changed: String!
+  language: String!
+  seoTitle: String!
+  content: [ContentElement]
+}
