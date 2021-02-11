@@ -4,40 +4,40 @@ schema {
 
 type Query {
   article(id: Int!): Article
-  all_article(
+  article_list(
     type: String = "node"
     bundle: String = "article"
     offset: Int = 0
     limit: Int = 10
-  ): ArticleConnection!
+  ): ArticleList!
   channel(id: Int!): Channel
-  all_channel(
+  channel_list(
     type: String = "taxonomy_term"
     bundle: String = "channel"
     offset: Int = 0
     limit: Int = 10
-  ): ChannelConnection!
+  ): ChannelList!
   tag(id: Int!): Tag
-  all_tag(
+  tag_list(
     type: String = "taxonomy_term"
     bundle: String = "tags"
     offset: Int = 0
     limit: Int = 10
-  ): TagsConnection!
+  ): TagList!
   route(path: String!): ContentType
 }
 
-type ArticleConnection {
+type ArticleList {
   total: Int!
   items: [Article!]
 }
 
-type ChannelConnection {
+type ChannelList {
   total: Int!
   items: [Channel!]
 }
 
-type TagsConnection {
+type TagList {
   total: Int!
   items: [Tag!]
 }

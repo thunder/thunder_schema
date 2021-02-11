@@ -58,9 +58,9 @@ class ThunderSchema extends SdlSchemaPluginBase {
     $this->addParagraphEmbedFields();
 
     // Todo: Maybe make a list and add Connectionfields in a loop.
-    $this->addConnectionFields('ArticleConnection');
-    $this->addConnectionFields('TopicConnection');
-    $this->addConnectionFields('ChannelConnection');
+    $this->addConnectionFields('ArticleList');
+    $this->addConnectionFields('TopicList');
+    $this->addConnectionFields('ChannelList');
 
     $this->registry->addFieldResolver('Query', 'route', $this->builder->compose(
       $this->builder->produce('route_load')
@@ -362,6 +362,7 @@ class ThunderSchema extends SdlSchemaPluginBase {
    * Todo: maybe list types in an array and make a foreach to add producers.
    */
   protected function addQueryFields() {
+
     $this->registry->addFieldResolver('Query', 'article',
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('node'))
@@ -369,7 +370,7 @@ class ThunderSchema extends SdlSchemaPluginBase {
         ->map('id', $this->builder->fromArgument('id'))
     );
 
-    $this->registry->addFieldResolver('Query', 'all_article',
+    $this->registry->addFieldResolver('Query', 'article_list',
       $this->builder->produce('query_entities')
         ->map('type', $this->builder->fromArgument('type'))
         ->map('bundle', $this->builder->fromArgument('bundle'))
@@ -384,7 +385,7 @@ class ThunderSchema extends SdlSchemaPluginBase {
         ->map('id', $this->builder->fromArgument('id'))
     );
 
-    $this->registry->addFieldResolver('Query', 'all_channel',
+    $this->registry->addFieldResolver('Query', 'channel_list',
       $this->builder->produce('query_entities')
         ->map('type', $this->builder->fromArgument('type'))
         ->map('bundle', $this->builder->fromArgument('bundle'))
@@ -399,7 +400,7 @@ class ThunderSchema extends SdlSchemaPluginBase {
         ->map('id', $this->builder->fromArgument('id'))
     );
 
-    $this->registry->addFieldResolver('Query', 'all_tag',
+    $this->registry->addFieldResolver('Query', 'tag_list',
       $this->builder->produce('query_entities')
         ->map('type', $this->builder->fromArgument('type'))
         ->map('bundle', $this->builder->fromArgument('bundle'))
