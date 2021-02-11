@@ -68,9 +68,9 @@ class ThunderSchema extends SdlSchemaPluginBase {
     $this->registry->addTypeResolver('ContentType', function ($value) {
       $bundle = $value->bundle();
       if ($value instanceof ContentEntityInterface) {
-        return $this->mapBundleToSchemaName();
+        return $this->mapBundleToSchemaName($bundle);
       }
-      throw new Error('Could not resolve content type.' . $bundle);
+      throw new Error('Could not resolve content type. ' . $bundle);
     });
 
     $this->registry->addTypeResolver('ContentElement', function ($value) {
@@ -90,7 +90,7 @@ class ThunderSchema extends SdlSchemaPluginBase {
         return $this->mapBundleToSchemaName($bundle);
       }
 
-      throw new Error('Could not resolve element type.' . $bundle);
+      throw new Error('Could not resolve element type. ' . $bundle);
     });
 
   }
@@ -100,19 +100,11 @@ class ThunderSchema extends SdlSchemaPluginBase {
    * @param $bundle_name
    *   The bundle name.
    *
-   * return bundle_name
+   * @return string
    *   Returns the mapped bundle name.
    */
   protected function mapBundleToSchemaName($bundle_name) {
-    if (strpos($bundle_name, '_')) {
-      preg_match_all("/\_\s*\w/", $bundle_name, $matches);
-      foreach($matches[0] as $match){
-        $bundle_name = str_replace($match, strtoupper($match), $bundle_name);
-      }
-      $bundle_name = str_replace('_', '', $bundle_name);
-      return ucfirst($bundle_name);
-    }
-    return ucfirst($bundle_name);
+    return str_replace('_', '', ucwords($bundle_name, '_'));
   }
 
   /**
