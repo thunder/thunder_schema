@@ -24,6 +24,7 @@ type Query {
     offset: Int = 0
     limit: Int = 10
   ): TagsConnection!
+  route(path: String!): ContentType
 }
 
 type ArticleConnection {
