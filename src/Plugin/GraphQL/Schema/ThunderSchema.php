@@ -67,6 +67,7 @@ class ThunderSchema extends SdlSchemaPluginBase {
   protected function addInterfaces () {
     $this->registry->addTypeResolver('ContentType', function ($value) {
       $bundle = $value->bundle();
+
       if ($value instanceof ContentEntityInterface) {
         return $this->mapBundleToSchemaName();
       }
