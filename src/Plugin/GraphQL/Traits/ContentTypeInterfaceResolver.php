@@ -29,6 +29,11 @@ trait ContentTypeInterfaceResolver {
         ->map('entity', $builder->fromParent())
     );
 
+    $registry->addFieldResolver($type, 'entity',
+      $builder->produce('entity_type_id')
+        ->map('entity', $builder->fromParent())
+    );
+
     $registry->addFieldResolver($type, 'title',
       $builder->produce('entity_label')
         ->map('entity', $builder->fromParent())
