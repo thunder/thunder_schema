@@ -3,7 +3,6 @@
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
-use Drupal\thunder_schema\Plugin\GraphQL\Traits\ContentTypeInterfaceResolver;
 
 /**
  * @SchemaExtension(
@@ -15,7 +14,12 @@ use Drupal\thunder_schema\Plugin\GraphQL\Traits\ContentTypeInterfaceResolver;
  */
 class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
-  use ContentTypeInterfaceResolver;
+  public function registerResolvers(ResolverRegistryInterface $registry) {
+    parent::registerResolvers($registry);
+
+    $this->queryFieldResolver();
+    $this->typeResolvers();
+  }
 
   /**
    * Add article field resolvers.
@@ -49,6 +53,22 @@ class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
       $this->builder->produce('entity_reference_revisions')
         ->map('entity', $this->builder->fromParent())
         ->map('field', $this->builder->fromValue('field_paragraphs'))
+    );
+  }
+
+
+
+  /**
+   * Add article query field resolvers.
+   */
+  protected function queryFieldResolver() {
+    $this->registry->addFieldResolver(
+      'Query',
+      'article',
+      $this->builder->produce('entity_load')
+        ->map('type', $this->builder->fromValue('node'))
+        ->map('bundles', $this->builder->fromValue(['article']))
+        ->map('id', $this->builder->fromArgument('id'))
     );
   }
 

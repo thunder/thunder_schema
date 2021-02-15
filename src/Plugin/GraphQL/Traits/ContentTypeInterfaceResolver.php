@@ -62,4 +62,19 @@ trait ContentTypeInterfaceResolver {
 
   }
 
+  /**
+   * Add type resolvers.
+   *
+   * Adds Bundle names to ContentType resolver.
+   */
+  protected function typeResolvers() {
+    $this->registry->addTypeResolver('ContentType', function ($value) {
+      $bundle = $value->bundle();
+
+      if ($value instanceof ContentEntityInterface) {
+        return $this->mapBundleToSchemaName($bundle);
+      }
+    });
+  }
+
 }

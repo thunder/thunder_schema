@@ -2,9 +2,7 @@ type Schema {
   query: Query
 }
 
-type Query {
-  article(id: Int!): Article
-}
+type Query
 
 interface ContentType {
   id: Int!
@@ -30,14 +28,4 @@ interface ContentList {
   items: [ContentType!]
 }
 
-type Article implements ContentType {
-  id: Int!
-  uuid: String!
-  entity: String!
-  bundle: String!
-  title: String!
-  url: String!
-  created: String!
-  changed: String!
-  language: String!
-}
+type Article implements ContentType

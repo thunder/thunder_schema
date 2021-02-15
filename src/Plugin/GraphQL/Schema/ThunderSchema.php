@@ -36,19 +36,6 @@ class ThunderSchema extends ComposableSchema {
   /**
    * {@inheritdoc}
    */
-  public function getResolverRegistry() {
-    $this->builder = new ResolverBuilder();
-    $this->registry = new ResolverRegistry();
-
-    $this->typeResolvers();
-    $this->queryFieldResolver();
-
-    return $this->registry;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   protected function getSchemaDefinition() {
     $id = $this->getPluginId();
     $definition = $this->getPluginDefinition();
@@ -65,36 +52,6 @@ class ThunderSchema extends ComposableSchema {
     }
 
     return file_get_contents($file) ?: NULL;
-  }
-
-  /**
-   * Add type resolvers.
-   *
-   * Adds Bundle names to ContentType resolver.
-   */
-  protected function typeResolvers(): void {
-    $this->registry->addTypeResolver('ContentType', function ($value) {
-      $bundle = $value->bundle();
-
-      if ($value instanceof ContentEntityInterface) {
-        return $this->mapBundleToSchemaName($bundle);
-      }
-    });
-  }
-
-
-  /**
-   * Add article query field resolvers.
-   */
-  protected function queryFieldResolver() {
-    $this->registry->addFieldResolver(
-      'Query',
-      'article',
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue('node'))
-        ->map('bundles', $this->builder->fromValue(['article']))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
   }
 
 }
