@@ -2,12 +2,15 @@ type Schema {
   query: Query
 }
 
-type Query
+type Query {
+  article(id: Int!): Article
+}
 
 interface ContentType {
   id: Int!
   uuid: String!
   title: String!
+  entity: String!
   bundle: String!
   url: String!
   created: String!
@@ -20,4 +23,21 @@ interface ContentElement {
   uuid: String!
   type: String!
   label: String
+}
+
+interface ContentList {
+  total: Int!
+  items: [ContentType!]
+}
+
+type Article implements ContentType {
+  id: Int!
+  uuid: String!
+  entity: String!
+  bundle: String!
+  title: String!
+  url: String!
+  created: String!
+  changed: String!
+  language: String!
 }

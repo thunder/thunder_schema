@@ -3,7 +3,10 @@
 namespace Drupal\thunder_schema\Plugin\GraphQL\Schema;
 
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
+use Drupal\graphql\GraphQL\ResolverBuilder;
+use Drupal\graphql\GraphQL\ResolverRegistry;
 use Drupal\graphql\Plugin\GraphQL\Schema\ComposableSchema;
+use Drupal\thunder_schema\Plugin\GraphQL\Traits\ContentTypeInterfaceResolver;
 
 /**
  * @Schema(
@@ -13,6 +16,35 @@ use Drupal\graphql\Plugin\GraphQL\Schema\ComposableSchema;
  * )
  */
 class ThunderSchema extends ComposableSchema {
+
+  use ContentTypeInterfaceResolver;
+
+  /**
+   * ResolverRegistryInterface.
+   *
+   * @var \Drupal\graphql\GraphQL\ResolverRegistryInterface
+   */
+  protected $registry;
+
+  /**
+   * ResolverBuilder.
+   *
+   * @var \Drupal\graphql\GraphQL\ResolverBuilder
+   */
+  protected $builder;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getResolverRegistry() {
+    $this->builder = new ResolverBuilder();
+    $this->registry = new ResolverRegistry();
+
+    $this->typeResolvers();
+    $this->queryFieldResolver();
+
+    return $this->registry;
+  }
 
   /**
    * {@inheritdoc}
@@ -33,6 +65,36 @@ class ThunderSchema extends ComposableSchema {
     }
 
     return file_get_contents($file) ?: NULL;
+  }
+
+  /**
+   * Add type resolvers.
+   *
+   * Adds Bundle names to ContentType resolver.
+   */
+  protected function typeResolvers(): void {
+    $this->registry->addTypeResolver('ContentType', function ($value) {
+      $bundle = $value->bundle();
+
+      if ($value instanceof ContentEntityInterface) {
+        return $this->mapBundleToSchemaName($bundle);
+      }
+    });
+  }
+
+
+  /**
+   * Add article query field resolvers.
+   */
+  protected function queryFieldResolver() {
+    $this->registry->addFieldResolver(
+      'Query',
+      'article',
+      $this->builder->produce('entity_load')
+        ->map('type', $this->builder->fromValue('node'))
+        ->map('bundles', $this->builder->fromValue(['article']))
+        ->map('id', $this->builder->fromArgument('id'))
+    );
   }
 
 }

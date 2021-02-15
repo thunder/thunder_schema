@@ -1,12 +1,1 @@
-type Article implements ContentType {
-  id: Int!
-  uuid: String!
-  bundle: String!
-  title: String!
-  url: String!
-  created: String!
-  changed: String!
-  language: String!
-  seoTitle: String!
-  content: [ContentElement]
-}
+# The GraphQl Module currently requires extensions to have this file, even if it is empty.
