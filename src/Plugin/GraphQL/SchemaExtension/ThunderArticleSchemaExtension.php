@@ -18,7 +18,6 @@ class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
     parent::registerResolvers($registry);
 
     $this->queryFieldResolver();
-    $this->typeResolvers('node', 'Article');
     $this->fieldResolver();
   }
 

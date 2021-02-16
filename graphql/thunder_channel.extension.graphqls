@@ -1,0 +1,15 @@
+extend type Query {
+  channel(id: Int!): Tag
+}
+
+extend type Channel implements ContentType {
+  id: Int!
+  uuid: String!
+  title: String!
+  entity: String!
+  bundle: String!
+  url: String!
+  created: String!
+  changed: String!
+  language: String!
+}

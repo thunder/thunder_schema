@@ -6,13 +6,13 @@ use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 
 /**
  * @SchemaExtension(
- *   id = "thunder_tag",
- *   name = "Tag taxonomy schema extension",
- *   description = "A schema extension that adds tag related fields.",
+ *   id = "thunder_channel",
+ *   name = "Channel taxonomy schema extension",
+ *   description = "A schema extension that adds channel related fields.",
  *   schema = "thunder"
  * )
  */
-class ThunderTagSchemaExtension extends ThunderSchemaExtensionPluginBase {
+class ThunderChannelSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
@@ -25,7 +25,7 @@ class ThunderTagSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * Add article field resolvers.
    */
   protected function fieldResolver() {
-    $this->addContentTypeInterfaceFields('Tag', $this->registry, $this->builder);
+    $this->addContentTypeInterfaceFields('Channel', $this->registry, $this->builder);
   }
 
 
@@ -36,7 +36,7 @@ class ThunderTagSchemaExtension extends ThunderSchemaExtensionPluginBase {
     $this->registry->addFieldResolver('Query', 'tag',
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('taxonomy_term'))
-        ->map('bundles', $this->builder->fromValue(['tags']))
+        ->map('bundles', $this->builder->fromValue(['channel']))
         ->map('id', $this->builder->fromArgument('id'))
     );
   }

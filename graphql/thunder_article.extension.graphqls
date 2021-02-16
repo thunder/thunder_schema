@@ -12,6 +12,8 @@ extend type Article implements ContentType{
   created: String!
   changed: String!
   language: String!
+  channel: Channel
+  tags: [Tag]
   seoTitle: String!
   content: [ContentElement]
 }
