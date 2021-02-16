@@ -7,7 +7,7 @@ use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 /**
  * @SchemaExtension(
  *   id = "thunder_channel",
- *   name = "Channel taxonomy schema extension",
+ *   name = "Channel taxonomy extension",
  *   description = "A schema extension that adds channel related fields.",
  *   schema = "thunder"
  * )
@@ -25,12 +25,12 @@ class ThunderChannelSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * Add article field resolvers.
    */
   protected function fieldResolver() {
-    $this->addContentTypeInterfaceFields('Channel', $this->registry, $this->builder);
+    $this->addContentTypeInterfaceFields('Channel');
   }
 
 
   /**
-   * Add tag query field resolvers.
+   * Add channel query field resolvers.
    */
   protected function queryFieldResolver() {
     $this->registry->addFieldResolver('Query', 'tag',

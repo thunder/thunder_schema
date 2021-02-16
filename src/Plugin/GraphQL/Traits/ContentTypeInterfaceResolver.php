@@ -3,86 +3,65 @@
 namespace Drupal\thunder_schema\Plugin\GraphQL\Traits;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\graphql\GraphQL\ResolverBuilder;
-use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 
 trait ContentTypeInterfaceResolver {
 
   /**
    * @param string $type
-   * @param \Drupal\graphql\GraphQL\ResolverRegistryInterface $registry
-   * @param \Drupal\graphql\GraphQL\ResolverBuilder $builder
    */
-  public function addContentTypeInterfaceFields($type, ResolverRegistryInterface $registry, ResolverBuilder $builder) {
+  public function addContentTypeInterfaceFields(string $type) {
 
-    $registry->addFieldResolver($type, 'uuid',
-      $builder->produce('entity_uuid')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'uuid',
+      $this->builder->produce('entity_uuid')
+        ->map('entity', $this->builder->fromParent())
     );
 
-    $registry->addFieldResolver($type, 'id',
-      $builder->produce('entity_id')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'id',
+      $this->builder->produce('entity_id')
+        ->map('entity', $this->builder->fromParent())
     );
 
-    $registry->addFieldResolver($type, 'bundle',
-      $builder->produce('entity_bundle')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'type',
+      $this->builder->produce('entity_bundle')
+        ->map('entity', $this->builder->fromParent())
     );
 
-    $registry->addFieldResolver($type, 'entity',
-      $builder->produce('entity_type_id')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'entity',
+      $this->builder->produce('entity_type_id')
+        ->map('entity', $this->builder->fromParent())
     );
 
-    $registry->addFieldResolver($type, 'title',
-      $builder->produce('entity_label')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'title',
+      $this->builder->produce('entity_label')
+        ->map('entity', $this->builder->fromParent())
     );
 
-    $registry->addFieldResolver($type, 'url',
-      $builder->compose(
-        $builder->produce('entity_url')
-          ->map('entity', $builder->fromParent()),
-        $builder->produce('url_path')
-          ->map('url', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'url',
+      $this->builder->compose(
+        $this->builder->produce('entity_url')
+          ->map('entity', $this->builder->fromParent()),
+        $this->builder->produce('url_path')
+          ->map('url', $this->builder->fromParent())
       )
     );
 
-    $registry->addFieldResolver($type, 'created',
-      $builder->produce('entity_created')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'created',
+      $this->builder->produce('entity_created')
+        ->map('entity', $this->builder->fromParent())
     );
 
-    $registry->addFieldResolver($type, 'changed',
-      $builder->produce('entity_changed')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'changed',
+      $this->builder->produce('entity_changed')
+        ->map('entity', $this->builder->fromParent())
     );
 
-    $registry->addFieldResolver($type, 'language',
-      $builder->produce('property_path')
-        ->map('type', $builder->fromValue('entity'))
-        ->map('value', $builder->fromParent())
-        ->map('path', $builder->fromValue('langcode.value'))
+    $this->registry->addFieldResolver($type, 'language',
+      $this->builder->produce('property_path')
+        ->map('type', $this->builder->fromValue('entity'))
+        ->map('value', $this->builder->fromParent())
+        ->map('path', $this->builder->fromValue('langcode.value'))
     );
 
-  }
-
-  /**
-   * Add type resolvers.
-   *
-   * Adds Bundle names to ContentType resolver.
-   */
-  protected function typeResolvers($entityType, $bundle) {
-    $this->registry->addTypeResolver('ContentType', function ($value) use ($entityType, $bundle) {
-
-      /** ContentEntityInterface $value */
-      if ($value instanceof ContentEntityInterface) {
-        if ($value->getEntityTypeId() === $entityType && $value->bundle() === $bundle) {
-          return $this->mapBundleToSchemaName($bundle);
-        }
-      }
-    });
   }
 
 }

@@ -7,7 +7,7 @@ use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 /**
  * @SchemaExtension(
  *   id = "thunder_article",
- *   name = "Article schema extension",
+ *   name = "Article extension",
  *   description = "A schema extension that adds article related fields.",
  *   schema = "thunder"
  * )
@@ -25,7 +25,7 @@ class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * Add article field resolvers.
    */
   protected function fieldResolver() {
-    $this->addContentTypeInterfaceFields('Article', $this->registry, $this->builder);
+    $this->addContentTypeInterfaceFields('Article');
 
     $this->registry->addFieldResolver('Article', 'seoTitle',
       $this->builder->produce('property_path')

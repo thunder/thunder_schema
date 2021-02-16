@@ -2,12 +2,12 @@ extend type Query {
   channel(id: Int!): Tag
 }
 
-extend type Channel implements ContentType {
+extend type Channel {
   id: Int!
   uuid: String!
   title: String!
   entity: String!
-  bundle: String!
+  type: String!
   url: String!
   created: String!
   changed: String!

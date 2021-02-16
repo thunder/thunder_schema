@@ -7,7 +7,7 @@ use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 /**
  * @SchemaExtension(
  *   id = "thunder_tag",
- *   name = "Tag taxonomy schema extension",
+ *   name = "Tag taxonomy extension",
  *   description = "A schema extension that adds tag related fields.",
  *   schema = "thunder"
  * )
@@ -25,9 +25,8 @@ class ThunderTagSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * Add article field resolvers.
    */
   protected function fieldResolver() {
-    $this->addContentTypeInterfaceFields('Tag', $this->registry, $this->builder);
+    $this->addContentTypeInterfaceFields('Tag');
   }
-
 
   /**
    * Add tag query field resolvers.

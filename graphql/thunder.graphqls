@@ -7,7 +7,7 @@ interface ContentType {
   uuid: String!
   title: String!
   entity: String!
-  bundle: String!
+  type: String!
   url: String!
   created: String!
   changed: String!
@@ -17,6 +17,7 @@ interface ContentType {
 interface ContentElement {
   id: Int!
   uuid: String!
+  entity: String!
   type: String!
   label: String
 }
@@ -27,6 +28,9 @@ interface ContentList {
 }
 
 type Query
-type Article
-type Tag
-type Channel
+
+type Article implements ContentType
+type Tag implements ContentType
+type Channel implements ContentType
+
+type Image implements ContentElement

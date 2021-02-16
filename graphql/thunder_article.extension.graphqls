@@ -2,11 +2,11 @@ extend type Query {
   article(id: Int!): Article
 }
 
-extend type Article implements ContentType{
+extend type Article {
   id: Int!
   uuid: String!
   entity: String!
-  bundle: String!
+  type: String!
   title: String!
   url: String!
   created: String!

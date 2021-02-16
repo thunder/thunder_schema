@@ -1,0 +1,7 @@
+extend type Image {
+  id: Int!
+  uuid: String!
+  entity: String!
+  type: String!
+  label: String
+}

@@ -9,29 +9,32 @@ trait ContentElementInterfaceResolver {
 
   /**
    * @param string $type
-   * @param \Drupal\graphql\GraphQL\ResolverRegistryInterface $registry
-   * @param \Drupal\graphql\GraphQL\ResolverBuilder $builder
    */
-  public function addContentElementInterfaceFields(string $type, ResolverRegistryInterface $registry, ResolverBuilder $builder) {
+  public function addContentElementInterfaceFields(string $type) {
 
-    $registry->addFieldResolver($type, 'uuid',
-      $builder->produce('entity_uuid')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'uuid',
+      $this->builder->produce('entity_uuid')
+        ->map('entity', $this->builder->fromParent())
     );
 
-    $registry->addFieldResolver($type, 'id',
-      $builder->produce('entity_id')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'id',
+      $this->builder->produce('entity_id')
+        ->map('entity', $this->builder->fromParent())
     );
 
-    $registry->addFieldResolver($type, 'type',
-      $builder->produce('entity_bundle')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'type',
+      $this->builder->produce('entity_bundle')
+        ->map('entity', $this->builder->fromParent())
     );
 
-    $registry->addFieldResolver($type, 'label',
-      $builder->produce('entity_label')
-        ->map('entity', $builder->fromParent())
+    $this->registry->addFieldResolver($type, 'entity',
+      $this->builder->produce('entity_type_id')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'label',
+      $this->builder->produce('entity_label')
+        ->map('entity', $this->builder->fromParent())
     );
 
   }
