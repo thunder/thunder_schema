@@ -19,6 +19,7 @@ class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
     $this->queryFieldResolver();
     $this->typeResolvers();
+    $this->fieldResolver();
   }
 
   /**

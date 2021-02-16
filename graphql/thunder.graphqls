@@ -29,3 +29,5 @@ interface ContentList {
 }
 
 type Article implements ContentType
+
+type Tag implements ContentType

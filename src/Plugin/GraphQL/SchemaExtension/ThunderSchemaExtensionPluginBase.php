@@ -42,8 +42,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    */
   public function registerResolvers(ResolverRegistryInterface $registry) {
     $this->registry = $registry;
-
-    $this->fieldResolver();
   }
 
   /**
