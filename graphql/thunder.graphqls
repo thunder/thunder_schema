@@ -2,8 +2,6 @@ type Schema {
   query: Query
 }
 
-type Query
-
 interface ContentType {
   id: Int!
   uuid: String!
@@ -28,6 +26,7 @@ interface ContentList {
   items: [ContentType!]
 }
 
-type Article implements ContentType
+type Query
+type Article
+type Tag
 
-type Tag implements ContentType

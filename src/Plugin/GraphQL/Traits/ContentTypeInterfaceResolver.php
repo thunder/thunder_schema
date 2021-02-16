@@ -2,6 +2,7 @@
 
 namespace Drupal\thunder_schema\Plugin\GraphQL\Traits;
 
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\graphql\GraphQL\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 
@@ -72,12 +73,14 @@ trait ContentTypeInterfaceResolver {
    *
    * Adds Bundle names to ContentType resolver.
    */
-  protected function typeResolvers() {
-    $this->registry->addTypeResolver('ContentType', function ($value) {
-      $bundle = $value->bundle();
+  protected function typeResolvers($entityType, $bundle) {
+    $this->registry->addTypeResolver('ContentType', function ($value) use ($entityType, $bundle) {
 
+      /** ContentEntityInterface $value */
       if ($value instanceof ContentEntityInterface) {
-        return $this->mapBundleToSchemaName($bundle);
+        if ($value->getEntityTypeId() === $entityType && $value->bundle() === $bundle) {
+          return $this->mapBundleToSchemaName($bundle);
+        }
       }
     });
   }

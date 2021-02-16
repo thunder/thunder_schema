@@ -2,7 +2,7 @@ extend type Query {
   tag(id: Int!): Tag
 }
 
-extend type Tag {
+extend type Tag implements ContentType {
   id: Int!
   uuid: String!
   title: String!
