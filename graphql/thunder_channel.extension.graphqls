@@ -1,5 +1,5 @@
 extend type Query {
-  channel(id: Int!): Tag
+  channel(id: Int!): Channel
 }
 
 extend type Channel {

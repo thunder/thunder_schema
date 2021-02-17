@@ -33,7 +33,7 @@ class ThunderChannelSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * Add channel query field resolvers.
    */
   protected function queryFieldResolver() {
-    $this->registry->addFieldResolver('Query', 'tag',
+    $this->registry->addFieldResolver('Query', 'channel',
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('taxonomy_term'))
         ->map('bundles', $this->builder->fromValue(['channel']))

@@ -50,7 +50,7 @@ class ThunderEmbedParagraphSchemaExtension extends ThunderSchemaExtensionPluginB
   protected function typeResolver() {
     $this->registry->addTypeResolver('Paragraph',
       function ($value) {
-        if ($value instanceof ParagraphInterface && in_array($value->bundle(), ['twitter', 'pinterest', 'instagram'])) {
+        if ($value instanceof ParagraphInterface && $value->bundle() === 'twitter') {
            return 'EmbedParagraph';
         }
       }
