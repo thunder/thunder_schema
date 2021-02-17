@@ -3,13 +3,12 @@
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
-use Drupal\paragraphs\ParagraphInterface;
 
 /**
  * @SchemaExtension(
  *   id = "thunder_embed_paragraph",
  *   name = "Embed paragraph extension",
- *   description = "A schema extension that adds image paragraph related fields.",
+ *   description = "A schema extension that adds embed paragraph related fields.",
  *   schema = "thunder"
  * )
  */
@@ -50,7 +49,7 @@ class ThunderEmbedParagraphSchemaExtension extends ThunderSchemaExtensionPluginB
   protected function typeResolver() {
     $this->registry->addTypeResolver('Paragraph',
       function ($value) {
-        if ($value instanceof ParagraphInterface && $value->bundle() === 'twitter') {
+        if ($value instanceof ParagraphInterface && in_array($value->bundle(),['twitter','pinterest','instagram'])) {
            return 'EmbedParagraph';
         }
       }

@@ -61,8 +61,6 @@ class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
   }
 
-
-
   /**
    * Add article query field resolvers.
    */
