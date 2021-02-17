@@ -29,8 +29,54 @@ interface ContentList {
 
 type Query
 
-type Article implements ContentType
-type Tag implements ContentType
-type Channel implements ContentType
+type Article implements ContentType {
+  id: Int!
+  uuid: String!
+  title: String!
+  entity: String!
+  type: String!
+  url: String!
+  created: String!
+  changed: String!
+  language: String
+}
 
-type ImageParagraph implements Paragraph
+type Tag implements ContentType {
+  id: Int!
+  uuid: String!
+  title: String!
+  entity: String!
+  type: String!
+  url: String!
+  created: String!
+  changed: String!
+  language: String
+}
+
+type Channel implements ContentType {
+  id: Int!
+  uuid: String!
+  title: String!
+  entity: String!
+  type: String!
+  url: String!
+  created: String!
+  changed: String!
+  language: String
+}
+
+type ImageParagraph implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  type: String!
+  label: String
+}
+
+type EmbedParagraph implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  type: String!
+  label: String
+}

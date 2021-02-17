@@ -3,15 +3,6 @@ extend type Query {
 }
 
 extend type Article {
-  id: Int!
-  uuid: String!
-  entity: String!
-  type: String!
-  title: String!
-  url: String!
-  created: String!
-  changed: String!
-  language: String!
   published: Boolean!
   channel: Channel
   tags: [Tag]

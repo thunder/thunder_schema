@@ -1,9 +1,4 @@
 extend type ImageParagraph {
-  id: Int!
-  uuid: String!
-  entity: String!
-  type: String!
-  label: String
   copyright: String
   description: String
   src: String

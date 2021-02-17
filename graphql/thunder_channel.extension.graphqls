@@ -3,13 +3,5 @@ extend type Query {
 }
 
 extend type Channel {
-  id: Int!
-  uuid: String!
-  title: String!
-  entity: String!
-  type: String!
-  url: String!
-  created: String!
-  changed: String!
-  language: String!
+  content: [Paragraph]!
 }
