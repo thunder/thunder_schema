@@ -137,6 +137,27 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
           ->map('path', $this->builder->fromValue('field_url.value'))
       )
     );
+
+    // Image list
+    $this->addCommonEntityFields('ImageListParagraph');
+    $mediaEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
+
+    $this->registry->addFieldResolver('ImageListParagraph', 'title',
+      $this->builder->compose(
+        $mediaEntityProducer,
+        $this->builder->produce('entity_label')
+          ->map('entity', $this->builder->fromParent())
+      )
+    );
+
+    $this->registry->addFieldResolver('ImageListParagraph', 'images',
+      $this->builder->compose(
+        $mediaEntityProducer,
+        $this->builder->produce('entity_reference')
+          ->map('entity', $this->builder->fromParent())
+          ->map('field', $this->builder->fromValue('field_media_images'))
+      )
+    );
   }
 
   /**
