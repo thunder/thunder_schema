@@ -21,6 +21,7 @@ If all works, you should be able to test some queries in the Explorer.
     {
       article(id: 4) {
         id
+        url
         name
         language
         author {
@@ -31,7 +32,7 @@ If all works, you should be able to test some queries in the Explorer.
         type
         entity
         channel {
-          published
+          url
           name
         }
         content {
