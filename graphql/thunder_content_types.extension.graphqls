@@ -2,4 +2,5 @@ extend type Query {
   article(id: Int!): Article
   tag(id: Int!): Tag
   channel(id: Int!): Channel
+  author(id: Int!): Author
 }

@@ -25,9 +25,10 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
    * Add article field resolvers.
    */
   protected function fieldResolver() {
+    /**
+     * Article
+     */
     $this->addContentTypeInterfaceFields('Article');
-    $this->addContentTypeInterfaceFields('Tag');
-    $this->addContentTypeInterfaceFields('Channel');
 
     $this->registry->addFieldResolver('Article', 'published',
       $this->builder->produce('entity_published')
@@ -62,15 +63,56 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
         ->map('field', $this->builder->fromValue('field_paragraphs'))
     );
 
+    /**
+     * Tags
+     */
+    $this->addContentTypeInterfaceFields('Tag');
+
+    $this->registry->addFieldResolver('Tag', 'published',
+      $this->builder->produce('entity_published')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver('Tag', 'content',
+      $this->builder->produce('entity_reference_revisions')
+        ->map('entity', $this->builder->fromParent())
+        ->map('field', $this->builder->fromValue('field_paragraphs'))
+    );
+
+    /**
+     * Channel
+     */
+    $this->addContentTypeInterfaceFields('Channel');
+
+    $this->registry->addFieldResolver('Channel', 'published',
+      $this->builder->produce('entity_published')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver('Channel', 'content',
+      $this->builder->produce('entity_reference_revisions')
+        ->map('entity', $this->builder->fromParent())
+        ->map('field', $this->builder->fromValue('field_paragraphs'))
+    );
+
+    /**
+     * User
+     */
+    $this->addContentTypeInterfaceFields('Author');
+
+    $this->registry->addFieldResolver('Author', 'mail',
+      $this->builder->produce('property_path')
+        ->map('type', $this->builder->fromValue('entity'))
+        ->map('value', $this->builder->fromParent())
+        ->map('path', $this->builder->fromValue('mail.value'))
+    );
   }
 
   /**
-   * Add article query field resolvers.
+   * Add content query field resolvers.
    */
   protected function queryFieldResolver() {
-    $this->registry->addFieldResolver(
-      'Query',
-      'article',
+    $this->registry->addFieldResolver('Query', 'article',
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('node'))
         ->map('bundles', $this->builder->fromValue(['article']))
@@ -90,18 +132,25 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
         ->map('bundles', $this->builder->fromValue(['tags']))
         ->map('id', $this->builder->fromArgument('id'))
     );
+
+    $this->registry->addFieldResolver('Query', 'author',
+      $this->builder->produce('entity_load')
+        ->map('type', $this->builder->fromValue('user'))
+        ->map('id', $this->builder->fromArgument('id'))
+    );
+
   }
 
   /**
    * Add fields common to all content types.
    *
-   * @param string $entityTypeId
+   * @param string $type
    *   The entity type id.
    */
-  public function addContentTypeInterfaceFields(string $entityTypeId) {
-    $this->addCommonEntityFields($entityTypeId);
+  public function addContentTypeInterfaceFields(string $type) {
+    $this->addCommonEntityFields($type);
 
-    $this->registry->addFieldResolver($entityTypeId, 'url',
+    $this->registry->addFieldResolver($type, 'url',
       $this->builder->compose(
         $this->builder->produce('entity_url')
           ->map('entity', $this->builder->fromParent()),
@@ -110,17 +159,17 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
       )
     );
 
-    $this->registry->addFieldResolver($entityTypeId, 'created',
+    $this->registry->addFieldResolver($type, 'created',
       $this->builder->produce('entity_created')
         ->map('entity', $this->builder->fromParent())
     );
 
-    $this->registry->addFieldResolver($entityTypeId, 'changed',
+    $this->registry->addFieldResolver($type, 'changed',
       $this->builder->produce('entity_changed')
         ->map('entity', $this->builder->fromParent())
     );
 
-    $this->registry->addFieldResolver($entityTypeId, 'language',
+    $this->registry->addFieldResolver($type, 'language',
       $this->builder->produce('property_path')
         ->map('type', $this->builder->fromValue('entity'))
         ->map('value', $this->builder->fromParent())

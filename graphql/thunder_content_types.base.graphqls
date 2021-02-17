@@ -8,6 +8,7 @@ interface ContentType {
   created: String!
   changed: String!
   language: String
+  author: Author
 }
 
 type Article implements ContentType {
@@ -20,6 +21,8 @@ type Article implements ContentType {
   created: String!
   changed: String!
   language: String
+  author: Author
+
   published: Boolean!
   channel: Channel
   tags: [Tag]
@@ -37,6 +40,10 @@ type Tag implements ContentType {
   created: String!
   changed: String!
   language: String
+  author: Author
+
+  published: Boolean!
+  content: [Paragraph]
 }
 
 type Channel implements ContentType {
@@ -49,5 +56,23 @@ type Channel implements ContentType {
   created: String!
   changed: String!
   language: String
+  author: Author
+
+  published: Boolean!
+  content: [Paragraph]
 }
 
+type Author implements ContentType {
+  id: Int!
+  uuid: String!
+  name: String!
+  entity: String!
+  type: String!
+  url: String!
+  created: String!
+  changed: String!
+  language: String
+  author: Author
+
+  mail: String
+}

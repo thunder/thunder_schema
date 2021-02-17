@@ -119,6 +119,14 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
       $this->builder->produce('entity_label')
         ->map('entity', $this->builder->fromParent())
     );
+
+    $this->registry->addFieldResolver(
+      $entityTypeId,
+      'author',
+      $this->builder->produce('entity_owner')
+        ->map('entity', $this->builder->fromParent())
+    );
+
   }
 
 }
