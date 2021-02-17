@@ -4,7 +4,6 @@ namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\paragraphs\ParagraphInterface;
-use Drupal\thunder_schema\Plugin\GraphQL\Traits\EntitySchemaTrait;
 
 /**
  * @SchemaExtension(
@@ -16,8 +15,6 @@ use Drupal\thunder_schema\Plugin\GraphQL\Traits\EntitySchemaTrait;
  */
 class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
-  use EntitySchemaTrait;
-
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
@@ -26,7 +23,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
   }
 
   /**
-   * Add image paragraph field resolvers.
+   * Add paragraph field resolvers.
    */
   protected function fieldResolver() {
     // Text

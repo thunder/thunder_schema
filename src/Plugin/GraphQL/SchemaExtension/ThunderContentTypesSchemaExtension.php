@@ -3,7 +3,6 @@
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
-use Drupal\thunder_schema\Plugin\GraphQL\Traits\EntitySchemaTrait;
 
 /**
  * @SchemaExtension(
@@ -14,8 +13,6 @@ use Drupal\thunder_schema\Plugin\GraphQL\Traits\EntitySchemaTrait;
  * )
  */
 class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBase {
-
-  use EntitySchemaTrait;
 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
@@ -96,17 +93,15 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
   }
 
   /**
-   * @param string $type
+   * Add fields common to all content types.
+   *
+   * @param string $entityTypeId
+   *   The entity type id.
    */
-  public function addContentTypeInterfaceFields(string $type) {
-    $this->addCommonEntityFields($type);
+  public function addContentTypeInterfaceFields(string $entityTypeId) {
+    $this->addCommonEntityFields($entityTypeId);
 
-    $this->registry->addFieldResolver($type, 'name',
-      $this->builder->produce('entity_label')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver($type, 'url',
+    $this->registry->addFieldResolver($entityTypeId, 'url',
       $this->builder->compose(
         $this->builder->produce('entity_url')
           ->map('entity', $this->builder->fromParent()),
@@ -115,17 +110,17 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
       )
     );
 
-    $this->registry->addFieldResolver($type, 'created',
+    $this->registry->addFieldResolver($entityTypeId, 'created',
       $this->builder->produce('entity_created')
         ->map('entity', $this->builder->fromParent())
     );
 
-    $this->registry->addFieldResolver($type, 'changed',
+    $this->registry->addFieldResolver($entityTypeId, 'changed',
       $this->builder->produce('entity_changed')
         ->map('entity', $this->builder->fromParent())
     );
 
-    $this->registry->addFieldResolver($type, 'language',
+    $this->registry->addFieldResolver($entityTypeId, 'language',
       $this->builder->produce('property_path')
         ->map('type', $this->builder->fromValue('entity'))
         ->map('value', $this->builder->fromParent())
