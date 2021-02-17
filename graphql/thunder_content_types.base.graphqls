@@ -1,7 +1,3 @@
-type Schema {
-  query: Query
-}
-
 interface ContentType {
   id: Int!
   uuid: String!
@@ -14,21 +10,6 @@ interface ContentType {
   language: String
 }
 
-interface Paragraph {
-  id: Int!
-  uuid: String!
-  entity: String!
-  type: String!
-  label: String
-}
-
-interface ContentList {
-  total: Int!
-  items: [ContentType!]
-}
-
-type Query
-
 type Article implements ContentType {
   id: Int!
   uuid: String!
@@ -39,6 +20,11 @@ type Article implements ContentType {
   created: String!
   changed: String!
   language: String
+  published: Boolean!
+  channel: Channel
+  tags: [Tag]
+  seoTitle: String!
+  content: [Paragraph]
 }
 
 type Tag implements ContentType {
@@ -65,18 +51,3 @@ type Channel implements ContentType {
   language: String
 }
 
-type ImageParagraph implements Paragraph {
-  id: Int!
-  uuid: String!
-  entity: String!
-  type: String!
-  label: String
-}
-
-type EmbedParagraph implements Paragraph {
-  id: Int!
-  uuid: String!
-  entity: String!
-  type: String!
-  label: String
-}

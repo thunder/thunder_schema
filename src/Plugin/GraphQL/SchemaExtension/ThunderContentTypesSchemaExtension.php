@@ -3,16 +3,19 @@
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
+use Drupal\thunder_schema\Plugin\GraphQL\Traits\ContentTypeInterfaceResolver;
 
 /**
  * @SchemaExtension(
- *   id = "thunder_article",
- *   name = "Article extension",
- *   description = "A schema extension that adds article related fields.",
+ *   id = "thunder_content_types",
+ *   name = "Content types",
+ *   description = "Adds content types and their fields.",
  *   schema = "thunder"
  * )
  */
-class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
+class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBase {
+
+  use ContentTypeInterfaceResolver;
 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
@@ -26,6 +29,8 @@ class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
    */
   protected function fieldResolver() {
     $this->addContentTypeInterfaceFields('Article');
+    $this->addContentTypeInterfaceFields('Tag');
+    $this->addContentTypeInterfaceFields('Channel');
 
     $this->registry->addFieldResolver('Article', 'published',
       $this->builder->produce('entity_published')
@@ -59,6 +64,7 @@ class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('entity', $this->builder->fromParent())
         ->map('field', $this->builder->fromValue('field_paragraphs'))
     );
+
   }
 
   /**
@@ -71,6 +77,20 @@ class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('node'))
         ->map('bundles', $this->builder->fromValue(['article']))
+        ->map('id', $this->builder->fromArgument('id'))
+    );
+
+    $this->registry->addFieldResolver('Query', 'channel',
+      $this->builder->produce('entity_load')
+        ->map('type', $this->builder->fromValue('taxonomy_term'))
+        ->map('bundles', $this->builder->fromValue(['channel']))
+        ->map('id', $this->builder->fromArgument('id'))
+    );
+
+    $this->registry->addFieldResolver('Query', 'tag',
+      $this->builder->produce('entity_load')
+        ->map('type', $this->builder->fromValue('taxonomy_term'))
+        ->map('bundles', $this->builder->fromValue(['tags']))
         ->map('id', $this->builder->fromArgument('id'))
     );
   }

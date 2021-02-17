@@ -6,13 +6,11 @@ use Drupal\graphql\GraphQL\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
 use Drupal\thunder_schema\Plugin\GraphQL\Traits\ParagraphInterfaceResolver;
-use Drupal\thunder_schema\Plugin\GraphQL\Traits\ContentTypeInterfaceResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPluginBase {
 
   use ParagraphInterfaceResolver;
-  use ContentTypeInterfaceResolver;
 
   /**
    * ResolverRegistryInterface.

@@ -2,8 +2,6 @@
 
 namespace Drupal\thunder_schema\Plugin\GraphQL\Traits;
 
-use Drupal\Core\Entity\ContentEntityInterface;
-
 trait ContentTypeInterfaceResolver {
 
   /**

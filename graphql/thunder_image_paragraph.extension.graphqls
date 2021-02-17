@@ -1,7 +1,0 @@
-extend type ImageParagraph {
-  copyright: String
-  description: String
-  src: String
-  width: Int
-  height: Int
-}
