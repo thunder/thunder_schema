@@ -2,15 +2,12 @@
 
 namespace Drupal\thunder_schema\Plugin\GraphQL\Traits;
 
-use Drupal\graphql\GraphQL\ResolverBuilder;
-use Drupal\graphql\GraphQL\ResolverRegistryInterface;
-
-trait ContentElementInterfaceResolver {
+trait ParagraphInterfaceResolver {
 
   /**
    * @param string $type
    */
-  public function addContentElementInterfaceFields(string $type) {
+  public function addParagraphInterfaceFields(string $type) {
 
     $this->registry->addFieldResolver($type, 'uuid',
       $this->builder->produce('entity_uuid')

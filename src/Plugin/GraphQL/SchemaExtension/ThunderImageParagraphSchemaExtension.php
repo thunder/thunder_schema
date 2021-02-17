@@ -7,13 +7,13 @@ use Drupal\paragraphs\ParagraphInterface;
 
 /**
  * @SchemaExtension(
- *   id = "thunder_image",
- *   name = "Image extension",
- *   description = "A schema extension that adds image related fields.",
+ *   id = "thunder_image_paragraph",
+ *   name = "Image paragraph extension",
+ *   description = "A schema extension that adds image paragraph related fields.",
  *   schema = "thunder"
  * )
  */
-class ThunderImageSchemaExtension extends ThunderSchemaExtensionPluginBase {
+class ThunderImageParagraphSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
@@ -23,21 +23,21 @@ class ThunderImageSchemaExtension extends ThunderSchemaExtensionPluginBase {
   }
 
   /**
-   * Add image field resolvers.
+   * Add image paragraph field resolvers.
    */
   protected function fieldResolver() {
-    $this->addContentElementInterfaceFields('Image');
+    $this->addParagraphInterfaceFields('ImageParagraph');
   }
 
   /**
-   * Add Image type.
+   * Add image paragraph type.
    */
   protected function typeResolver() {
     $this->registry->addTypeResolver(
-      'ContentElement',
+      'Paragraph',
       function ($value) {
         if ($value instanceof ParagraphInterface && $value->bundle() === 'image'){
-           return 'Image';
+           return 'ImageParagraph';
         }
       }
     );

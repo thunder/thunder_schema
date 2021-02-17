@@ -14,7 +14,7 @@ interface ContentType {
   language: String
 }
 
-interface ContentElement {
+interface Paragraph {
   id: Int!
   uuid: String!
   entity: String!
@@ -33,4 +33,4 @@ type Article implements ContentType
 type Tag implements ContentType
 type Channel implements ContentType
 
-type Image implements ContentElement
+type ImageParagraph implements Paragraph

@@ -15,5 +15,5 @@ extend type Article {
   channel: Channel
   tags: [Tag]
   seoTitle: String!
-  content: [ContentElement]
+  content: [Paragraph]
 }

@@ -1,4 +1,4 @@
-extend type Image {
+extend type ImageParagraph {
   id: Int!
   uuid: String!
   entity: String!
