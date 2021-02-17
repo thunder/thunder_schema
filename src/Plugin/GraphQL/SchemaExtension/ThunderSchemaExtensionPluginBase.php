@@ -4,6 +4,7 @@ namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
 use Drupal\graphql\GraphQL\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
+use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy;
 use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -44,6 +45,37 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    */
   protected function createResolverBuilder() {
     $this->builder = new ResolverBuilder();
+  }
+
+  /**
+   * Get the data producer for a referenced entity.
+   *
+   * @param $parentEntityType
+   *   The entity type id of the parent entity.
+   * @param $referenceFieldName
+   *   The reference field name.
+   *
+   * @return \Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy
+   *   The data producer proxy.
+   */
+  protected function referencedEntityProducer($parentEntityType, $referenceFieldName) : DataProducerProxy {
+    return $this->builder->produce('property_path')
+      ->map('type', $this->builder->fromValue('entity:' . $parentEntityType))
+      ->map('value', $this->builder->fromParent())
+      ->map('path', $this->builder->fromValue($referenceFieldName . '.entity'));
+  }
+
+  /**
+   * Takes the bundle name and returns the schema name.
+   *
+   * @param string $bundleName
+   *   The bundle name.
+   *
+   * @return string
+   *   Returns the mapped bundle name.
+   */
+  protected function mapBundleToSchemaName(string $bundleName) {
+    return str_replace('_', '', ucwords($bundleName, '_'));
   }
 
 }

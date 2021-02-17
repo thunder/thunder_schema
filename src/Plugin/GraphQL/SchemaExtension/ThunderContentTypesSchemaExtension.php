@@ -3,7 +3,7 @@
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
-use Drupal\thunder_schema\Plugin\GraphQL\Traits\ContentTypeInterfaceResolver;
+use Drupal\thunder_schema\Plugin\GraphQL\Traits\EntitySchemaTrait;
 
 /**
  * @SchemaExtension(
@@ -15,7 +15,7 @@ use Drupal\thunder_schema\Plugin\GraphQL\Traits\ContentTypeInterfaceResolver;
  */
 class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
-  use ContentTypeInterfaceResolver;
+  use EntitySchemaTrait;
 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
@@ -93,6 +93,45 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
         ->map('bundles', $this->builder->fromValue(['tags']))
         ->map('id', $this->builder->fromArgument('id'))
     );
+  }
+
+  /**
+   * @param string $type
+   */
+  public function addContentTypeInterfaceFields(string $type) {
+    $this->addCommonEntityFields($type);
+
+    $this->registry->addFieldResolver($type, 'title',
+      $this->builder->produce('entity_label')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'url',
+      $this->builder->compose(
+        $this->builder->produce('entity_url')
+          ->map('entity', $this->builder->fromParent()),
+        $this->builder->produce('url_path')
+          ->map('url', $this->builder->fromParent())
+      )
+    );
+
+    $this->registry->addFieldResolver($type, 'created',
+      $this->builder->produce('entity_created')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'changed',
+      $this->builder->produce('entity_changed')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'language',
+      $this->builder->produce('property_path')
+        ->map('type', $this->builder->fromValue('entity'))
+        ->map('value', $this->builder->fromParent())
+        ->map('path', $this->builder->fromValue('langcode.value'))
+    );
+
   }
 
 }

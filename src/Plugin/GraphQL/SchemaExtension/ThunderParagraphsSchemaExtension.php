@@ -4,6 +4,7 @@ namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\paragraphs\ParagraphInterface;
+use Drupal\thunder_schema\Plugin\GraphQL\Traits\EntitySchemaTrait;
 
 /**
  * @SchemaExtension(
@@ -14,6 +15,8 @@ use Drupal\paragraphs\ParagraphInterface;
  * )
  */
 class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase {
+
+  use EntitySchemaTrait;
 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
@@ -27,7 +30,8 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
    */
   protected function fieldResolver() {
     // Text
-    $this->addParagraphInterfaceFields('TextParagraph');
+    $this->addCommonEntityFields('TextParagraph');
+
     $this->registry->addFieldResolver('TextParagraph', 'text',
       $this->builder->produce('property_path')
         ->map('type', $this->builder->fromValue('entity:paragraph'))
@@ -36,15 +40,12 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     );
 
     // Image
-    $this->addParagraphInterfaceFields('ImageParagraph');
-    $imageEntity = $this->builder->produce('property_path')
-      ->map('type', $this->builder->fromValue('entity:paragraph'))
-      ->map('value', $this->builder->fromParent())
-      ->map('path', $this->builder->fromValue('field_image.entity'));
+    $this->addCommonEntityFields('ImageParagraph');
+    $imageEntityProducer = $this->referencedEntityProducer('paragraph', 'field_image');
 
     $this->registry->addFieldResolver('ImageParagraph', 'copyright',
       $this->builder->compose(
-        $imageEntity,
+        $imageEntityProducer,
         $this->builder->produce('property_path')
           ->map('type', $this->builder->fromValue('entity:media'))
           ->map('value', $this->builder->fromParent())
@@ -54,7 +55,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
 
     $this->registry->addFieldResolver('ImageParagraph', 'description',
       $this->builder->compose(
-        $imageEntity,
+        $imageEntityProducer,
         $this->builder->produce('property_path')
           ->map('type', $this->builder->fromValue('entity:media'))
           ->map('value', $this->builder->fromParent())
@@ -64,7 +65,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
 
     $this->registry->addFieldResolver('ImageParagraph', 'src',
       $this->builder->compose(
-        $imageEntity,
+        $imageEntityProducer,
         $this->builder->produce('property_path')
           ->map('type', $this->builder->fromValue('entity:media'))
           ->map('value', $this->builder->fromParent())
@@ -76,7 +77,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
 
     $this->registry->addFieldResolver('ImageParagraph', 'width',
       $this->builder->compose(
-        $imageEntity,
+        $imageEntityProducer,
         $this->builder->produce('property_path')
           ->map('type', $this->builder->fromValue('entity:media'))
           ->map('value', $this->builder->fromParent())
@@ -86,7 +87,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
 
     $this->registry->addFieldResolver('ImageParagraph', 'height',
       $this->builder->compose(
-        $imageEntity,
+        $imageEntityProducer,
         $this->builder->produce('property_path')
           ->map('type', $this->builder->fromValue('entity:media'))
           ->map('value', $this->builder->fromParent())
@@ -96,7 +97,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
 
     $this->registry->addFieldResolver('ImageParagraph', 'title',
       $this->builder->compose(
-        $imageEntity,
+        $imageEntityProducer,
         $this->builder->produce('property_path')
           ->map('type', $this->builder->fromValue('entity:media'))
           ->map('value', $this->builder->fromParent())
@@ -106,7 +107,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
 
     $this->registry->addFieldResolver('ImageParagraph', 'alt',
       $this->builder->compose(
-        $imageEntity,
+        $imageEntityProducer,
         $this->builder->produce('property_path')
           ->map('type', $this->builder->fromValue('entity:media'))
           ->map('value', $this->builder->fromParent())
@@ -116,7 +117,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
 
     $this->registry->addFieldResolver('ImageParagraph', 'tags',
       $this->builder->compose(
-        $imageEntity,
+        $imageEntityProducer,
         $this->builder->produce('entity_reference')
           ->map('entity', $this->builder->fromParent())
           ->map('field', $this->builder->fromValue('field_tags'))
@@ -124,14 +125,12 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     );
 
     // Embed
-    $this->addParagraphInterfaceFields('EmbedParagraph');
-    $embedEntity = $this->builder->produce('property_path')
-      ->map('type', $this->builder->fromValue('entity:paragraph'))
-      ->map('value', $this->builder->fromParent())
-      ->map('path', $this->builder->fromValue('field_media.entity'));
+    $this->addCommonEntityFields('EmbedParagraph');
+    $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
+
     $this->registry->addFieldResolver('EmbedParagraph', 'url',
       $this->builder->compose(
-        $embedEntity,
+        $embedEntityProducer,
         $this->builder->produce('property_path')
           ->map('type', $this->builder->fromValue('entity:media'))
           ->map('value', $this->builder->fromParent())
@@ -158,51 +157,6 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
           return $this->mapBundleToSchemaName($bundle) . 'Paragraph';
         }
       }
-    );
-
-  }
-
-  /**
-   * Takes the bundle name and returns the schema name.
-   *
-   * @param string $bundleName
-   *   The bundle name.
-   *
-   * @return string
-   *   Returns the mapped bundle name.
-   */
-  protected function mapBundleToSchemaName(string $bundleName) {
-    return str_replace('_', '', ucwords($bundleName, '_'));
-  }
-
-  /**
-   * @param string $type
-   */
-  public function addParagraphInterfaceFields(string $type) {
-
-    $this->registry->addFieldResolver($type, 'uuid',
-      $this->builder->produce('entity_uuid')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver($type, 'id',
-      $this->builder->produce('entity_id')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver($type, 'type',
-      $this->builder->produce('entity_bundle')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver($type, 'entity',
-      $this->builder->produce('entity_type_id')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver($type, 'label',
-      $this->builder->produce('entity_label')
-        ->map('entity', $this->builder->fromParent())
     );
 
   }

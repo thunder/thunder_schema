@@ -1,0 +1,22 @@
+interface Media {
+  id: Int!
+  uuid: String!
+  entity: String!
+  type: String!
+}
+
+type Image implements Media {
+  id: Int!
+  uuid: String!
+  entity: String!
+  type: String!
+
+  title: String
+  alt: String
+  copyright: String
+  description: String
+  src: String
+  width: Int
+  height: Int
+  tags: [Tag]
+}
