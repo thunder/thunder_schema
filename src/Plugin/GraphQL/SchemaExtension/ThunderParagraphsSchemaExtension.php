@@ -4,7 +4,6 @@ namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\paragraphs\ParagraphInterface;
-use GraphQL\Error\Error;
 
 /**
  * @SchemaExtension(
@@ -115,6 +114,15 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
       )
     );
 
+    $this->registry->addFieldResolver('ImageParagraph', 'tags',
+      $this->builder->compose(
+        $imageEntity,
+        $this->builder->produce('entity_reference')
+          ->map('entity', $this->builder->fromParent())
+          ->map('field', $this->builder->fromValue('field_tags'))
+        )
+    );
+
     // Embed
     $this->addParagraphInterfaceFields('EmbedParagraph');
     $embedEntity = $this->builder->produce('property_path')
@@ -166,4 +174,37 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
   protected function mapBundleToSchemaName(string $bundleName) {
     return str_replace('_', '', ucwords($bundleName, '_'));
   }
+
+  /**
+   * @param string $type
+   */
+  public function addParagraphInterfaceFields(string $type) {
+
+    $this->registry->addFieldResolver($type, 'uuid',
+      $this->builder->produce('entity_uuid')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'id',
+      $this->builder->produce('entity_id')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'type',
+      $this->builder->produce('entity_bundle')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'entity',
+      $this->builder->produce('entity_type_id')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'label',
+      $this->builder->produce('entity_label')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+  }
+
 }

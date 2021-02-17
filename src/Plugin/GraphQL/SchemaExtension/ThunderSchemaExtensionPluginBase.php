@@ -5,12 +5,9 @@ namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 use Drupal\graphql\GraphQL\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
-use Drupal\thunder_schema\Plugin\GraphQL\Traits\ParagraphInterfaceResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPluginBase {
-
-  use ParagraphInterfaceResolver;
 
   /**
    * ResolverRegistryInterface.

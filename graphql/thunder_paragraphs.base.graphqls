@@ -18,6 +18,7 @@ type ImageParagraph implements Paragraph {
   src: String
   width: Int
   height: Int
+  tags: [Tag]
 }
 
 type EmbedParagraph implements Paragraph {
