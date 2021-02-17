@@ -142,7 +142,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     $this->addCommonEntityFields('ImageListParagraph');
     $mediaEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
-    $this->registry->addFieldResolver('ImageListParagraph', 'title',
+    $this->registry->addFieldResolver('ImageListParagraph', 'name',
       $this->builder->compose(
         $mediaEntityProducer,
         $this->builder->produce('entity_label')

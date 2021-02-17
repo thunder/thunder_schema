@@ -1,7 +1,7 @@
 interface ContentType {
   id: Int!
   uuid: String!
-  title: String!
+  name: String!
   entity: String!
   type: String!
   url: String!
@@ -13,7 +13,7 @@ interface ContentType {
 type Article implements ContentType {
   id: Int!
   uuid: String!
-  title: String!
+  name: String!
   entity: String!
   type: String!
   url: String!
@@ -23,14 +23,14 @@ type Article implements ContentType {
   published: Boolean!
   channel: Channel
   tags: [Tag]
-  seoTitle: String!
+  seoname: String!
   content: [Paragraph]
 }
 
 type Tag implements ContentType {
   id: Int!
   uuid: String!
-  title: String!
+  name: String!
   entity: String!
   type: String!
   url: String!
@@ -42,7 +42,7 @@ type Tag implements ContentType {
 type Channel implements ContentType {
   id: Int!
   uuid: String!
-  title: String!
+  name: String!
   entity: String!
   type: String!
   url: String!

@@ -45,6 +45,6 @@ type ImageListParagraph implements Paragraph {
   type: String!
   entity: String!
 
-  title: String
+  name: String
   images: [Image]
 }

@@ -101,7 +101,7 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
   public function addContentTypeInterfaceFields(string $type) {
     $this->addCommonEntityFields($type);
 
-    $this->registry->addFieldResolver($type, 'title',
+    $this->registry->addFieldResolver($type, 'name',
       $this->builder->produce('entity_label')
         ->map('entity', $this->builder->fromParent())
     );
