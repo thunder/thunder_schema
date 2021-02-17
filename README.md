@@ -23,6 +23,7 @@ If all works, you should be able to test some queries in the Explorer.
         id
         url
         name
+        seoTitle
         language
         author {
           id
