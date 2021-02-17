@@ -36,6 +36,7 @@ If all works, you should be able to test some queries in the Explorer.
         }
         content {
           id
+          type
           ... on ImageListParagraph {
             name
             images {
