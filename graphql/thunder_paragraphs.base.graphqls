@@ -3,6 +3,7 @@ interface Paragraph {
   uuid: String!
   entity: String!
   type: String!
+  name: String
 }
 
 type ImageParagraph implements Paragraph {
@@ -10,6 +11,7 @@ type ImageParagraph implements Paragraph {
   uuid: String!
   entity: String!
   type: String!
+  name: String
 
   title: String
   alt: String
@@ -26,6 +28,7 @@ type EmbedParagraph implements Paragraph {
   uuid: String!
   type: String!
   entity: String!
+  name: String
 
   url: String
 }
@@ -35,6 +38,7 @@ type TextParagraph implements Paragraph {
   uuid: String!
   type: String!
   entity: String!
+  name: String
 
   text: String
 }
@@ -44,7 +48,7 @@ type ImageListParagraph implements Paragraph {
   uuid: String!
   type: String!
   entity: String!
-
   name: String
+
   images: [Image]
 }
