@@ -4,4 +4,9 @@ extend type ImageParagraph {
   entity: String!
   type: String!
   label: String
+  copyright: String
+  description: String
+  src: String
+  width: Int
+  height: Int
 }

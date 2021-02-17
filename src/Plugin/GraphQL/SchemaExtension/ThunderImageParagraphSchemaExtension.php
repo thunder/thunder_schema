@@ -27,6 +27,64 @@ class ThunderImageParagraphSchemaExtension extends ThunderSchemaExtensionPluginB
    */
   protected function fieldResolver() {
     $this->addParagraphInterfaceFields('ImageParagraph');
+
+    $producedMediaEntity = $this->builder->produce('property_path')
+      ->map('type', $this->builder->fromValue('entity:paragraph'))
+      ->map('value', $this->builder->fromParent())
+      ->map('path', $this->builder->fromValue('field_image.entity'));
+
+    $this->registry->addFieldResolver('ImageParagraph', 'copyright',
+      $this->builder->compose(
+        $producedMediaEntity,
+        $this->builder->produce('property_path')
+          ->map('type', $this->builder->fromValue('entity:media'))
+          ->map('value', $this->builder->fromParent())
+          ->map('path', $this->builder->fromValue('field_copyright.value'))
+      )
+    );
+
+    $this->registry->addFieldResolver('ImageParagraph', 'description',
+      $this->builder->compose(
+        $producedMediaEntity,
+        $this->builder->produce('property_path')
+          ->map('type', $this->builder->fromValue('entity:media'))
+          ->map('value', $this->builder->fromParent())
+          ->map('path', $this->builder->fromValue('field_description.processed'))
+      )
+    );
+
+    $this->registry->addFieldResolver('ImageParagraph', 'src',
+      $this->builder->compose(
+        $producedMediaEntity,
+        $this->builder->produce('property_path')
+          ->map('type', $this->builder->fromValue('entity:media'))
+          ->map('value', $this->builder->fromParent())
+          ->map('path', $this->builder->fromValue('field_image.entity')),
+        $this->builder->produce('image_url')
+          ->map('entity', $this->builder->fromParent())
+      )
+    );
+
+    $this->registry->addFieldResolver('ImageParagraph', 'width',
+      $this->builder->compose(
+        $producedMediaEntity,
+        $this->builder->produce('property_path')
+          ->map('type', $this->builder->fromValue('entity:media'))
+          ->map('value', $this->builder->fromParent())
+          ->map('path', $this->builder->fromValue('field_image.width'))
+      )
+    );
+
+    $this->registry->addFieldResolver('ImageParagraph', 'height',
+      $this->builder->compose(
+        $producedMediaEntity,
+        $this->builder->produce('property_path')
+          ->map('type', $this->builder->fromValue('entity:media'))
+          ->map('value', $this->builder->fromParent())
+          ->map('path', $this->builder->fromValue('field_image.height'))
+      )
+    );
+
   }
 
   /**

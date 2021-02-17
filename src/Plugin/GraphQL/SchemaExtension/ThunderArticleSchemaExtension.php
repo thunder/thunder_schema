@@ -27,6 +27,11 @@ class ThunderArticleSchemaExtension extends ThunderSchemaExtensionPluginBase {
   protected function fieldResolver() {
     $this->addContentTypeInterfaceFields('Article');
 
+    $this->registry->addFieldResolver('Article', 'published',
+      $this->builder->produce('entity_published')
+        ->map('entity', $this->builder->fromParent())
+    );
+
     $this->registry->addFieldResolver('Article', 'seoTitle',
       $this->builder->produce('property_path')
         ->map('type', $this->builder->fromValue('entity:node'))

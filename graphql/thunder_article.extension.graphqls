@@ -12,6 +12,7 @@ extend type Article {
   created: String!
   changed: String!
   language: String!
+  published: Boolean!
   channel: Channel
   tags: [Tag]
   seoTitle: String!
