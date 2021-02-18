@@ -38,95 +38,12 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
 
     // Image
     $this->addCommonEntityFields('ImageParagraph');
-    $imageEntityProducer = $this->referencedEntityProducer('paragraph', 'field_image');
 
-    $this->registry->addFieldResolver('ImageParagraph', 'name',
-      $this->builder->compose(
-        $imageEntityProducer,
-        $this->builder->produce('entity_label')
-          ->map('entity', $this->builder->fromParent())
-      )
-    );
-
-    $this->registry->addFieldResolver('ImageParagraph', 'copyright',
-      $this->builder->compose(
-        $imageEntityProducer,
-        $this->builder->produce('property_path')
-          ->map('type', $this->builder->fromValue('entity:media'))
-          ->map('value', $this->builder->fromParent())
-          ->map('path', $this->builder->fromValue('field_copyright.value'))
-      )
-    );
-
-    $this->registry->addFieldResolver('ImageParagraph', 'description',
-      $this->builder->compose(
-        $imageEntityProducer,
-        $this->builder->produce('property_path')
-          ->map('type', $this->builder->fromValue('entity:media'))
-          ->map('value', $this->builder->fromParent())
-          ->map('path', $this->builder->fromValue('field_description.processed'))
-      )
-    );
-
-    $this->registry->addFieldResolver('ImageParagraph', 'src',
-      $this->builder->compose(
-        $imageEntityProducer,
-        $this->builder->produce('property_path')
-          ->map('type', $this->builder->fromValue('entity:media'))
-          ->map('value', $this->builder->fromParent())
-          ->map('path', $this->builder->fromValue('field_image.entity')),
-        $this->builder->produce('image_url')
-          ->map('entity', $this->builder->fromParent())
-      )
-    );
-
-    $this->registry->addFieldResolver('ImageParagraph', 'width',
-      $this->builder->compose(
-        $imageEntityProducer,
-        $this->builder->produce('property_path')
-          ->map('type', $this->builder->fromValue('entity:media'))
-          ->map('value', $this->builder->fromParent())
-          ->map('path', $this->builder->fromValue('field_image.width'))
-      )
-    );
-
-    $this->registry->addFieldResolver('ImageParagraph', 'height',
-      $this->builder->compose(
-        $imageEntityProducer,
-        $this->builder->produce('property_path')
-          ->map('type', $this->builder->fromValue('entity:media'))
-          ->map('value', $this->builder->fromParent())
-          ->map('path', $this->builder->fromValue('field_image.height'))
-      )
-    );
-
-    $this->registry->addFieldResolver('ImageParagraph', 'title',
-      $this->builder->compose(
-        $imageEntityProducer,
-        $this->builder->produce('property_path')
-          ->map('type', $this->builder->fromValue('entity:media'))
-          ->map('value', $this->builder->fromParent())
-          ->map('path', $this->builder->fromValue('field_image.title'))
-      )
-    );
-
-    $this->registry->addFieldResolver('ImageParagraph', 'alt',
-      $this->builder->compose(
-        $imageEntityProducer,
-        $this->builder->produce('property_path')
-          ->map('type', $this->builder->fromValue('entity:media'))
-          ->map('value', $this->builder->fromParent())
-          ->map('path', $this->builder->fromValue('field_image.alt'))
-      )
-    );
-
-    $this->registry->addFieldResolver('ImageParagraph', 'tags',
-      $this->builder->compose(
-        $imageEntityProducer,
-        $this->builder->produce('entity_reference')
-          ->map('entity', $this->builder->fromParent())
-          ->map('field', $this->builder->fromValue('field_tags'))
-        )
+    $this->registry->addFieldResolver('ImageParagraph', 'image',
+      $this->builder->produce('property_path')
+        ->map('type', $this->builder->fromValue('entity:paragraph'))
+        ->map('value', $this->builder->fromParent())
+        ->map('path', $this->builder->fromValue('field_image.entity'))
     );
 
     // Embed
@@ -184,7 +101,6 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
         }
       }
     );
-
   }
 
 }

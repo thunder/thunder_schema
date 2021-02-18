@@ -13,14 +13,7 @@ type ImageParagraph implements Paragraph {
   type: String!
   name: String
 
-  title: String
-  alt: String
-  copyright: String
-  description: String
-  src: String
-  width: Int
-  height: Int
-  tags: [Tag]
+  image: Image
 }
 
 type EmbedParagraph implements Paragraph {
