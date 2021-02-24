@@ -98,9 +98,9 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
     /**
      * User
      */
-    $this->addContentTypeInterfaceFields('Author');
+    $this->addContentTypeInterfaceFields('User');
 
-    $this->registry->addFieldResolver('Author', 'mail',
+    $this->registry->addFieldResolver('User', 'mail',
       $this->builder->produce('property_path')
         ->map('type', $this->builder->fromValue('entity'))
         ->map('value', $this->builder->fromParent())
@@ -133,7 +133,7 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
         ->map('id', $this->builder->fromArgument('id'))
     );
 
-    $this->registry->addFieldResolver('Query', 'author',
+    $this->registry->addFieldResolver('Query', 'user',
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('user'))
         ->map('id', $this->builder->fromArgument('id'))

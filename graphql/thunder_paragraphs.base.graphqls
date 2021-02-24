@@ -2,7 +2,6 @@ interface Paragraph {
   id: Int!
   uuid: String!
   entity: String!
-  type: String!
   name: String
 }
 
@@ -10,16 +9,32 @@ type ParagraphImage implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!
-  type: String!
   name: String
 
   image: Image
 }
 
-type ParagraphEmbed implements Paragraph {
+type ParagraphTwitter implements Paragraph {
   id: Int!
   uuid: String!
-  type: String!
+  entity: String!
+  name: String
+
+  url: String
+}
+
+type ParagraphInstagram implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  url: String
+}
+
+type ParagraphPinterest implements Paragraph {
+  id: Int!
+  uuid: String!
   entity: String!
   name: String
 
@@ -29,17 +44,15 @@ type ParagraphEmbed implements Paragraph {
 type ParagraphText implements Paragraph {
   id: Int!
   uuid: String!
-  type: String!
   entity: String!
   name: String
 
   text: String
 }
 
-type ParagraphImageList implements Paragraph {
+type ParagraphGallery implements Paragraph {
   id: Int!
   uuid: String!
-  type: String!
   entity: String!
   name: String
 

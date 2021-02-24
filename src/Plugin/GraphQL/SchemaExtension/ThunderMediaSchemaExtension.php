@@ -18,7 +18,6 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
-    $this->typeResolver();
     $this->fieldResolver();
   }
 
@@ -96,28 +95,6 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('value', $this->builder->fromParent())
         ->map('path', $this->builder->fromValue('field_url.value'))
     );
-  }
-
-  /**
-   * Add Paragraph types.
-   */
-  protected function typeResolver() {
-    $this->registry->addTypeResolver(
-      'Media',
-      function ($value) {
-        if ($value instanceof MediaInterface) {
-          $bundle = $value->bundle();
-          if (in_array($bundle,['twitter','pinterest','instagram'])) {
-            return 'Embed';
-          }
-          if (in_array($bundle,['gallery'])) {
-            return 'Image';
-          }
-          return $this->mapBundleToSchemaName($bundle);
-        }
-      }
-    );
-
   }
 
 }

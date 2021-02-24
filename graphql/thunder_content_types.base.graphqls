@@ -3,12 +3,11 @@ interface ContentType {
   uuid: String!
   name: String!
   entity: String!
-  type: String!
   url: String!
   created: String!
   changed: String!
   language: String
-  author: Author
+  author: User
 }
 
 type Article implements ContentType {
@@ -16,12 +15,11 @@ type Article implements ContentType {
   uuid: String!
   name: String!
   entity: String!
-  type: String!
   url: String!
   created: String!
   changed: String!
   language: String
-  author: Author
+  author: User
 
   published: Boolean!
   channel: Channel
@@ -35,12 +33,11 @@ type Tag implements ContentType {
   uuid: String!
   name: String!
   entity: String!
-  type: String!
   url: String!
   created: String!
   changed: String!
   language: String
-  author: Author
+  author: User
 
   published: Boolean!
   content: [Paragraph]
@@ -51,28 +48,26 @@ type Channel implements ContentType {
   uuid: String!
   name: String!
   entity: String!
-  type: String!
   url: String!
   created: String!
   changed: String!
   language: String
-  author: Author
+  author: User
 
   published: Boolean!
   content: [Paragraph]
 }
 
-type Author implements ContentType {
+type User implements ContentType {
   id: Int!
   uuid: String!
   name: String!
   entity: String!
-  type: String!
   url: String!
   created: String!
   changed: String!
   language: String
-  author: Author
+  author: User
 
   mail: String
 }

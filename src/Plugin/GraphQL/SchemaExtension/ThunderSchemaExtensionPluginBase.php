@@ -2,10 +2,18 @@
 
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy;
 use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
+use Drupal\media\MediaInterface;
+use Drupal\node\NodeInterface;
+use Drupal\paragraphs\ParagraphInterface;
+use Drupal\taxonomy\TermInterface;
+use Drupal\user\UserInterface;
+use GraphQL\Type\Definition\ResolveInfo;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPluginBase {
@@ -38,6 +46,72 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    */
   public function registerResolvers(ResolverRegistryInterface $registry) {
     $this->registry = $registry;
+
+    $this->registry->addTypeResolver('ContentType',
+      \Closure::fromCallable([
+        __CLASS__,
+        'resolveContentTypes',
+      ])
+    );
+
+    $this->registry->addTypeResolver('Media',
+      \Closure::fromCallable([
+        __CLASS__,
+        'resolveMediaTypes',
+      ])
+    );
+
+    $this->registry->addTypeResolver('Paragraph',
+      \Closure::fromCallable([
+        __CLASS__,
+        'resolveParagraphTypes',
+      ])
+    );
+
+  }
+
+  /**
+   * Add fields common to all content entity types.
+   *
+   * @param string $entityTypeId
+   *   The entity type id.
+   */
+  public function addCommonEntityFields(string $entityTypeId) {
+    $this->registry->addFieldResolver(
+      $entityTypeId,
+      'uuid',
+      $this->builder->produce('entity_uuid')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver(
+      $entityTypeId,
+      'id',
+      $this->builder->produce('entity_id')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver(
+      $entityTypeId,
+      'entity',
+      $this->builder->produce('entity_type_id')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver(
+      $entityTypeId,
+      'name',
+      $this->builder->produce('entity_label')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver(
+      $entityTypeId,
+      'author',
+      $this->builder->produce('entity_owner')
+        ->map('entity', $this->builder->fromParent())
+    );
+
   }
 
   /**
@@ -79,54 +153,52 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   }
 
   /**
-   * Add fields common to all content entity types.
+   * Resolves content types.
    *
-   * @param string $entityTypeId
-   *   The entity type id.
+   * @param mixed $value
+   * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
+   * @param \GraphQL\Type\Definition\ResolveInfo $info
+   *
+   * @return string
+   *   Response type.
    */
-  public function addCommonEntityFields(string $entityTypeId) {
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'uuid',
-      $this->builder->produce('entity_uuid')
-        ->map('entity', $this->builder->fromParent())
-    );
+  protected function resolveContentTypes($value, ResolveContext $context, ResolveInfo $info): string {
+    if ($value instanceof NodeInterface || $value instanceof TermInterface || $value instanceof UserInterface) {
+      return $this->mapBundleToSchemaName($value->bundle());
+    }
+  }
 
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'id',
-      $this->builder->produce('entity_id')
-        ->map('entity', $this->builder->fromParent())
-    );
+  /**
+   * Resolves paragraph types.
+   *
+   * @param mixed $value
+   * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
+   * @param \GraphQL\Type\Definition\ResolveInfo $info
+   *
+   * @return string
+   *   Response type.
+   */
+  protected function resolveParagraphTypes($value, ResolveContext $context, ResolveInfo $info): string {
+    if ($value instanceof ParagraphInterface) {
+      $bundle = $value->bundle();
+      return 'Paragraph' . $this->mapBundleToSchemaName($value->bundle());
+    }
+  }
 
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'type',
-      $this->builder->produce('entity_bundle')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'entity',
-      $this->builder->produce('entity_type_id')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'name',
-      $this->builder->produce('entity_label')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'author',
-      $this->builder->produce('entity_owner')
-        ->map('entity', $this->builder->fromParent())
-    );
-
+  /**
+   * Resolves media types.
+   *
+   * @param mixed $value
+   * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
+   * @param \GraphQL\Type\Definition\ResolveInfo $info
+   *
+   * @return string
+   *   Response type.
+   */
+  protected function resolveMediaTypes($value, ResolveContext $context, ResolveInfo $info): string {
+    if ($value instanceof MediaInterface) {
+      return $this->mapBundleToSchemaName($value->bundle());
+    }
   }
 
 }

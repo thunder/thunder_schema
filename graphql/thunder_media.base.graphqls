@@ -2,7 +2,6 @@ interface Media {
   id: Int!
   uuid: String!
   entity: String!
-  type: String!
   name: String
 }
 
@@ -10,7 +9,6 @@ type Image implements Media {
   id: Int!
   uuid: String!
   entity: String!
-  type: String!
   name: String
 
   title: String

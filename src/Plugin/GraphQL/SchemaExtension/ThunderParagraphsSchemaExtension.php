@@ -2,8 +2,11 @@
 
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
+use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
+use Drupal\graphql\GraphQL\Response\ResponseInterface;
 use Drupal\paragraphs\ParagraphInterface;
+use GraphQL\Type\Definition\ResolveInfo;
 
 /**
  * @SchemaExtension(
@@ -18,7 +21,6 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
-    $this->typeResolver();
     $this->fieldResolver();
   }
 
@@ -46,11 +48,11 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
         ->map('path', $this->builder->fromValue('field_image.entity'))
     );
 
-    // Embed
-    $this->addCommonEntityFields('ParagraphEmbed');
+    // Twitter
+    $this->addCommonEntityFields('ParagraphTwitter');
     $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
-    $this->registry->addFieldResolver('ParagraphEmbed', 'url',
+    $this->registry->addFieldResolver('ParagraphTwitter', 'url',
       $this->builder->compose(
         $embedEntityProducer,
         $this->builder->produce('property_path')
@@ -60,11 +62,39 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
       )
     );
 
-    // Image list
-    $this->addCommonEntityFields('ParagraphImageList');
+    // Instagram
+    $this->addCommonEntityFields('ParagraphInstagram');
+    $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
+
+    $this->registry->addFieldResolver('ParagraphInstagram', 'url',
+      $this->builder->compose(
+        $embedEntityProducer,
+        $this->builder->produce('property_path')
+          ->map('type', $this->builder->fromValue('entity:media'))
+          ->map('value', $this->builder->fromParent())
+          ->map('path', $this->builder->fromValue('field_url.value'))
+      )
+    );
+
+    // Pinterest
+    $this->addCommonEntityFields('ParagraphPinterest');
+    $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
+
+    $this->registry->addFieldResolver('ParagraphPinterest', 'url',
+      $this->builder->compose(
+        $embedEntityProducer,
+        $this->builder->produce('property_path')
+          ->map('type', $this->builder->fromValue('entity:media'))
+          ->map('value', $this->builder->fromParent())
+          ->map('path', $this->builder->fromValue('field_url.value'))
+      )
+    );
+
+    // Gallery
+    $this->addCommonEntityFields('ParagraphGallery');
     $mediaEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
-    $this->registry->addFieldResolver('ParagraphImageList', 'name',
+    $this->registry->addFieldResolver('ParagraphGallery', 'name',
       $this->builder->compose(
         $mediaEntityProducer,
         $this->builder->produce('entity_label')
@@ -72,34 +102,13 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
       )
     );
 
-    $this->registry->addFieldResolver('ParagraphImageList', 'images',
+    $this->registry->addFieldResolver('ParagraphGallery', 'images',
       $this->builder->compose(
         $mediaEntityProducer,
         $this->builder->produce('entity_reference')
           ->map('entity', $this->builder->fromParent())
           ->map('field', $this->builder->fromValue('field_media_images'))
       )
-    );
-  }
-
-  /**
-   * Add Paragraph types.
-   */
-  protected function typeResolver() {
-    $this->registry->addTypeResolver(
-      'Paragraph',
-      function ($value) {
-        if ($value instanceof ParagraphInterface) {
-          $bundle = $value->bundle();
-          if (in_array($bundle,['twitter','pinterest','instagram'])) {
-            return 'ParagraphEmbed';
-          }
-          if (in_array($bundle,['gallery'])) {
-            return 'ParagraphImageList';
-          }
-          return 'Paragraph' . $this->mapBundleToSchemaName($bundle);
-        }
-      }
     );
   }
 

@@ -29,31 +29,30 @@ If all works, you should be able to test some queries in the Explorer.
           id
           name
           mail
+          __typename
         }
-        type
         entity
         channel {
           url
           name
         }
+
         content {
           id
-          type
-          ... on ParagraphImageList {
-            name
-            images {
-              name
-              src
-            }
-          }
-          ... on ParagraphEmbed {
+          __typename
+          ... on ParagraphPinterest {
             url
           }
           ... on ParagraphText {
             text
           }
+          ... on ParagraphGallery {
+            images {
+              src
+            }
+          }
           ... on ParagraphImage {
-              image {
+            image {
               src
               width
               title
