@@ -7,7 +7,6 @@ interface ContentType {
   created: String!
   changed: String!
   language: String
-  author: User
 }
 
 type Article implements ContentType {
@@ -67,7 +66,6 @@ type User implements ContentType {
   created: String!
   changed: String!
   language: String
-  author: User
 
   mail: String
 }

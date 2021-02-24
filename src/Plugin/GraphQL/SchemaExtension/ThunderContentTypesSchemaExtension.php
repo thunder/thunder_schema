@@ -48,6 +48,11 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
         ->map('entity', $this->builder->fromParent())
     );
 
+    $this->registry->addFieldResolver('Article', 'author',
+      $this->builder->produce('entity_owner')
+        ->map('entity', $this->builder->fromParent())
+    );
+
     $this->registry->addFieldResolver('Article', 'seoTitle',
       $this->builder->produce('property_path')
         ->map('type', $this->builder->fromValue('entity:node'))
@@ -81,6 +86,11 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
      */
     $this->resolveContentTypeInterfaceFields('Tag');
 
+    $this->registry->addFieldResolver('Tag', 'author',
+      $this->builder->produce('entity_owner')
+        ->map('entity', $this->builder->fromParent())
+    );
+
     $this->registry->addFieldResolver('Tag', 'published',
       $this->builder->produce('entity_published')
         ->map('entity', $this->builder->fromParent())
@@ -96,6 +106,11 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
      * Channel
      */
     $this->resolveContentTypeInterfaceFields('Channel');
+
+    $this->registry->addFieldResolver('Channel', 'author',
+      $this->builder->produce('entity_owner')
+        ->map('entity', $this->builder->fromParent())
+    );
 
     $this->registry->addFieldResolver('Channel', 'published',
       $this->builder->produce('entity_published')

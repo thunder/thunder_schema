@@ -106,11 +106,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   protected function resolveContentTypeInterfaceFields(string $type) {
     $this->resolveBaseFields($type);
 
-    $this->registry->addFieldResolver($type, 'author',
-      $this->builder->produce('entity_owner')
-        ->map('entity', $this->builder->fromParent())
-    );
-
     $this->registry->addFieldResolver($type, 'url',
       $this->builder->compose(
         $this->builder->produce('entity_url')
