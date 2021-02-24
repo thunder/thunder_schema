@@ -22,7 +22,6 @@ type Article implements ContentType {
   changed: String!
   language: String
   author: Author
-
   published: Boolean!
   channel: Channel
   tags: [Tag]
@@ -41,7 +40,6 @@ type Tag implements ContentType {
   changed: String!
   language: String
   author: Author
-
   published: Boolean!
   content: [Paragraph]
 }
@@ -57,7 +55,6 @@ type Channel implements ContentType {
   changed: String!
   language: String
   author: Author
-
   published: Boolean!
   content: [Paragraph]
 }
@@ -73,6 +70,5 @@ type Author implements ContentType {
   changed: String!
   language: String
   author: Author
-
   mail: String
 }
