@@ -3,7 +3,6 @@
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
-use Drupal\media\MediaInterface;
 
 /**
  * @SchemaExtension(
@@ -18,16 +17,16 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
-    $this->fieldResolver();
+    $this->resolveFields();
   }
 
   /**
    * Add image media field resolvers.
    */
-  protected function fieldResolver() {
+  protected function resolveFields() {
 
     // Image
-    $this->addCommonEntityFields('Image');
+    $this->resolveBaseFields('Image');
     $this->registry->addFieldResolver('Image', 'copyright',
       $this->builder->produce('property_path')
         ->map('type', $this->builder->fromValue('entity:media'))
@@ -88,7 +87,7 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     // Embed
-    $this->addCommonEntityFields('Embed');
+    $this->resolveBaseFields('Embed');
     $this->registry->addFieldResolver('Embed', 'url',
       $this->builder->produce('property_path')
         ->map('type', $this->builder->fromValue('entity:media'))

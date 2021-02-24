@@ -2,7 +2,6 @@
 
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
-use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
@@ -71,72 +70,10 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   }
 
   /**
-   * Add fields common to all content entity types.
-   *
-   * @param string $entityTypeId
-   *   The entity type id.
-   */
-  public function addCommonEntityFields(string $entityTypeId) {
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'uuid',
-      $this->builder->produce('entity_uuid')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'id',
-      $this->builder->produce('entity_id')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'entity',
-      $this->builder->produce('entity_type_id')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'name',
-      $this->builder->produce('entity_label')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver(
-      $entityTypeId,
-      'author',
-      $this->builder->produce('entity_owner')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-  }
-
-  /**
    * Create the ResolverBuilder.
    */
   protected function createResolverBuilder() {
     $this->builder = new ResolverBuilder();
-  }
-
-  /**
-   * Get the data producer for a referenced entity.
-   *
-   * @param $parentEntityType
-   *   The entity type id of the parent entity.
-   * @param $referenceFieldName
-   *   The reference field name.
-   *
-   * @return \Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy
-   *   The data producer proxy.
-   */
-  protected function referencedEntityProducer($parentEntityType, $referenceFieldName) : DataProducerProxy {
-    return $this->builder->produce('property_path')
-      ->map('type', $this->builder->fromValue('entity:' . $parentEntityType))
-      ->map('value', $this->builder->fromParent())
-      ->map('path', $this->builder->fromValue($referenceFieldName . '.entity'));
   }
 
   /**
@@ -180,7 +117,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    */
   protected function resolveParagraphTypes($value, ResolveContext $context, ResolveInfo $info): string {
     if ($value instanceof ParagraphInterface) {
-      $bundle = $value->bundle();
       return 'Paragraph' . $this->mapBundleToSchemaName($value->bundle());
     }
   }
@@ -199,6 +135,102 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
     if ($value instanceof MediaInterface) {
       return $this->mapBundleToSchemaName($value->bundle());
     }
+  }
+
+  /**
+   * Add fields common to all entities.
+   *
+   * @param string $type
+   *   The type name.
+   */
+  protected function resolveBaseFields(string $type) {
+    $this->registry->addFieldResolver(
+      $type,
+      'uuid',
+      $this->builder->produce('entity_uuid')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver(
+      $type,
+      'id',
+      $this->builder->produce('entity_id')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver(
+      $type,
+      'entity',
+      $this->builder->produce('entity_type_id')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver(
+      $type,
+      'name',
+      $this->builder->produce('entity_label')
+        ->map('entity', $this->builder->fromParent())
+    );
+  }
+
+
+  /**
+   * Add fields common to all content types.
+   *
+   * @param string $type
+   *   The type name.
+   */
+  protected function resolveContentTypeInterfaceFields(string $type) {
+    $this->resolveBaseFields($type);
+
+    $this->registry->addFieldResolver($type, 'author',
+      $this->builder->produce('entity_owner')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'url',
+      $this->builder->compose(
+        $this->builder->produce('entity_url')
+          ->map('entity', $this->builder->fromParent()),
+        $this->builder->produce('url_path')
+          ->map('url', $this->builder->fromParent())
+      )
+    );
+
+    $this->registry->addFieldResolver($type, 'created',
+      $this->builder->produce('entity_created')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'changed',
+      $this->builder->produce('entity_changed')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->registry->addFieldResolver($type, 'language',
+      $this->builder->produce('property_path')
+        ->map('type', $this->builder->fromValue('entity'))
+        ->map('value', $this->builder->fromParent())
+        ->map('path', $this->builder->fromValue('langcode.value'))
+    );
+  }
+
+  /**
+   * Get the data producer for a referenced entity.
+   *
+   * @param $parentEntityType
+   *   The entity type id of the parent entity.
+   * @param $referenceFieldName
+   *   The reference field name.
+   *
+   * @return \Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy
+   *   The data producer proxy.
+   */
+  protected function referencedEntityProducer($parentEntityType, $referenceFieldName) : DataProducerProxy {
+    return $this->builder->produce('property_path')
+      ->map('type', $this->builder->fromValue('entity:' . $parentEntityType))
+      ->map('value', $this->builder->fromParent())
+      ->map('path', $this->builder->fromValue($referenceFieldName . '.entity'));
   }
 
 }

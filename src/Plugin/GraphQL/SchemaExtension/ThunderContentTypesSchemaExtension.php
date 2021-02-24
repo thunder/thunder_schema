@@ -17,18 +17,18 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
-    $this->queryFieldResolver();
-    $this->fieldResolver();
+    $this->resolveQueryFields();
+    $this->resolveFields();
   }
 
   /**
    * Add article field resolvers.
    */
-  protected function fieldResolver() {
+  protected function resolveFields() {
     /**
      * Article
      */
-    $this->addContentTypeInterfaceFields('Article');
+    $this->resolveContentTypeInterfaceFields('Article');
 
     $this->registry->addFieldResolver('Article', 'published',
       $this->builder->produce('entity_published')
@@ -66,7 +66,7 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
     /**
      * Tags
      */
-    $this->addContentTypeInterfaceFields('Tag');
+    $this->resolveContentTypeInterfaceFields('Tag');
 
     $this->registry->addFieldResolver('Tag', 'published',
       $this->builder->produce('entity_published')
@@ -82,7 +82,7 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
     /**
      * Channel
      */
-    $this->addContentTypeInterfaceFields('Channel');
+    $this->resolveContentTypeInterfaceFields('Channel');
 
     $this->registry->addFieldResolver('Channel', 'published',
       $this->builder->produce('entity_published')
@@ -98,7 +98,7 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
     /**
      * User
      */
-    $this->addContentTypeInterfaceFields('User');
+    $this->resolveContentTypeInterfaceFields('User');
 
     $this->registry->addFieldResolver('User', 'mail',
       $this->builder->produce('property_path')
@@ -111,7 +111,7 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
   /**
    * Add content query field resolvers.
    */
-  protected function queryFieldResolver() {
+  protected function resolveQueryFields() {
     $this->registry->addFieldResolver('Query', 'article',
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('node'))
@@ -137,43 +137,6 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('user'))
         ->map('id', $this->builder->fromArgument('id'))
-    );
-
-  }
-
-  /**
-   * Add fields common to all content types.
-   *
-   * @param string $type
-   *   The entity type id.
-   */
-  public function addContentTypeInterfaceFields(string $type) {
-    $this->addCommonEntityFields($type);
-
-    $this->registry->addFieldResolver($type, 'url',
-      $this->builder->compose(
-        $this->builder->produce('entity_url')
-          ->map('entity', $this->builder->fromParent()),
-        $this->builder->produce('url_path')
-          ->map('url', $this->builder->fromParent())
-      )
-    );
-
-    $this->registry->addFieldResolver($type, 'created',
-      $this->builder->produce('entity_created')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver($type, 'changed',
-      $this->builder->produce('entity_changed')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->registry->addFieldResolver($type, 'language',
-      $this->builder->produce('property_path')
-        ->map('type', $this->builder->fromValue('entity'))
-        ->map('value', $this->builder->fromParent())
-        ->map('path', $this->builder->fromValue('langcode.value'))
     );
 
   }

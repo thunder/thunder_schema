@@ -2,11 +2,7 @@
 
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
-use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
-use Drupal\graphql\GraphQL\Response\ResponseInterface;
-use Drupal\paragraphs\ParagraphInterface;
-use GraphQL\Type\Definition\ResolveInfo;
 
 /**
  * @SchemaExtension(
@@ -21,15 +17,15 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
-    $this->fieldResolver();
+    $this->resolveFields();
   }
 
   /**
    * Add paragraph field resolvers.
    */
-  protected function fieldResolver() {
+  protected function resolveFields() {
     // Text
-    $this->addCommonEntityFields('ParagraphText');
+    $this->resolveBaseFields('ParagraphText');
 
     $this->registry->addFieldResolver('ParagraphText', 'text',
       $this->builder->produce('property_path')
@@ -39,7 +35,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     );
 
     // Image
-    $this->addCommonEntityFields('ParagraphImage');
+    $this->resolveBaseFields('ParagraphImage');
 
     $this->registry->addFieldResolver('ParagraphImage', 'image',
       $this->builder->produce('property_path')
@@ -49,7 +45,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     );
 
     // Twitter
-    $this->addCommonEntityFields('ParagraphTwitter');
+    $this->resolveBaseFields('ParagraphTwitter');
     $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
     $this->registry->addFieldResolver('ParagraphTwitter', 'url',
@@ -63,7 +59,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     );
 
     // Instagram
-    $this->addCommonEntityFields('ParagraphInstagram');
+    $this->resolveBaseFields('ParagraphInstagram');
     $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
     $this->registry->addFieldResolver('ParagraphInstagram', 'url',
@@ -77,7 +73,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     );
 
     // Pinterest
-    $this->addCommonEntityFields('ParagraphPinterest');
+    $this->resolveBaseFields('ParagraphPinterest');
     $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
     $this->registry->addFieldResolver('ParagraphPinterest', 'url',
@@ -91,7 +87,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     );
 
     // Gallery
-    $this->addCommonEntityFields('ParagraphGallery');
+    $this->resolveBaseFields('ParagraphGallery');
     $mediaEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
     $this->registry->addFieldResolver('ParagraphGallery', 'name',
