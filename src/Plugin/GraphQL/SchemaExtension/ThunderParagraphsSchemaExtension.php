@@ -2,7 +2,10 @@
 
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
+use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
+use Drupal\paragraphs\ParagraphInterface;
+use GraphQL\Type\Definition\ResolveInfo;
 
 /**
  * @SchemaExtension(
@@ -16,6 +19,13 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
+
+    $this->registry->addTypeResolver('Paragraph',
+      \Closure::fromCallable([
+        __CLASS__,
+        'resolveParagraphTypes',
+      ])
+    );
 
     $this->resolveFields();
   }
@@ -106,6 +116,22 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
           ->map('field', $this->builder->fromValue('field_media_images'))
       )
     );
+  }
+
+  /**
+   * Resolves paragraph types.
+   *
+   * @param mixed $value
+   * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
+   * @param \GraphQL\Type\Definition\ResolveInfo $info
+   *
+   * @return string
+   *   Response type.
+   */
+  protected function resolveParagraphTypes($value, ResolveContext $context, ResolveInfo $info): string {
+    if ($value instanceof ParagraphInterface) {
+      return 'Paragraph' . $this->mapBundleToSchemaName($value->bundle());
+    }
   }
 
 }

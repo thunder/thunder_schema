@@ -2,7 +2,11 @@
 
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
+use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
+use Drupal\media\MediaInterface;
+use Drupal\paragraphs\ParagraphInterface;
+use GraphQL\Type\Definition\ResolveInfo;
 
 /**
  * @SchemaExtension(
@@ -16,6 +20,13 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
+
+    $this->registry->addTypeResolver('Media',
+      \Closure::fromCallable([
+        __CLASS__,
+        'resolveMediaTypes',
+      ])
+    );
 
     $this->resolveFields();
   }
@@ -94,6 +105,23 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('value', $this->builder->fromParent())
         ->map('path', $this->builder->fromValue('field_url.value'))
     );
+  }
+
+
+  /**
+   * Resolves media types.
+   *
+   * @param mixed $value
+   * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
+   * @param \GraphQL\Type\Definition\ResolveInfo $info
+   *
+   * @return string
+   *   Response type.
+   */
+  protected function resolveMediaTypes($value, ResolveContext $context, ResolveInfo $info): string {
+    if ($value instanceof MediaInterface) {
+      return $this->mapBundleToSchemaName($value->bundle());
+    }
   }
 
 }

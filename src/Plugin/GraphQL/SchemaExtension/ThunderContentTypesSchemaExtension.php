@@ -2,7 +2,12 @@
 
 namespace Drupal\thunder_schema\Plugin\GraphQL\SchemaExtension;
 
+use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
+use Drupal\node\NodeInterface;
+use Drupal\taxonomy\TermInterface;
+use Drupal\user\UserInterface;
+use GraphQL\Type\Definition\ResolveInfo;
 
 /**
  * @SchemaExtension(
@@ -16,6 +21,14 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
 
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
+
+    $this->registry->addTypeResolver('ContentType',
+      \Closure::fromCallable([
+        __CLASS__,
+        'resolveContentTypes',
+      ])
+    );
+
 
     $this->resolveQueryFields();
     $this->resolveFields();
@@ -139,6 +152,22 @@ class ThunderContentTypesSchemaExtension extends ThunderSchemaExtensionPluginBas
         ->map('id', $this->builder->fromArgument('id'))
     );
 
+  }
+
+  /**
+   * Resolves content types.
+   *
+   * @param mixed $value
+   * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
+   * @param \GraphQL\Type\Definition\ResolveInfo $info
+   *
+   * @return string
+   *   Response type.
+   */
+  protected function resolveContentTypes($value, ResolveContext $context, ResolveInfo $info): string {
+    if ($value instanceof NodeInterface || $value instanceof TermInterface || $value instanceof UserInterface) {
+      return $this->mapBundleToSchemaName($value->bundle());
+    }
   }
 
 }
