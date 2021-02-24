@@ -6,7 +6,7 @@ interface Paragraph {
   name: String
 }
 
-type ImageParagraph implements Paragraph {
+type ParagraphImage implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!
@@ -16,7 +16,7 @@ type ImageParagraph implements Paragraph {
   image: Image
 }
 
-type EmbedParagraph implements Paragraph {
+type ParagraphEmbed implements Paragraph {
   id: Int!
   uuid: String!
   type: String!
@@ -26,7 +26,7 @@ type EmbedParagraph implements Paragraph {
   url: String
 }
 
-type TextParagraph implements Paragraph {
+type ParagraphText implements Paragraph {
   id: Int!
   uuid: String!
   type: String!
@@ -36,7 +36,7 @@ type TextParagraph implements Paragraph {
   text: String
 }
 
-type ImageListParagraph implements Paragraph {
+type ParagraphImageList implements Paragraph {
   id: Int!
   uuid: String!
   type: String!

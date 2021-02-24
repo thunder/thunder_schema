@@ -92,12 +92,12 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
         if ($value instanceof ParagraphInterface) {
           $bundle = $value->bundle();
           if (in_array($bundle,['twitter','pinterest','instagram'])) {
-            return 'EmbedParagraph';
+            return 'ParagraphEmbed';
           }
           if (in_array($bundle,['gallery'])) {
-            return 'ImageListParagraph';
+            return 'ParagraphImageList';
           }
-          return $this->mapBundleToSchemaName($bundle) . 'Paragraph';
+          return 'Paragraph' . $this->mapBundleToSchemaName($bundle);
         }
       }
     );

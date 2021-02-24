@@ -39,27 +39,29 @@ If all works, you should be able to test some queries in the Explorer.
         content {
           id
           type
-          ... on ImageListParagraph {
+          ... on ParagraphImageList {
             name
             images {
               name
               src
             }
           }
-          ... on EmbedParagraph {
+          ... on ParagraphEmbed {
             url
           }
-          ... on TextParagraph {
+          ... on ParagraphText {
             text
           }
-          ... on ImageParagraph {
-            src
-            width
-            title
-            alt
-            name
-            tags {
+          ... on ParagraphImage {
+              image {
+              src
+              width
+              title
+              alt
               name
+              tags {
+                name
+              }
             }
           }
         }
