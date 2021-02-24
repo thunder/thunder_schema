@@ -27,9 +27,9 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
    */
   protected function fieldResolver() {
     // Text
-    $this->addCommonEntityFields('TextParagraph');
+    $this->addCommonEntityFields('ParagraphText');
 
-    $this->registry->addFieldResolver('TextParagraph', 'text',
+    $this->registry->addFieldResolver('ParagraphText', 'text',
       $this->builder->produce('property_path')
         ->map('type', $this->builder->fromValue('entity:paragraph'))
         ->map('value', $this->builder->fromParent())
@@ -37,9 +37,9 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     );
 
     // Image
-    $this->addCommonEntityFields('ImageParagraph');
+    $this->addCommonEntityFields('ParagraphImage');
 
-    $this->registry->addFieldResolver('ImageParagraph', 'image',
+    $this->registry->addFieldResolver('ParagraphImage', 'image',
       $this->builder->produce('property_path')
         ->map('type', $this->builder->fromValue('entity:paragraph'))
         ->map('value', $this->builder->fromParent())
@@ -47,10 +47,10 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     );
 
     // Embed
-    $this->addCommonEntityFields('EmbedParagraph');
+    $this->addCommonEntityFields('ParagraphEmbed');
     $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
-    $this->registry->addFieldResolver('EmbedParagraph', 'url',
+    $this->registry->addFieldResolver('ParagraphEmbed', 'url',
       $this->builder->compose(
         $embedEntityProducer,
         $this->builder->produce('property_path')
@@ -61,10 +61,10 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     );
 
     // Image list
-    $this->addCommonEntityFields('ImageListParagraph');
+    $this->addCommonEntityFields('ParagraphImageList');
     $mediaEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
-    $this->registry->addFieldResolver('ImageListParagraph', 'name',
+    $this->registry->addFieldResolver('ParagraphImageList', 'name',
       $this->builder->compose(
         $mediaEntityProducer,
         $this->builder->produce('entity_label')
@@ -72,7 +72,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
       )
     );
 
-    $this->registry->addFieldResolver('ImageListParagraph', 'images',
+    $this->registry->addFieldResolver('ParagraphImageList', 'images',
       $this->builder->compose(
         $mediaEntityProducer,
         $this->builder->produce('entity_reference')
