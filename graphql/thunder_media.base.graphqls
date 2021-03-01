@@ -5,7 +5,7 @@ interface Media {
   name: String
 }
 
-type MediaImage implements Media {
+type Image implements Media {
   id: Int!
   uuid: String!
   entity: String!
