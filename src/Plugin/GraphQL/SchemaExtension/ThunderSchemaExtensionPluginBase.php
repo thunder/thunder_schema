@@ -98,7 +98,7 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
 
 
   /**
-   * Add fields common to all content types.
+   * Add fields common to all page types.
    *
    * @param string $type
    *   The type name.

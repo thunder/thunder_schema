@@ -170,7 +170,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
   }
 
   /**
-   * Resolves content types.
+   * Resolves page types.
    *
    * @param mixed $value
    * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
