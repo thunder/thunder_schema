@@ -103,7 +103,7 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    * @param string $type
    *   The type name.
    */
-  protected function resolveContentTypeInterfaceFields(string $type) {
+  protected function resolvePagesInterfaceFields(string $type) {
     $this->resolveBaseFields($type);
 
     $this->registry->addFieldResolver($type, 'url',
