@@ -61,6 +61,33 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   }
 
   /**
+   * Add content query field resolvers.
+   *
+   * @param string $page_type
+   *   The name of the pagetype e.g. article.
+   * @param string $entity_type
+   *   The name of the entity type e.g. node, taxonomy_term.
+   */
+  protected function resolveQueryFields(string $page_type, string $entity_type) {
+
+
+    $this->registry->addFieldResolver('Query', $page_type,
+      $this->builder->produce('entity_load')
+        ->map('type', $this->builder->fromValue($entity_type))
+        ->map('bundles', $this->builder->fromValue($page_type))
+        ->map('id', $this->builder->fromArgument('id'))
+    );
+
+    $this->registry->addFieldResolver('Query', $page_type . 'list',
+      $this->builder->produce('query_entities')
+        ->map('type', $this->builder->fromValue($entity_type))
+        ->map('bundle', $this->builder->fromValue($page_type))
+        ->map('offset', $this->builder->fromArgument('offset'))
+        ->map('limit', $this->builder->fromArgument('limit'))
+    );
+  }
+
+  /**
    * Add fields common to all entities.
    *
    * @param string $type
