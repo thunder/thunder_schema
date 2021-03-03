@@ -1,24 +1,20 @@
 <?php
 
-namespace Drupal\thunder\Plugin\GraphQL\DataProducer;
+namespace Drupal\thunder_schema\Plugin\GraphQL\DataProducer\Entity;
 
-use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
-use Drupal\thunder_schema\Wrappers\QueryConnection;
-use GraphQL\Error\UserError;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\graphql\GraphQL\Execution\FieldContext;
+use Drupal\thunder_schema\Plugin\GraphQL\DataProducer\ThunderEntityQueryBase;
 
 /**
  * Builds and executes Drupal entity query.
  *
  * @DataProducer(
- *   id = "entity_list_producer",
+ *   id = "thunder_entity_query",
  *   name = @Translation("Load entities"),
  *   description = @Translation("Loads entities."),
- *   produces = @ContextDefinition("entities",
- *     label = @Translation("Entities")
+ *   produces = @ContextDefinition("string",
+ *     label = @Translation("Entity IDs"),
+ *     multiple = TRUE
  *   ),
  *   consumes = {
  *     "type" = @ContextDefinition("string",
@@ -26,79 +22,58 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     ),
  *     "limit" = @ContextDefinition("integer",
  *       label = @Translation("Limit"),
- *       required = FALSE
+ *       required = FALSE,
+ *       default_value = 10
  *     ),
  *     "offset" = @ContextDefinition("integer",
  *       label = @Translation("Offset"),
- *       required = FALSE
+ *       required = FALSE,
+ *       default_value = 0
+ *     ),
+ *     "owned_only" = @ContextDefinition("boolean",
+ *       label = @Translation("Query only owned entities"),
+ *       required = FALSE,
+ *       default_value = FALSE
  *     ),
  *     "conditions" = @ContextDefinition("any",
  *       label = @Translation("Conditions"),
  *       multiple = TRUE,
- *       required = FALSE
+ *       required = FALSE,
+ *       default_value = {}
  *     ),
- *     "language" = @ContextDefinition("string",
- *       label = @Translation("Entity languages(s)"),
+ *     "allowed_filters" = @ContextDefinition("string",
+ *       label = @Translation("Allowed filters"),
  *       multiple = TRUE,
- *       required = FALSE
+ *       required = FALSE,
+ *       default_value = {}
+ *     ),
+ *     "languages" = @ContextDefinition("string",
+ *       label = @Translation("Entity languages"),
+ *       multiple = TRUE,
+ *       required = FALSE,
+ *       default_value = {}
  *     ),
  *     "bundles" = @ContextDefinition("any",
- *       label = @Translation("Entity bundle(s)"),
+ *       label = @Translation("Entity bundles"),
  *       multiple = TRUE,
+ *       required = FALSE,
+ *       default_value = {}
+ *     ),
+ *     "sorts" = @ContextDefinition("any",
+ *       label = @Translation("Sorts"),
+ *       multiple = TRUE,
+ *       default_value = {},
  *       required = FALSE
  *     )
  *   }
  * )
  */
-class EntityQuery extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
+class EntityQuery extends ThunderEntityQueryBase {
 
   /**
-   * Maximum number of results.
-   *
-   * To prevent denial of service attacks with loading too many items.
+   * The default maximum number of items to be capped to prevent DDOS attacks.
    */
-  const MAX_LIMIT = 100;
-
-  /**
-   * The entity type manager service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManager
-   */
-  protected $entityTypeManager;
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('entity_type.manager')
-    );
-  }
-
-  /**
-   * EntityLoad constructor.
-   *
-   * @param array $configuration
-   *   The plugin configuration array.
-   * @param string $pluginId
-   *   The plugin id.
-   * @param array $pluginDefinition
-   *   The plugin definition array.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   *   The entity type manager service.
-   */
-  public function __construct(
-    array $configuration,
-    string $pluginId,
-    array $pluginDefinition,
-    EntityTypeManagerInterface $entityTypeManager
-  ) {
-    parent::__construct($configuration, $pluginId, $pluginDefinition);
-    $this->entityTypeManager = $entityTypeManager;
-  }
+  const MAX_ITEMS = 100;
 
   /**
    * Resolves the entity query.
@@ -107,68 +82,69 @@ class EntityQuery extends DataProducerPluginBase implements ContainerFactoryPlug
    *   Entity type.
    * @param int $limit
    *   Maximum number of queried entities.
-   * @param int|null $offset
+   * @param int $offset
    *   Offset to start with.
-   * @param array|null $conditions
+   * @param bool $ownedOnly
+   *   Query only entities owned by current user.
+   * @param array $conditions
    *   List of conditions to filter the entities.
-   * @param string|null $language
-   *   Language of queried entities.
-   * @param array|null $bundles
+   * @param array $allowedFilters
+   *   List of fields to be used in conditions to restrict access to data.
+   * @param string[] $languages
+   *   Languages for queried entities.
+   * @param string[] $bundles
    *   List of bundles to be filtered.
-   * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $metadata
-   *   The metadata object for caching.
+   * @param array $sorts
+   *   List of sorts.
+   * @param \Drupal\graphql\GraphQL\Execution\FieldContext $context
+   *   The caching context related to the current field.
    *
-   * @return \Drupal\thunder_schema\Wrappers\QueryConnection
+   * @return array
    *   The list of ids that match this query.
    *
    * @throws \GraphQL\Error\UserError
    *   No bundles defined for given entity type.
    */
-  public function resolve(string $type, int $limit = 10, ?int $offset = NULL, ?array $conditions = NULL, ?string $language = NULL, ?array $bundles = NULL, RefinableCacheableDependencyInterface $metadata): array {
-
-    $storage = $this->entityTypeManager->getStorage($type);
-    $entityType = $storage->getEntityType();
-
-    // Make sure that max limit is not crossed.
-    if ($limit > static::MAX_LIMIT) {
-      $limit = static::MAX_LIMIT;
-    }
+  public function resolve(string $type, int $limit, int $offset, bool $ownedOnly, array $conditions, array $allowedFilters, array $languages, array $bundles, array $sorts, FieldContext $context): array {
+    $query = $this->buildBaseEntityQuery(
+      $type,
+      $ownedOnly,
+      $conditions,
+      $allowedFilters,
+      $languages,
+      $bundles,
+      $context
+    );
 
     // Make sure offset is zero or positive.
-    if (!isset($offset) || $offset < 0) {
-      $offset = 0;
+    $offset = max($offset, 0);
+
+    // Make sure limit is positive and cap the max items to prevent DDOS
+    // attacks.
+    if ($limit <= 0) {
+      $limit = 10;
     }
+    $limit = min($limit, self::MAX_ITEMS);
 
-    $entity_type = $this->entityTypeManager->getStorage($type);
-    $query = $entity_type->getQuery()
-      ->range($offset, $limit);
+    // Apply offset and limit.
+    $query->range($offset, $limit);
 
-    // Ensure that access checking is performed on the query.
-    $query->accessCheck(TRUE);
-
-    if (isset($bundles)) {
-      $bundle_key = $entity_type->getEntityType()->getKey('bundle');
-      if (!$bundle_key) {
-        throw new UserError('No bundles defined for given entity type.');
+    // Add sorts.
+    foreach ($sorts as $sort) {
+      if (!empty($sort['field'])) {
+        if (!empty($sort['direction']) && strtolower($sort['direction']) == 'desc') {
+          $direction = 'DESC';
+        }
+        else {
+          $direction = 'ASC';
+        }
+        $query->sort($sort['field'], $direction);
       }
-      $query->condition($bundle_key, $bundles, "IN");
-    }
-    if (isset($language)) {
-      $query->condition('langcode', $language);
     }
 
-    foreach ($conditions as $condition) {
-      $operation = isset($condition['operator']) ? $condition['operator'] : NULL;
-      $query->condition($condition['field'], $condition['value'], $operation);
-    }
+    $ids = $query->execute();
 
-    $metadata->addCacheTags($entityType->getListCacheTags());
-    $metadata->addCacheContexts($entityType->getListCacheContexts());
-
-    return new QueryConnection($query);
-    /*$ids = $query->execute();
-
-    return $ids;*/
+    return $ids;
   }
 
 }
