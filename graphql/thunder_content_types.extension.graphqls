@@ -3,4 +3,23 @@ extend type Query {
   tag(id: Int!): Tag
   channel(id: Int!): Channel
   user(id: Int!): User
+
+  article_list(
+    type: String = "node"
+    bundle: String = "article"
+    offset: Int = 0
+    limit: Int = 10
+  ): Connection!
+
+  channel_list(
+    type: String = "taxonomy_term"
+    bundle: String = "channel"
+    offset: Int = 0
+    limit: Int = 10
+  ): Connection!
+}
+
+type Connection {
+  total: Int!
+  items: [Article!]
 }

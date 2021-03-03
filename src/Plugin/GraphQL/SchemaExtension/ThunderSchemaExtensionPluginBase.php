@@ -6,6 +6,7 @@ use Drupal\graphql\GraphQL\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy;
 use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
+use Drupal\thunder_schema\Wrappers\QueryConnection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPluginBase {
@@ -61,33 +62,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   }
 
   /**
-   * Add content query field resolvers.
-   *
-   * @param string $page_type
-   *   The name of the pagetype e.g. article.
-   * @param string $entity_type
-   *   The name of the entity type e.g. node, taxonomy_term.
-   */
-  protected function resolveQueryFields(string $page_type, string $entity_type) {
-
-
-    $this->registry->addFieldResolver('Query', $page_type,
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue($entity_type))
-        ->map('bundles', $this->builder->fromValue($page_type))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
-
-    $this->registry->addFieldResolver('Query', $page_type . 'list',
-      $this->builder->produce('query_entities')
-        ->map('type', $this->builder->fromValue($entity_type))
-        ->map('bundle', $this->builder->fromValue($page_type))
-        ->map('offset', $this->builder->fromArgument('offset'))
-        ->map('limit', $this->builder->fromArgument('limit'))
-    );
-  }
-
-  /**
    * Add fields common to all entities.
    *
    * @param string $type
@@ -123,6 +97,51 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
     );
   }
 
+  /**
+   * Add content query field resolvers.
+   *
+   * @param string $page_type
+   *   The page type name.
+   * @param string $entity_type
+   *   The entity type name.
+   */
+  protected function resolveContentTypeInterfaceQueryFields(string $page_type, string $entity_type) {
+      $this->addConnectionFields('Connection');
+
+      $this->registry->addFieldResolver('Query', $page_type,
+        $this->builder->produce('entity_load')
+          ->map('type', $this->builder->fromValue($entity_type))
+          ->map('bundles', $this->builder->fromValue([$page_type]))
+          ->map('id', $this->builder->fromArgument('id'))
+      );
+
+      $this->registry->addFieldResolver('Query', $page_type . '_list',
+        $this->builder->produce('entity_list_producer')
+          ->map('type', $this->builder->fromArgument('type'))
+          ->map('bundle', $this->builder->fromArgument('bundle'))
+          ->map('offset', $this->builder->fromArgument('offset'))
+          ->map('limit', $this->builder->fromArgument('limit'))
+      );
+  }
+
+  /**
+   * Function addConnectionFields - adds the connection fields.
+   * @param string $type
+   *   The connection type.
+   */
+  protected function addConnectionFields($type) {
+    $this->registry->addFieldResolver($type, 'total',
+      $this->builder->callback(function (QueryConnection $connection) {
+        return $connection->total();
+      })
+    );
+
+    $this->registry->addFieldResolver($type, 'items',
+      $this->builder->callback(function (QueryConnection $connection) {
+        return $connection->items();
+      })
+    );
+  }
 
   /**
    * Add fields common to all content types.
