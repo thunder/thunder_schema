@@ -174,7 +174,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->registry->addFieldResolver('Query', 'page_list',
-      $this->builder->produce('query_entities')
+      $this->builder->produce('thunder_entity_query')
         ->map('type', $this->builder->fromArgument('type'))
         ->map('bundle', $this->builder->fromArgument('bundle'))
         ->map('offset', $this->builder->fromArgument('offset'))
