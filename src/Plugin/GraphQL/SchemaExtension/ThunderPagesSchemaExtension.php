@@ -10,6 +10,8 @@ use Drupal\user\UserInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
+ * Schema extension for page types.
+ *
  * @SchemaExtension(
  *   id = "thunder_pages",
  *   name = "Content pages",
@@ -20,7 +22,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
   /**
-   *
+   * {@inheritdoc}
    */
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
@@ -40,9 +42,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * Add article field resolvers.
    */
   protected function resolveFields() {
-    /**
-     * Article
-     */
+    // Article.
     $this->resolvePageInterfaceFields('Article');
 
     $this->registry->addFieldResolver('Article', 'published',
@@ -83,9 +83,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('field', $this->builder->fromValue('field_paragraphs'))
     );
 
-    /**
-     * Tags
-     */
+    // Tags.
     $this->resolvePageInterfaceFields('Tag');
 
     $this->registry->addFieldResolver('Tag', 'author',
@@ -104,9 +102,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('field', $this->builder->fromValue('field_paragraphs'))
     );
 
-    /**
-     * Channel
-     */
+    // Channel.
     $this->resolvePageInterfaceFields('Channel');
 
     $this->registry->addFieldResolver('Channel', 'author',
@@ -125,9 +121,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('field', $this->builder->fromValue('field_paragraphs'))
     );
 
-    /**
-     * User
-     */
+    // User.
     $this->resolvePageInterfaceFields('User');
 
     $this->registry->addFieldResolver('User', 'mail',
@@ -175,8 +169,11 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * Resolves page types.
    *
    * @param mixed $value
+   *   The current value.
    * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
+   *   The resolve context.
    * @param \GraphQL\Type\Definition\ResolveInfo $info
+   *   The resolve information.
    *
    * @return string
    *   Response type.

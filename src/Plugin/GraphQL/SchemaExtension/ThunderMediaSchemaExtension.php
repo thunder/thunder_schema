@@ -8,6 +8,8 @@ use Drupal\media\MediaInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
+ * The media schema extension.
+ *
  * @SchemaExtension(
  *   id = "thunder_media",
  *   name = "Media extension",
@@ -18,7 +20,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
   /**
-   *
+   * {@inheritdoc}
    */
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
@@ -104,8 +106,11 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * Resolves media types.
    *
    * @param mixed $value
+   *   The current value.
    * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
+   *   The resolve context.
    * @param \GraphQL\Type\Definition\ResolveInfo $info
+   *   The resolve information.
    *
    * @return string
    *   Response type.

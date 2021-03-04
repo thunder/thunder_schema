@@ -9,7 +9,7 @@ use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- *
+ * The base class for Thunder schema extension plugins.
  */
 abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPluginBase {
 
@@ -138,15 +138,15 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   /**
    * Get the data producer for a referenced entity.
    *
-   * @param $parentEntityType
+   * @param string $parentEntityType
    *   The entity type id of the parent entity.
-   * @param $referenceFieldName
+   * @param string $referenceFieldName
    *   The reference field name.
    *
    * @return \Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy
    *   The data producer proxy.
    */
-  protected function referencedEntityProducer($parentEntityType, $referenceFieldName) : DataProducerProxy {
+  protected function referencedEntityProducer(string $parentEntityType, string $referenceFieldName) : DataProducerProxy {
     return $this->builder->produce('property_path')
       ->map('type', $this->builder->fromValue('entity:' . $parentEntityType))
       ->map('value', $this->builder->fromParent())

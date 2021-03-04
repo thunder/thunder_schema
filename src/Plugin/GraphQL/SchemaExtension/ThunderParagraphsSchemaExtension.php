@@ -8,6 +8,8 @@ use Drupal\paragraphs\ParagraphInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
+ * The paragraph schema extension.
+ *
  * @SchemaExtension(
  *   id = "thunder_paragraphs",
  *   name = "Paragraph extension",
@@ -18,7 +20,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
   /**
-   *
+   * Add image media field resolvers.
    */
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
@@ -122,11 +124,14 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
   }
 
   /**
-   * Resolves paragraph types.
+   * Resolves page types.
    *
    * @param mixed $value
+   *   The current value.
    * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
+   *   The resolve context.
    * @param \GraphQL\Type\Definition\ResolveInfo $info
+   *   The resolve information.
    *
    * @return string
    *   Response type.
