@@ -14,6 +14,9 @@ use Drupal\graphql\GraphQL\ResolverRegistryInterface;
  */
 class ThunderRoutingSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
+  /**
+   *
+   */
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 

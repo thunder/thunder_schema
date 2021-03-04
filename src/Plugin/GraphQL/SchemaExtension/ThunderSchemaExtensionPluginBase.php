@@ -8,6 +8,9 @@ use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy;
 use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ *
+ */
 abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPluginBase {
 
   /**
@@ -95,7 +98,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
         ->map('entity', $this->builder->fromParent())
     );
   }
-
 
   /**
    * Add fields common to all page types.

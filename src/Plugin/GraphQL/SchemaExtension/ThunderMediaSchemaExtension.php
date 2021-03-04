@@ -5,7 +5,6 @@ namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\media\MediaInterface;
-use Drupal\paragraphs\ParagraphInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
@@ -18,6 +17,9 @@ use GraphQL\Type\Definition\ResolveInfo;
  */
 class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
+  /**
+   *
+   */
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
@@ -36,7 +38,7 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
    */
   protected function resolveFields() {
 
-    // Image
+    // Image.
     $this->resolveBaseFields('MediaImage');
     $this->registry->addFieldResolver('MediaImage', 'copyright',
       $this->builder->produce('property_path')
@@ -97,7 +99,6 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('field', $this->builder->fromValue('field_tags'))
     );
   }
-
 
   /**
    * Resolves media types.

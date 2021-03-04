@@ -19,6 +19,9 @@ use GraphQL\Type\Definition\ResolveInfo;
  */
 class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
+  /**
+   *
+   */
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
@@ -28,7 +31,6 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         'resolvePageTypes',
       ])
     );
-
 
     $this->resolveQueryFields();
     $this->resolveFields();

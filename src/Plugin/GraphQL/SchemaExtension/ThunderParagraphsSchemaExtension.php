@@ -17,6 +17,9 @@ use GraphQL\Type\Definition\ResolveInfo;
  */
 class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
+  /**
+   *
+   */
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
@@ -34,7 +37,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
    * Add paragraph field resolvers.
    */
   protected function resolveFields() {
-    // Text
+    // Text.
     $this->resolveBaseFields('ParagraphText');
 
     $this->registry->addFieldResolver('ParagraphText', 'text',
@@ -44,7 +47,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
         ->map('path', $this->builder->fromValue('field_text.processed'))
     );
 
-    // Image
+    // Image.
     $this->resolveBaseFields('ParagraphImage');
 
     $this->registry->addFieldResolver('ParagraphImage', 'image',
@@ -54,7 +57,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
         ->map('path', $this->builder->fromValue('field_image.entity'))
     );
 
-    // Twitter
+    // Twitter.
     $this->resolveBaseFields('ParagraphTwitter');
     $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
@@ -68,7 +71,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
       )
     );
 
-    // Instagram
+    // Instagram.
     $this->resolveBaseFields('ParagraphInstagram');
     $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
@@ -82,7 +85,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
       )
     );
 
-    // Pinterest
+    // Pinterest.
     $this->resolveBaseFields('ParagraphPinterest');
     $embedEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
@@ -96,7 +99,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
       )
     );
 
-    // Gallery
+    // Gallery.
     $this->resolveBaseFields('ParagraphGallery');
     $mediaEntityProducer = $this->referencedEntityProducer('paragraph', 'field_media');
 
