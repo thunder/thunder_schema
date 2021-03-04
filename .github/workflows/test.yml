@@ -24,7 +24,7 @@ jobs:
 
     strategy:
       matrix:
-        DRUPAL_TESTING_DRUPAL_VERSION: ['~8.9.0']
+        DRUPAL_TESTING_DRUPAL_VERSION: ['~9.1.0']
 
     steps:
       - uses: actions/checkout@v1
@@ -58,16 +58,12 @@ jobs:
       - name: Get build environment
         run: composer global require thunder/drupal-testing
 
-      - name: Prepare the build
-        run: test-drupal-project prepare_build
-        env:
-          DRUPAL_TESTING_DRUPAL_VERSION: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION }}
-
       - name: Build the docroot
         run: test-drupal-project build
 
       - name: Test for deprecations
         run: test-drupal-project deprecation
+        if: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION != '~9.1.0' }}
 
       - name: Install drupal
         run: test-drupal-project install
