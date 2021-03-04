@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DataProducer(
- *   id = "thunder_page_list_producer",
+ *   id = "thunder_page_list",
  *   name = @Translation("Load entities"),
  *   description = @Translation("Loads a list of entities of a type."),
  *   produces = @ContextDefinition("any",
@@ -35,13 +35,25 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     "limit" = @ContextDefinition("integer",
  *       label = @Translation("Limit"),
  *       required = FALSE
+ *     ),
+ *     "conditions" = @ContextDefinition("any",
+ *       label = @Translation("Conditions"),
+ *       multiple = TRUE,
+ *       required = FALSE,
+ *       default_value = {}
+ *     ),
+ *     "sorts" = @ContextDefinition("any",
+ *       label = @Translation("Sorts"),
+ *       multiple = TRUE,
+ *       default_value = {},
+ *       required = FALSE
  *     )
  *   }
  * )
  */
-class PageListProducer extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
+class ThunderPageList extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
 
-  const MAX_LIMIT = 100;
+  const MAX_LIMIT = 2000;
 
   /**
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
@@ -87,17 +99,24 @@ class PageListProducer extends DataProducerPluginBase implements ContainerFactor
 
   /**
    * @param string $type
-   * @param array|null $bundles
+   *   Entity type.
+   * @param string[] $bundles
    *   List of bundles to be filtered.
    * @param int $offset
+   *   Offset to start with.
    * @param int $limit
+   *   Maximum number of queried entities.
+   * @param array $conditions
+   *   List of conditions to filter the entities.
+   * @param array $sorts
+   *   List of sorts.
    * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $metadata
    *
    * @return \Drupal\thunder_gqls\Wrappers\QueryConnection
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function resolve(string $type, ?array $bundles = NULL, $offset, $limit, RefinableCacheableDependencyInterface $metadata) {
+  public function resolve(string $type, array $bundles, $offset, $limit, array $conditions, array $sorts, RefinableCacheableDependencyInterface $metadata) {
     if ($limit > static::MAX_LIMIT) {
       throw new UserError(sprintf('Exceeded maximum query limit: %s.', static::MAX_LIMIT));
     }
@@ -117,7 +136,27 @@ class PageListProducer extends DataProducerPluginBase implements ContainerFactor
       $query->condition($bundle_key, $bundles, "IN");
     }
 
+    if (isset($conditions)) {
+      $x=1;
+    }
+
+
     $query->range($offset, $limit);
+
+    if (isset($sorts)) {
+      $x=1;
+      foreach ($sorts as $sort) {
+        if (!empty($sort['field'])) {
+          if (!empty($sort['direction']) && strtolower($sort['direction']) == 'desc') {
+            $direction = 'DESC';
+          }
+          else {
+            $direction = 'ASC';
+          }
+          $query->sort($sort['field'], $direction);
+        }
+      }
+    }
 
     $metadata->addCacheTags($entityType->getListCacheTags());
     $metadata->addCacheContexts($entityType->getListCacheContexts());
