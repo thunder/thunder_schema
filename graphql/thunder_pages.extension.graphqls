@@ -6,10 +6,9 @@ extend type Query {
 
   page_list(
     type: String
-    bundles: [Page]
-    limit: Int = 10
+    bundles: [String]
     offset: Int = 0
-    conditions: [String]
+    limit: Int = 10
   ): Connection!
 }
 
