@@ -11,7 +11,7 @@ use GraphQL\Error\UserError;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * The list produce.
+ * The list producer.
  *
  * @DataProducer(
  *   id = "query_entities",
