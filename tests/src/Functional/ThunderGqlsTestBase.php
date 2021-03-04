@@ -31,6 +31,9 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
    */
   protected $graphqlUser;
 
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp(): void {
     parent::setUp();
 
@@ -40,7 +43,7 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
       'access user profiles',
       'view media',
       'view published terms in channel',
-      'view published terms in tags'
+      'view published terms in tags',
     ]);
 
   }
@@ -55,8 +58,9 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
    */
   protected function logWithRole(string $role) {
     $user = $this->drupalCreateUser();
-        $user->addRole($role);
+    $user->addRole($role);
     $user->save();
     $this->drupalLogin($user);
   }
+
 }
