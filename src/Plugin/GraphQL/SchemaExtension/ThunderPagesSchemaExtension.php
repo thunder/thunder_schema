@@ -179,6 +179,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
    *   Response type.
    */
   protected function resolvePageTypes($value, ResolveContext $context, ResolveInfo $info): string {
+    $someUnusedVar = '';
     if ($value instanceof NodeInterface || $value instanceof TermInterface || $value instanceof UserInterface) {
       return $this->mapBundleToSchemaName($value->bundle());
     }
