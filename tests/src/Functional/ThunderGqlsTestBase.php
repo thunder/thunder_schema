@@ -21,6 +21,7 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'graphql',
     'thunder_gqls',
   ];
 
