@@ -106,6 +106,9 @@ class EntityQuery extends ThunderEntityQueryBase {
    *   No bundles defined for given entity type.
    */
   public function resolve(string $type, int $limit, int $offset, bool $ownedOnly, array $conditions, array $allowedFilters, array $languages, array $bundles, array $sorts, FieldContext $context): array {
+    $storage = $this->entityTypeManager->getStorage($type);
+    $entityType = $storage->getEntityType();
+
     $query = $this->buildBaseEntityQuery(
       $type,
       $ownedOnly,
@@ -142,7 +145,10 @@ class EntityQuery extends ThunderEntityQueryBase {
       }
     }
 
-    $ids = $query->execute();
+    $metadata->addCacheTags($entityType->getListCacheTags());
+    $metadata->addCacheContexts($entityType->getListCacheContexts());
+
+    return new QueryConnection($query);
 
     return $ids;
   }

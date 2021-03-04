@@ -4,16 +4,9 @@ extend type Query {
   channel(id: Int!): Channel
   user(id: Int!): User
 
-  article_list(
-    type: String = "node"
-    bundle: String = "article"
-    offset: Int = 0
-    limit: Int = 10
-  ): Connection!
-
-  channel_list(
-    type: String = "taxonomy_term"
-    bundle: String = "channel"
+  page_list(
+    type: String
+    bundle: String
     offset: Int = 0
     limit: Int = 10
   ): Connection!
@@ -21,5 +14,5 @@ extend type Query {
 
 type Connection {
   total: Int!
-  items: [Article!]
+  items: [ContentType!]
 }

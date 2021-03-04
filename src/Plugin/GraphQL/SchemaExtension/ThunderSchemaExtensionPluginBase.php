@@ -115,7 +115,7 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
           ->map('id', $this->builder->fromArgument('id'))
       );
 
-      $this->registry->addFieldResolver('Query', $page_type . '_list',
+      $this->registry->addFieldResolver('Query', 'page_list',
         $this->builder->produce('query_entities')
           ->map('type', $this->builder->fromArgument('type'))
           ->map('bundle', $this->builder->fromArgument('bundle'))
