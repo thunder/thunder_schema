@@ -3,4 +3,16 @@ extend type Query {
   tag(id: Int!): Tag
   channel(id: Int!): Channel
   user(id: Int!): User
+
+  page_list(
+    type: String
+    bundle: String
+    offset: Int = 0
+    limit: Int = 10
+  ): Connection!
+}
+
+type Connection {
+  total: Int!
+  items: [Page!]
 }

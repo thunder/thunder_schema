@@ -6,6 +6,7 @@ use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
+use Drupal\thunder_gqls\Wrappers\QueryConnection;
 use Drupal\user\UserInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 
@@ -29,8 +30,6 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
       ])
     );
 
-
-    $this->resolveQueryFields();
     $this->resolveFields();
   }
 
@@ -42,6 +41,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
      * Article
      */
     $this->resolvePageInterfaceFields('Article');
+    $this->resolvePageInterfaceQueryFields('article', 'node');
 
     $this->registry->addFieldResolver('Article', 'published',
       $this->builder->produce('entity_published')
@@ -85,6 +85,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
      * Tags
      */
     $this->resolvePageInterfaceFields('Tag');
+    $this->resolvePageInterfaceQueryFields('tag', 'taxonomy_term');
 
     $this->registry->addFieldResolver('Tag', 'author',
       $this->builder->produce('entity_owner')
@@ -106,6 +107,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
      * Channel
      */
     $this->resolvePageInterfaceFields('Channel');
+    $this->resolvePageInterfaceQueryFields('channel', 'taxonomy_term');
 
     $this->registry->addFieldResolver('Channel', 'author',
       $this->builder->produce('entity_owner')
@@ -127,6 +129,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
      * User
      */
     $this->resolvePageInterfaceFields('User');
+    $this->resolvePageInterfaceQueryFields('user', 'node');
 
     $this->registry->addFieldResolver('User', 'mail',
       $this->builder->produce('property_path')
@@ -134,39 +137,6 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('value', $this->builder->fromParent())
         ->map('path', $this->builder->fromValue('mail.value'))
     );
-  }
-
-  /**
-   * Add content query field resolvers.
-   */
-  protected function resolveQueryFields() {
-    $this->registry->addFieldResolver('Query', 'article',
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue('node'))
-        ->map('bundles', $this->builder->fromValue(['article']))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
-
-    $this->registry->addFieldResolver('Query', 'channel',
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue('taxonomy_term'))
-        ->map('bundles', $this->builder->fromValue(['channel']))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
-
-    $this->registry->addFieldResolver('Query', 'tag',
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue('taxonomy_term'))
-        ->map('bundles', $this->builder->fromValue(['tags']))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
-
-    $this->registry->addFieldResolver('Query', 'user',
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue('user'))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
-
   }
 
   /**
@@ -183,6 +153,52 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     if ($value instanceof NodeInterface || $value instanceof TermInterface || $value instanceof UserInterface) {
       return $this->mapBundleToSchemaName($value->bundle());
     }
+  }
+
+  /**
+   * Add content query field resolvers.
+   *
+   * @param string $page_type
+   *   The page type name.
+   * @param string $entity_type
+   *   The entity type name.
+   */
+  protected function resolvePageInterfaceQueryFields(string $page_type, string $entity_type) {
+    $this->addConnectionFields('Connection');
+
+    $this->registry->addFieldResolver('Query', $page_type,
+      $this->builder->produce('entity_load')
+        ->map('type', $this->builder->fromValue($entity_type))
+        ->map('bundles', $this->builder->fromValue([$page_type]))
+        ->map('id', $this->builder->fromArgument('id'))
+    );
+
+    $this->registry->addFieldResolver('Query', 'page_list',
+      $this->builder->produce('query_entities')
+        ->map('type', $this->builder->fromArgument('type'))
+        ->map('bundle', $this->builder->fromArgument('bundle'))
+        ->map('offset', $this->builder->fromArgument('offset'))
+        ->map('limit', $this->builder->fromArgument('limit'))
+    );
+  }
+
+  /**
+   * Function addConnectionFields - adds the connection fields.
+   * @param string $type
+   *   The connection type.
+   */
+  protected function addConnectionFields($type) {
+    $this->registry->addFieldResolver($type, 'total',
+      $this->builder->callback(function (QueryConnection $connection) {
+        return $connection->total();
+      })
+    );
+
+    $this->registry->addFieldResolver($type, 'items',
+      $this->builder->callback(function (QueryConnection $connection) {
+        return $connection->items();
+      })
+    );
   }
 
 }
