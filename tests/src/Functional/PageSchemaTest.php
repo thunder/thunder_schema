@@ -14,8 +14,9 @@ class PageSchemaTest extends ThunderGqlsTestBase {
    */
   public function testArticleSchema() {
     $this->drupalLogin($this->graphqlUser);
+
+
     $this->assertTrue(TRUE, 'this should not fail');
-    $this->assertTrue(FALSE, 'this should fail!');
   }
 
 }
