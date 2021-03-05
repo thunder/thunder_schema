@@ -3,10 +3,12 @@
 namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
 use Drupal\graphql\GraphQL\Execution\FieldContext;
-use Drupal\thunder_gqls\Wrappers\QueryConnection;
+use Drupal\thunder_gqls\Wrappers\ThunderQueryConnection;
 use GraphQL\Error\UserError;
 
 /**
+ * Class ThunderPageListProducer.
+ *
  * @DataProducer(
  *   id = "thunder_page_list_producer",
  *   name = @Translation("Load entities"),
@@ -94,7 +96,7 @@ class ThunderPageListProducer extends ThunderListProducerBase {
    * @param \Drupal\graphql\GraphQL\Execution\FieldContext $cacheContext
    *   The caching context related to the current field.
    *
-   * @return \Drupal\thunder_gqls\Wrappers\QueryConnection
+   * @return \Drupal\thunder_gqls\Wrappers\ThunderQueryConnection
    *   The list of ids that match this query.
    *
    * @throws \GraphQL\Error\UserError
@@ -102,7 +104,7 @@ class ThunderPageListProducer extends ThunderListProducerBase {
    */
   public function resolve(string $type, array $bundles, int $offset, int $limit, array $conditions, array $languages, array $allowedFilters, bool $ownedOnly, array $sortBy, FieldContext $cacheContext) {
 
-    $query = $this->buildBaseEntityQuery (
+    $query = $this->buildBaseEntityQuery(
       $type,
       $bundles,
       $conditions,
@@ -140,7 +142,7 @@ class ThunderPageListProducer extends ThunderListProducerBase {
     $cacheContext->addCacheTags($entityType->getListCacheTags());
     $cacheContext->addCacheContexts($entityType->getListCacheContexts());
 
-    return new QueryConnection($query);
+    return new ThunderQueryConnection($query);
   }
 
 }

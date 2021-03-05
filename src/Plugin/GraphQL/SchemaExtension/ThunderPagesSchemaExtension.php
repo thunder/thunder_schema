@@ -6,7 +6,7 @@ use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
-use Drupal\thunder_gqls\Wrappers\QueryConnection;
+use Drupal\thunder_gqls\Wrappers\ThunderQueryConnection;
 use Drupal\user\UserInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 
@@ -194,13 +194,13 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
    */
   protected function addConnectionFields($type) {
     $this->registry->addFieldResolver($type, 'total',
-      $this->builder->callback(function (QueryConnection $connection) {
+      $this->builder->callback(function (ThunderQueryConnection $connection) {
         return $connection->total();
       })
     );
 
     $this->registry->addFieldResolver($type, 'items',
-      $this->builder->callback(function (QueryConnection $connection) {
+      $this->builder->callback(function (ThunderQueryConnection $connection) {
         return $connection->items();
       })
     );
