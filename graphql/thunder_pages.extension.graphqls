@@ -1,25 +1,34 @@
-input Sorting {
-  field: String
-  direction: String
-}
-
 extend type Query {
   article(id: Int!): Article
   tag(id: Int!): Tag
   channel(id: Int!): Channel
   user(id: Int!): User
 
-  page_list(
+  page_list (
     type: String
     bundles: [String]
     offset: Int = 0
     limit: Int = 10
     conditions: [String]
-    sorts: [Sorting]
+    languages: [String]
+    ownedOnly: Boolean
+    allowdFilters: [String]
+    sortBy: [Sorting]
   ): Connection!
 }
 
 type Connection {
   total: Int!
   items: [Page!]
+}
+
+input Condition {
+  field: String
+  operator: String
+  value: String
+}
+
+input Sorting {
+  field: String
+  direction: String
 }

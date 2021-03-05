@@ -174,13 +174,16 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->registry->addFieldResolver('Query', 'page_list',
-      $this->builder->produce('thunder_page_list')
+      $this->builder->produce('thunder_page_list_producer')
         ->map('type', $this->builder->fromArgument('type'))
         ->map('bundles', $this->builder->fromArgument('bundles'))
         ->map('offset', $this->builder->fromArgument('offset'))
         ->map('limit', $this->builder->fromArgument('limit'))
         ->map('conditions', $this->builder->fromArgument('conditions'))
-        ->map('sorts', $this->builder->fromArgument('sorts'))
+        ->map('languages', $this->builder->fromArgument('languages'))
+        ->map('ownedOnly', $this->builder->fromArgument('ownedOnly'))
+        ->map('allowedFilters', $this->builder->fromArgument('allowedFilters'))
+        ->map('sortBy', $this->builder->fromArgument('sortBy'))
     );
   }
 
