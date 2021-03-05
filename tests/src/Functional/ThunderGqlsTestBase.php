@@ -24,6 +24,9 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
     'thunder_gqls',
   ];
 
+  /**
+   * {@inheritdoc}
+   */
   protected static $configSchemaCheckerExclusions = [
     'graphql.graphql_servers.thunder_graphql',
   ];
