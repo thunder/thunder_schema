@@ -25,6 +25,8 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
   ];
 
   /**
+   * This can be removed, once the linked issue is resolved. 
+   * 
    * @todo See https://github.com/drupal-graphql/graphql/issues/1177.
    *
    * {@inheritdoc}
