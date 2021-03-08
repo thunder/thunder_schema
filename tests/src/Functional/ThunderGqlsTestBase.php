@@ -25,6 +25,8 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
   ];
 
   /**
+   * TODO: Remove this, once https://github.com/drupal-graphql/graphql/issues/1177 is addressed.
+   *
    * {@inheritdoc}
    */
   protected static $configSchemaCheckerExclusions = [
