@@ -6,12 +6,12 @@ use Drupal\Core\Entity\Query\QueryInterface;
 use GraphQL\Deferred;
 
 /**
- * ThunderQueryConnection.
+ * ThunderQueryConnection class.
  */
 class ThunderQueryConnection {
 
   /**
-   * The query variable.
+   * The query interface.
    *
    * @var \Drupal\Core\Entity\Query\QueryInterface
    */
@@ -21,16 +21,17 @@ class ThunderQueryConnection {
    * ThunderQueryConnection constructor.
    *
    * @param \Drupal\Core\Entity\Query\QueryInterface $query
-   *   The QueryInterface.
+   *   The query interface.
    */
   public function __construct(QueryInterface $query) {
     $this->query = $query;
   }
 
   /**
-   * Returns the total number of results.
+   * Calculate the total amount of results.
    *
    * @return int
+   *   The total amount of results.
    */
   public function total() {
     $query = clone $this->query;
@@ -39,9 +40,10 @@ class ThunderQueryConnection {
   }
 
   /**
-   * Returns the result items.
+   * Retrieve The item list.
    *
    * @return array|\GraphQL\Deferred
+   *   The item list.
    */
   public function items() {
     $result = $this->query->execute();
