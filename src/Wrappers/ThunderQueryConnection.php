@@ -6,7 +6,7 @@ use Drupal\Core\Entity\Query\QueryInterface;
 use GraphQL\Deferred;
 
 /**
- * ThunderQueryConnection class.
+ * The thunder query connection class.
  */
 class ThunderQueryConnection {
 

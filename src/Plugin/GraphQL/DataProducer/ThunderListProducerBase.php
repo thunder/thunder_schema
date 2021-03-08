@@ -11,7 +11,7 @@ use GraphQL\Error\UserError;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Base class to share code between entity query and entity query count.
+ * The thunder list producer base class.
  */
 abstract class ThunderListProducerBase extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
 

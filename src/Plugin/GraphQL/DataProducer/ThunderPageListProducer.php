@@ -7,7 +7,7 @@ use Drupal\thunder_gqls\Wrappers\ThunderQueryConnection;
 use GraphQL\Error\UserError;
 
 /**
- * Class ThunderPageListProducer.
+ * The thunder page list producer class.
  *
  * @DataProducer(
  *   id = "thunder_page_list_producer",
