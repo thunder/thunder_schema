@@ -199,14 +199,14 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
   protected function resolvePageInterfaceQueryFields(string $page_type, string $entity_type) {
     $this->addConnectionFields('Connection');
 
-    $this->registry->addFieldResolver('Query', $page_type,
+    $this->addFieldResolverIfNotExists('Query', $page_type,
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue($entity_type))
         ->map('bundles', $this->builder->fromValue([$page_type]))
         ->map('id', $this->builder->fromArgument('id'))
     );
 
-    $this->registry->addFieldResolver('Query', 'page_list',
+   $this->addFieldResolverIfNotExists('Query', 'page_list',
       $this->builder->produce('thunder_page_list_producer')
         ->map('type', $this->builder->fromArgument('type'))
         ->map('bundles', $this->builder->fromArgument('bundles'))
@@ -227,13 +227,13 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
    *   The connection type.
    */
   protected function addConnectionFields($type) {
-    $this->registry->addFieldResolver($type, 'total',
+    $this->addFieldResolverIfNotExists($type, 'total',
       $this->builder->callback(function (ThunderQueryConnection $connection) {
         return $connection->total();
       })
     );
 
-    $this->registry->addFieldResolver($type, 'items',
+    $this->addFieldResolverIfNotExists($type, 'items',
       $this->builder->callback(function (ThunderQueryConnection $connection) {
         return $connection->items();
       })
