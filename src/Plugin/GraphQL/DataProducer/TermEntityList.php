@@ -2,8 +2,8 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\graphql\GraphQL\Execution\FieldContext;
+use Drupal\taxonomy\TermInterface;
 
 /**
  * The channel list producer class.
@@ -61,9 +61,34 @@ use Drupal\graphql\GraphQL\Execution\FieldContext;
 class TermEntityList extends EntityListProducerBase {
 
   /**
-   * {@inheritdoc}
+   * Build entity query for entities, that reference a specific term.
+   *
+   * @param TermInterface $term
+   *   The term entity interface.
+   * @param string $type
+   *   Entity type.
+   * @param string[] $bundles
+   *   List of bundles to be filtered.
+   * @param string $field
+   *   The term reference field of the bundle.
+   * @param int $offset
+   *   Query only entities owned by current user.
+   * @param int $limit
+   *   Maximum number of queried entities.
+   * @param string[] $languages
+   *   Languages for queried entities.
+   * @param array $sortBy
+   *   List of sorts.
+   * @param \Drupal\graphql\GraphQL\Execution\FieldContext $cacheContext
+   *   The caching context related to the current field.
+   *
+   * @return \Drupal\Core\Entity\Query\QueryInterface
+   *   Base entity query.
+   *
+   * @throws \GraphQL\Error\UserError
+   *   No bundles defined for given entity type.
    */
-  public function resolve(EntityInterface $term, string $type, array $bundles, string $field, int $offset, int $limit, array $languages, array $sortBy, FieldContext $cacheContext) {
+  public function resolve(TermInterface $term, string $type, array $bundles, string $field, int $offset, int $limit, array $languages, array $sortBy, FieldContext $cacheContext) {
     $conditions = [
       ['field' => $field, 'value' => $term->id()]
     ];
