@@ -133,7 +133,13 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('offset', $this->builder->fromArgument('offset'))
         ->map('limit', $this->builder->fromArgument('limit'))
         ->map('languages', $this->builder->fromArgument('languages'))
-        ->map('sortBy', $this->builder->fromValue([['field' => 'changed', 'direction' => 'DESC']])
+        ->map('sortBy', $this->builder->fromValue(
+          [
+            [
+              'field' => 'changed',
+              'direction' => 'DESC',
+            ]
+          ])
         )
     );
 
@@ -148,7 +154,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('path', $this->builder->fromValue('mail.value'))
     );
 
-    // Entity List
+    // Entity List.
     $this->addFieldResolverIfNotExists('EntityList', 'total',
       $this->builder->callback(function (EntityListResponse $entityList) {
         return $entityList->total();

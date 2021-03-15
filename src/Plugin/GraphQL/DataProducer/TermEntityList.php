@@ -64,7 +64,7 @@ class TermEntityList extends EntityListProducerBase {
   /**
    * Build entity query for entities, that reference a specific term.
    *
-   * @param TermInterface $term
+   * @param \Drupal\taxonomy\TermInterface $term
    *   The term entity interface.
    * @param string $type
    *   Entity type.
@@ -91,7 +91,10 @@ class TermEntityList extends EntityListProducerBase {
    */
   public function resolve(TermInterface $term, string $type, array $bundles, string $field, int $offset, int $limit, array $languages, array $sortBy, FieldContext $cacheContext): EntityListResponse {
     $conditions = [
-      ['field' => $field, 'value' => $term->id()]
+      [
+        'field' => $field,
+        'value' => $term->id(),
+      ],
     ];
 
     return parent::resolve(

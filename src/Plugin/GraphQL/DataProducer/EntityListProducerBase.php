@@ -152,7 +152,6 @@ abstract class EntityListProducerBase extends DataProducerPluginBase implements 
     $cacheContext->addCacheTags($entityType->getListCacheTags());
     $cacheContext->addCacheContexts($entityType->getListCacheContexts());
 
-
     return new EntityListResponse($query);
   }
 
