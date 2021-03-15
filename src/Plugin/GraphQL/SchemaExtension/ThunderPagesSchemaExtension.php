@@ -6,7 +6,7 @@ use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
-use Drupal\thunder_gqls\Wrappers\ThunderQueryConnection;
+use Drupal\thunder_gqls\Wrappers\EntityListResponse;
 use Drupal\user\UserInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 
@@ -124,6 +124,19 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('field', $this->builder->fromValue('field_paragraphs'))
     );
 
+    $this->addFieldResolverIfNotExists('Channel', 'articles',
+      $this->builder->produce('term_entity_list')
+        ->map('term', $this->builder->fromParent())
+        ->map('type', $this->builder->fromValue('node'))
+        ->map('bundles', $this->builder->fromValue(['article']))
+        ->map('field', $this->builder->fromValue('field_channel'))
+        ->map('offset', $this->builder->fromArgument('offset'))
+        ->map('limit', $this->builder->fromArgument('limit'))
+        ->map('languages', $this->builder->fromArgument('languages'))
+        ->map('sortBy', $this->builder->fromValue([['field' => 'changed', 'direction' => 'DESC']])
+        )
+    );
+
     // User.
     $this->resolvePageInterfaceFields('User');
     $this->resolvePageInterfaceQueryFields('user', 'node');
@@ -133,6 +146,19 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('type', $this->builder->fromValue('entity'))
         ->map('value', $this->builder->fromParent())
         ->map('path', $this->builder->fromValue('mail.value'))
+    );
+
+    // Entity List
+    $this->addFieldResolverIfNotExists('EntityList', 'total',
+      $this->builder->callback(function (EntityListResponse $entityList) {
+        return $entityList->total();
+      })
+    );
+
+    $this->addFieldResolverIfNotExists('EntityList', 'items',
+      $this->builder->callback(function (EntityListResponse $entityList) {
+        return $entityList->items();
+      })
     );
   }
 
@@ -197,46 +223,11 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
    *   The entity type name.
    */
   protected function resolvePageInterfaceQueryFields(string $page_type, string $entity_type) {
-    $this->addConnectionFields('Connection');
-
     $this->addFieldResolverIfNotExists('Query', $page_type,
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue($entity_type))
         ->map('bundles', $this->builder->fromValue([$page_type]))
         ->map('id', $this->builder->fromArgument('id'))
-    );
-
-   $this->addFieldResolverIfNotExists('Query', 'page_list',
-      $this->builder->produce('thunder_page_list_producer')
-        ->map('type', $this->builder->fromArgument('type'))
-        ->map('bundles', $this->builder->fromArgument('bundles'))
-        ->map('offset', $this->builder->fromArgument('offset'))
-        ->map('limit', $this->builder->fromArgument('limit'))
-        ->map('conditions', $this->builder->fromArgument('conditions'))
-        ->map('languages', $this->builder->fromArgument('languages'))
-        ->map('ownedOnly', $this->builder->fromArgument('ownedOnly'))
-        ->map('allowedFilters', $this->builder->fromArgument('allowedFilters'))
-        ->map('sortBy', $this->builder->fromArgument('sortBy'))
-    );
-  }
-
-  /**
-   * Function addConnectionFields - adds the connection fields.
-   *
-   * @param string $type
-   *   The connection type.
-   */
-  protected function addConnectionFields($type) {
-    $this->addFieldResolverIfNotExists($type, 'total',
-      $this->builder->callback(function (ThunderQueryConnection $connection) {
-        return $connection->total();
-      })
-    );
-
-    $this->addFieldResolverIfNotExists($type, 'items',
-      $this->builder->callback(function (ThunderQueryConnection $connection) {
-        return $connection->items();
-      })
     );
   }
 

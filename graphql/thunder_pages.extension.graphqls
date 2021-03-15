@@ -1,34 +1,11 @@
 extend type Query {
   article(id: Int!): Article
   tag(id: Int!): Tag
-  channel(id: Int!): Channel
-  user(id: Int!): User
-
-  page_list (
-    type: String
-    bundles: [String]
-    offset: Int = 0
-    limit: Int = 10
-    conditions: [String]
+  channel(
+    id: Int!
+    offset: Int
+    limit: Int
     languages: [String]
-    ownedOnly: Boolean
-    allowdFilters: [String]
-    sortBy: [Sorting]
-  ): Connection!
-}
-
-type Connection {
-  total: Int!
-  items: [Page!]
-}
-
-input Condition {
-  field: String
-  operator: String
-  value: String
-}
-
-input Sorting {
-  field: String
-  direction: String
+  ): Channel
+  user(id: Int!): User
 }

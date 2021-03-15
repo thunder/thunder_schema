@@ -9,6 +9,11 @@ interface Page {
   language: String
 }
 
+type EntityList {
+  total: Int!
+  items: [Page!]
+}
+
 type Article implements Page {
   id: Int!
   uuid: String!
@@ -55,6 +60,7 @@ type Channel implements Page {
 
   published: Boolean!
   content: [Paragraph]
+  articles: EntityList
 }
 
 type User implements Page {

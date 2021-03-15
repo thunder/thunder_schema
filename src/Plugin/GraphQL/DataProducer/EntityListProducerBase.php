@@ -7,13 +7,16 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\graphql\GraphQL\Execution\FieldContext;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
+use Drupal\thunder_gqls\Wrappers\EntityListResponse;
 use GraphQL\Error\UserError;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * The thunder list producer base class.
+ * The entity list producer base class.
  */
-abstract class ThunderListProducerBase extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
+abstract class EntityListProducerBase extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
+
+  const MAX_ITEMS = 100;
 
   /**
    * The entity type manager service.
@@ -75,14 +78,16 @@ abstract class ThunderListProducerBase extends DataProducerPluginBase implements
    *   Entity type.
    * @param string[] $bundles
    *   List of bundles to be filtered.
+   * @param int $offset
+   *   Query only entities owned by current user.
+   * @param int $limit
+   *   Maximum number of queried entities.
    * @param array $conditions
    *   List of conditions to filter the entities.
    * @param string[] $languages
    *   Languages for queried entities.
-   * @param array $allowedFilters
-   *   List of fields to be used in conditions to restrict access to data.
-   * @param bool $ownedOnly
-   *   Query only entities owned by current user.
+   * @param array $sortBy
+   *   List of sorts.
    * @param \Drupal\graphql\GraphQL\Execution\FieldContext $cacheContext
    *   The caching context related to the current field.
    *
@@ -92,19 +97,15 @@ abstract class ThunderListProducerBase extends DataProducerPluginBase implements
    * @throws \GraphQL\Error\UserError
    *   No bundles defined for given entity type.
    */
-  protected function buildBaseEntityQuery(string $type, array $bundles, array $conditions, array $languages, array $allowedFilters, bool $ownedOnly, FieldContext $cacheContext) {
+  protected function resolve(string $type, array $bundles, int $offset, int $limit, array $conditions, array $languages, array $sortBy, FieldContext $cacheContext) {
+    if ($limit > static::MAX_ITEMS) {
+      throw new UserError(sprintf('Exceeded maximum query limit: %s.', static::MAX_ITEMS));
+    }
+
     $entity_type = $this->entityTypeManager->getStorage($type);
     $query = $entity_type->getQuery();
 
-    // Query only those entities which are owned by current user, if desired.
-    if ($ownedOnly) {
-      $query->condition('uid', $this->currentUser->id());
-      // Add user cacheable dependencies.
-      $account = $this->currentUser->getAccount();
-      $cacheContext->addCacheableDependency($account);
-      // Cache response per user to make sure the user related result is shown.
-      $cacheContext->addCacheContexts(['user']);
-    }
+    $query->currentRevision()->accessCheck();
 
     // Ensure that access checking is performed on the query.
     $query->currentRevision()->accessCheck(TRUE);
@@ -125,14 +126,34 @@ abstract class ThunderListProducerBase extends DataProducerPluginBase implements
 
     // Filter by given conditions.
     foreach ($conditions as $condition) {
-      if (!in_array($condition['field'], $allowedFilters)) {
-        throw new UserError("Field '{$condition['field']}' is not allowed as filter.");
-      }
       $operation = isset($condition['operator']) ? $condition['operator'] : NULL;
       $query->condition($condition['field'], $condition['value'], $operation);
     }
 
-    return $query;
+    if (isset($sortBy)) {
+      foreach ($sortBy as $sort) {
+        if (!empty($sort['field'])) {
+          if (!empty($sort['direction']) && strtolower($sort['direction']) == 'desc') {
+            $direction = 'DESC';
+          }
+          else {
+            $direction = 'ASC';
+          }
+          $query->sort($sort['field'], $direction);
+        }
+      }
+    }
+
+    $query->range($offset, $limit);
+
+    $storage = $this->entityTypeManager->getStorage($type);
+    $entityType = $storage->getEntityType();
+
+    $cacheContext->addCacheTags($entityType->getListCacheTags());
+    $cacheContext->addCacheContexts($entityType->getListCacheContexts());
+
+
+    return new EntityListResponse($query);
   }
 
 }
