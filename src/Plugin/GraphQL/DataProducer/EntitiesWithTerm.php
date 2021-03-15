@@ -55,7 +55,12 @@ use Drupal\thunder_gqls\Wrappers\EntityListResponse;
  *       multiple = TRUE,
  *       default_value = {},
  *       required = FALSE
- *     )
+ *     ),
+ *     "depth" = @ContextDefinition("integer",
+ *       label = @Translation("Depth"),
+ *       required = FALSE,
+ *       default_value = 0
+ *     ),
  *   }
  * )
  */
@@ -80,6 +85,8 @@ class EntitiesWithTerm extends EntityListProducerBase {
    *   Languages for queried entities.
    * @param array $sortBy
    *   List of sorts.
+   * @param int $depth
+   *   The depth of children of the term.
    * @param \Drupal\graphql\GraphQL\Execution\FieldContext $cacheContext
    *   The caching context related to the current field.
    *
@@ -89,11 +96,21 @@ class EntitiesWithTerm extends EntityListProducerBase {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function resolve(TermInterface $term, string $type, array $bundles, string $field, int $offset, int $limit, array $languages, array $sortBy, FieldContext $cacheContext): EntityListResponse {
+  public function resolve(TermInterface $term, string $type, array $bundles, string $field, int $offset, int $limit, array $languages, array $sortBy, int $depth, FieldContext $cacheContext): EntityListResponse {
+    $termIds = [$term->id()];
+
+    if ($depth > 0) {
+      $terms = $this->entityTypeManager
+        ->getStorage('taxonomy_term')
+        ->loadTree($term->bundle(), $term->id(), $depth);
+      $termIds = array_merge($termIds, array_column($terms, 'tid'));
+    }
+
     $conditions = [
       [
         'field' => $field,
-        'value' => $term->id(),
+        'value' => $termIds,
+        'operator' => 'IN'
       ],
     ];
 

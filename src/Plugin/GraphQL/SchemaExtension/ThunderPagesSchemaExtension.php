@@ -160,6 +160,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
             ],
           ])
         )
+        ->map('depth', $this->builder->fromValue(1))
     );
 
     // User.
