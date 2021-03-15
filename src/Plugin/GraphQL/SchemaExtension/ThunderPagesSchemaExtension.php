@@ -64,12 +64,10 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->addFieldResolverIfNotExists('Article', 'channel',
-      $this->builder->compose(
-        $this->builder->produce('property_path')
-          ->map('type', $this->builder->fromValue('entity:taxonomy_term'))
-          ->map('value', $this->builder->fromParent())
-          ->map('path', $this->builder->fromValue('field_channel.entity'))
-      )
+      $this->builder->produce('property_path')
+        ->map('type', $this->builder->fromValue('entity:taxonomy_term'))
+        ->map('value', $this->builder->fromParent())
+        ->map('path', $this->builder->fromValue('field_channel.entity'))
     );
 
     $this->addFieldResolverIfNotExists('Article', 'tags',
@@ -141,6 +139,13 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
       $this->builder->produce('entity_reference_revisions')
         ->map('entity', $this->builder->fromParent())
         ->map('field', $this->builder->fromValue('field_paragraphs'))
+    );
+
+    $this->addFieldResolverIfNotExists('Channel', 'parent',
+      $this->builder->produce('property_path')
+        ->map('type', $this->builder->fromValue('entity:taxonomy_term'))
+        ->map('value', $this->builder->fromParent())
+        ->map('path', $this->builder->fromValue('parent.entity'))
     );
 
     $this->addFieldResolverIfNotExists('Channel', 'articles',

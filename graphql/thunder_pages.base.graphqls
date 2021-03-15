@@ -58,6 +58,7 @@ type Channel implements Page {
   changed: String!
   language: String
 
+  parent: Channel
   author: User
   published: Boolean!
   content: [Paragraph]
