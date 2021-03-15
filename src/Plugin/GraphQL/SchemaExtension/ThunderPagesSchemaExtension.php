@@ -125,7 +125,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->addFieldResolverIfNotExists('Channel', 'articles',
-      $this->builder->produce('term_entity_list')
+      $this->builder->produce('entities_with_term')
         ->map('term', $this->builder->fromParent())
         ->map('type', $this->builder->fromValue('node'))
         ->map('bundles', $this->builder->fromValue(['article']))

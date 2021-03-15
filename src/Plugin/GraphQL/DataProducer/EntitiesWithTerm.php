@@ -10,7 +10,7 @@ use Drupal\thunder_gqls\Wrappers\EntityListResponse;
  * The channel list producer class.
  *
  * @DataProducer(
- *   id = "term_entity_list",
+ *   id = "entities_with_term",
  *   name = @Translation("Term entity list"),
  *   description = @Translation("Loads a list of entities for a term."),
  *   produces = @ContextDefinition("any",
@@ -59,7 +59,7 @@ use Drupal\thunder_gqls\Wrappers\EntityListResponse;
  *   }
  * )
  */
-class TermEntityList extends EntityListProducerBase {
+class EntitiesWithTerm extends EntityListProducerBase {
 
   /**
    * Build entity query for entities, that reference a specific term.
