@@ -138,7 +138,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
             [
               'field' => 'changed',
               'direction' => 'DESC',
-            ]
+            ],
           ])
         )
     );

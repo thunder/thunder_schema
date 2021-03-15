@@ -155,16 +155,19 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   }
 
   /**
+   * Add field resolver to registry, if it does not already exist.
+   *
    * @param string $type
    *   The type name.
    * @param string $field
-   *   The field name
+   *   The field name.
    * @param \Drupal\graphql\GraphQL\Resolver\ResolverInterface $resolver
    *   The field resolver.
    */
-  protected function addFieldResolverIfNotExists(string $type, string $field, ResolverInterface $resolver){
+  protected function addFieldResolverIfNotExists(string $type, string $field, ResolverInterface $resolver) {
     if (!$this->registry->getFieldResolver($type, $field)) {
       $this->registry->addFieldResolver($type, $field, $resolver);
     }
   }
+
 }
