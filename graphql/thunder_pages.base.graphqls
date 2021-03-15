@@ -60,7 +60,7 @@ type Channel implements Page {
 
   published: Boolean!
   content: [Paragraph]
-  articles: EntityList
+  articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
 }
 
 type User implements Page {
