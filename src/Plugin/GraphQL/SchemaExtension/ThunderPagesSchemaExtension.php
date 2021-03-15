@@ -85,24 +85,44 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     // Tags.
-    $this->resolvePageInterfaceFields('Tag');
-    $this->resolvePageInterfaceQueryFields('tag', 'taxonomy_term');
+    $this->resolvePageInterfaceFields('Tags');
+    $this->resolvePageInterfaceQueryFields('tags', 'taxonomy_term');
 
-    $this->addFieldResolverIfNotExists('Tag', 'author',
+    $this->addFieldResolverIfNotExists('Tags', 'author',
       $this->builder->produce('entity_owner')
         ->map('entity', $this->builder->fromParent())
     );
 
-    $this->addFieldResolverIfNotExists('Tag', 'published',
+    $this->addFieldResolverIfNotExists('Tags', 'published',
       $this->builder->produce('entity_published')
         ->map('entity', $this->builder->fromParent())
     );
 
-    $this->addFieldResolverIfNotExists('Tag', 'content',
+    $this->addFieldResolverIfNotExists('Tags', 'content',
       $this->builder->produce('entity_reference_revisions')
         ->map('entity', $this->builder->fromParent())
         ->map('field', $this->builder->fromValue('field_paragraphs'))
     );
+
+    $this->addFieldResolverIfNotExists('Tags', 'articles',
+      $this->builder->produce('entities_with_term')
+        ->map('term', $this->builder->fromParent())
+        ->map('type', $this->builder->fromValue('node'))
+        ->map('bundles', $this->builder->fromValue(['article']))
+        ->map('field', $this->builder->fromValue('field_tags'))
+        ->map('offset', $this->builder->fromArgument('offset'))
+        ->map('limit', $this->builder->fromArgument('limit'))
+        ->map('languages', $this->builder->fromArgument('languages'))
+        ->map('sortBy', $this->builder->fromValue(
+          [
+            [
+              'field' => 'created',
+              'direction' => 'DESC',
+            ],
+          ])
+        )
+    );
+
 
     // Channel.
     $this->resolvePageInterfaceFields('Channel');
@@ -136,7 +156,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('sortBy', $this->builder->fromValue(
           [
             [
-              'field' => 'changed',
+              'field' => 'created',
               'direction' => 'DESC',
             ],
           ])
@@ -186,7 +206,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('id', $this->builder->fromArgument('id'))
     );
 
-    $this->addFieldResolverIfNotExists('Query', 'tag',
+    $this->addFieldResolverIfNotExists('Query', 'tags',
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('taxonomy_term'))
         ->map('bundles', $this->builder->fromValue(['tags']))
