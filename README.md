@@ -27,6 +27,13 @@ If all works, you should be able to test some queries in the Explorer.
           mail
         }
         ... on Channel {
+          articles(limit: 2) {
+            total
+            items {
+              name
+              url
+            }
+          }
           content {
             __typename
           }
