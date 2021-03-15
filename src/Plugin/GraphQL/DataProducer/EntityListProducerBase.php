@@ -3,11 +3,11 @@
 namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\graphql\GraphQL\Execution\FieldContext;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
-use Drupal\thunder_gqls\Wrappers\EntityListResponse;
 use GraphQL\Error\UserError;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -91,13 +91,13 @@ abstract class EntityListProducerBase extends DataProducerPluginBase implements 
    * @param \Drupal\graphql\GraphQL\Execution\FieldContext $cacheContext
    *   The caching context related to the current field.
    *
-   * @return \Drupal\thunder_gqls\Wrappers\EntityListResponse
+   * @return \Drupal\Core\Entity\Query\QueryInterface
    *   Base entity list response.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  protected function resolve(string $type, array $bundles, int $offset, int $limit, array $conditions, array $languages, array $sortBy, FieldContext $cacheContext): EntityListResponse {
+  protected function query(string $type, array $bundles, int $offset, int $limit, array $conditions, array $languages, array $sortBy, FieldContext $cacheContext): QueryInterface {
     if ($limit > static::MAX_ITEMS) {
       throw new UserError(sprintf('Exceeded maximum query limit: %s.', static::MAX_ITEMS));
     }
@@ -152,7 +152,7 @@ abstract class EntityListProducerBase extends DataProducerPluginBase implements 
     $cacheContext->addCacheTags($entityType->getListCacheTags());
     $cacheContext->addCacheContexts($entityType->getListCacheContexts());
 
-    return new EntityListResponse($query);
+    return $query;
   }
 
 }
