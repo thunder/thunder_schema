@@ -123,7 +123,6 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         )
     );
 
-
     // Channel.
     $this->resolvePageInterfaceFields('Channel');
     $this->resolvePageInterfaceQueryFields('channel', 'taxonomy_term');
