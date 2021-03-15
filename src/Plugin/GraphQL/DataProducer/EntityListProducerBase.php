@@ -91,13 +91,13 @@ abstract class EntityListProducerBase extends DataProducerPluginBase implements 
    * @param \Drupal\graphql\GraphQL\Execution\FieldContext $cacheContext
    *   The caching context related to the current field.
    *
-   * @return \Drupal\Core\Entity\Query\QueryInterface
-   *   Base entity query.
+   * @return \Drupal\thunder_gqls\Wrappers\EntityListResponse
+   *   Base entity list response.
    *
-   * @throws \GraphQL\Error\UserError
-   *   No bundles defined for given entity type.
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  protected function resolve(string $type, array $bundles, int $offset, int $limit, array $conditions, array $languages, array $sortBy, FieldContext $cacheContext) {
+  protected function resolve(string $type, array $bundles, int $offset, int $limit, array $conditions, array $languages, array $sortBy, FieldContext $cacheContext): EntityListResponse {
     if ($limit > static::MAX_ITEMS) {
       throw new UserError(sprintf('Exceeded maximum query limit: %s.', static::MAX_ITEMS));
     }

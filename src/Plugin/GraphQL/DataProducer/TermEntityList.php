@@ -4,6 +4,7 @@ namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
 use Drupal\graphql\GraphQL\Execution\FieldContext;
 use Drupal\taxonomy\TermInterface;
+use Drupal\thunder_gqls\Wrappers\EntityListResponse;
 
 /**
  * The channel list producer class.
@@ -82,13 +83,13 @@ class TermEntityList extends EntityListProducerBase {
    * @param \Drupal\graphql\GraphQL\Execution\FieldContext $cacheContext
    *   The caching context related to the current field.
    *
-   * @return \Drupal\Core\Entity\Query\QueryInterface
-   *   Base entity query.
+   * @return \Drupal\thunder_gqls\Wrappers\EntityListResponse
+   *   Base entity list response.
    *
-   * @throws \GraphQL\Error\UserError
-   *   No bundles defined for given entity type.
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function resolve(TermInterface $term, string $type, array $bundles, string $field, int $offset, int $limit, array $languages, array $sortBy, FieldContext $cacheContext) {
+  public function resolve(TermInterface $term, string $type, array $bundles, string $field, int $offset, int $limit, array $languages, array $sortBy, FieldContext $cacheContext): EntityListResponse {
     $conditions = [
       ['field' => $field, 'value' => $term->id()]
     ];
