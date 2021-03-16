@@ -24,7 +24,7 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
    */
   protected static $modules = [
     'thunder_gqls',
-    'thunder_demo'
+    'thunder_demo',
   ];
 
   /**
@@ -77,7 +77,18 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
     $this->drupalLogin($user);
   }
 
-
+  /**
+   * Queries the graphql api.
+   *
+   * @param string $query
+   *   The GraphQl query to execute.
+   * @param string $variables
+   *   The variables for the query.
+   *
+   * @return \Psr\Http\Message\ResponseInterface
+   *   The response.
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
   protected function query(string $query, string $variables): ResponseInterface {
     $urlGenerator = $this->container->get('url_generator');
     $url = $urlGenerator->generate('graphql.query.thunder_graphql');

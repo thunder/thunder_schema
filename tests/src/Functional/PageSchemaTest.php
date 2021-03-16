@@ -2,10 +2,6 @@
 
 namespace Drupal\Tests\thunder_gqls\Functional;
 
-use Drupal\Core\Url;
-use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\ResponseInterface;
-
 /**
  * Test the page schemata.
  *
