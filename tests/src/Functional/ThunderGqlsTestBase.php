@@ -87,6 +87,7 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
    *
    * @return \Psr\Http\Message\ResponseInterface
    *   The response.
+   *
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
   protected function query(string $query, string $variables): ResponseInterface {
