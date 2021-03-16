@@ -111,10 +111,11 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('offset', $this->builder->fromArgument('offset'))
         ->map('limit', $this->builder->fromArgument('limit'))
         ->map('languages', $this->builder->fromArgument('languages'))
-        ->map('sortBy', $this->builder->fromValue([[
-          'field' => 'created',
-          'direction' => 'DESC',
-        ]
+        ->map('sortBy', $this->builder->fromValue([
+          [
+            'field' => 'created',
+            'direction' => 'DESC',
+          ]
         ]))
     );
 
@@ -154,10 +155,11 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('offset', $this->builder->fromArgument('offset'))
         ->map('limit', $this->builder->fromArgument('limit'))
         ->map('languages', $this->builder->fromArgument('languages'))
-        ->map('sortBy', $this->builder->fromValue([[
-          'field' => 'created',
-          'direction' => 'DESC',
-        ]
+        ->map('sortBy', $this->builder->fromValue([
+          [
+            'field' => 'created',
+            'direction' => 'DESC',
+          ]
         ]))
         ->map('depth', $this->builder->fromValue(1))
     );
