@@ -114,8 +114,8 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('sortBy', $this->builder->fromValue([[
             'field' => 'created',
             'direction' => 'DESC',
-          ]])
-        )
+          ]
+        ]))
     );
 
     // Channel.
@@ -157,8 +157,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('sortBy', $this->builder->fromValue([[
           'field' => 'created',
           'direction' => 'DESC',
-        ]])
-        )
+        ]]))
         ->map('depth', $this->builder->fromValue(1))
     );
 

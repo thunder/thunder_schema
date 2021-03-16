@@ -110,7 +110,7 @@ class EntitiesWithTerm extends EntityListProducerBase {
       [
         'field' => $field,
         'value' => $termIds,
-        'operator' => 'IN'
+        'operator' => 'IN',
       ],
     ];
 
