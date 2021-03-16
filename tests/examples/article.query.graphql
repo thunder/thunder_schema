@@ -1,0 +1,40 @@
+query ($id: Int!) {
+  article(id: $id) {
+    id
+    url
+    name
+    entity
+    language
+    published
+    author {
+      id
+      name
+      mail
+      entity
+      url
+      language
+    }
+    channel {
+      id
+      published
+      name
+      url
+      parent {
+        name
+        id
+        url
+      }
+    }
+    tags {
+      id
+      name
+      url
+    }
+    seoTitle
+    content {
+      id
+      entity
+      name
+    }
+  }
+}

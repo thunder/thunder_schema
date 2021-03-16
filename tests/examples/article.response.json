@@ -1,0 +1,39 @@
+{
+  "data": {
+    "article": {
+      "id": 4,
+      "url": "/celebrating-20-certified-thunder-integrators",
+      "name": "Thunder worldwide",
+      "entity": "node",
+      "language": "en",
+      "published": true,
+      "author": {
+        "id": 1,
+        "name": "admin",
+        "mail": "admin@example.com",
+        "entity": "user",
+        "url": "/user/1",
+        "language": "en"
+      },
+      "channel": {
+        "id": 1,
+        "published": true,
+        "name": "News",
+        "url": "/news",
+        "parent": null
+      },
+      "tags": [
+        {
+          "id": 7,
+          "name": "Agency",
+          "url": "/agency"
+        },
+        {
+          "id": 8,
+          "name": "Business",
+          "url": "/business"
+        }
+      ]
+    }
+  }
+}
