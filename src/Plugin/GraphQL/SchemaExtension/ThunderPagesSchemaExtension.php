@@ -115,7 +115,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
           [
             'field' => 'created',
             'direction' => 'DESC',
-          ]
+          ],
         ]))
     );
 
@@ -159,7 +159,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
           [
             'field' => 'created',
             'direction' => 'DESC',
-          ]
+          ],
         ]))
         ->map('depth', $this->builder->fromValue(1))
     );
