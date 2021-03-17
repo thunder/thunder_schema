@@ -35,6 +35,9 @@ class SchemaTest extends ThunderGqlsTestBase {
       [
         'paragraphs',
       ],
+      [
+        'entities_with_term',
+      ],
     ];
   }
 

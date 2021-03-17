@@ -3,66 +3,18 @@
 namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\graphql\GraphQL\Execution\FieldContext;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
-use Drupal\thunder_gqls\Wrappers\EntityListResponse;
 use GraphQL\Error\UserError;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * The entity list producer class.
- *
- * @DataProducer(
- *   id = "entity_list",
- *   name = @Translation("Entity list"),
- *   description = @Translation("Loads a list of entities."),
- *   produces = @ContextDefinition("any",
- *     label = @Translation("Entity list")
- *   ),
- *   consumes = {
- *     "type" = @ContextDefinition("string",
- *       label = @Translation("Entity type")
- *     ),
- *     "bundles" = @ContextDefinition("any",
- *       label = @Translation("Entity bundles"),
- *       multiple = TRUE,
- *       required = FALSE,
- *       default_value = {}
- *     ),
- *     "offset" = @ContextDefinition("integer",
- *       label = @Translation("Offset"),
- *       required = FALSE,
- *       default_value = 0
- *     ),
- *     "limit" = @ContextDefinition("integer",
- *       label = @Translation("Limit"),
- *       required = FALSE,
- *       default_value = 100
- *     ),
- *     "conditions" = @ContextDefinition("any",
- *       label = @Translation("Filter conditions"),
- *       multiple = FALSE,
- *       required = FALSE,
- *       default_value = {}
- *     ),
- *     "languages" = @ContextDefinition("string",
- *       label = @Translation("Entity languages"),
- *       multiple = TRUE,
- *       required = FALSE,
- *       default_value = {}
- *     ),
- *     "sortBy" = @ContextDefinition("any",
- *       label = @Translation("Sorts"),
- *       multiple = TRUE,
- *       default_value = {},
- *       required = FALSE
- *     ),
- *   }
- * )
+ * The thunder base class for entity list producers.
  */
-class EntityListProducerBase extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
+abstract class ThunderEntityListProducerBase extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
 
   const MAX_ITEMS = 100;
 
@@ -139,15 +91,26 @@ class EntityListProducerBase extends DataProducerPluginBase implements Container
    * @param \Drupal\graphql\GraphQL\Execution\FieldContext $cacheContext
    *   The caching context related to the current field.
    *
-   * @return \Drupal\thunder_gqls\Wrappers\EntityListResponse
-   *   Base entity list response.
+   * @return \Drupal\Core\Entity\Query\QueryInterface
+   *   The query interface.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  protected function resolve(string $type, array $bundles, int $offset, int $limit, array $conditions, array $languages, array $sortBy, FieldContext $cacheContext): EntityListResponse {
+  protected function query(
+    string $type,
+    array $bundles,
+    int $offset,
+    int $limit,
+    array $conditions,
+    array $languages,
+    array $sortBy,
+    FieldContext $cacheContext
+  ): QueryInterface {
     if ($limit > static::MAX_ITEMS) {
-      throw new UserError(sprintf('Exceeded maximum query limit: %s.', static::MAX_ITEMS));
+      throw new UserError(
+        sprintf('Exceeded maximum query limit: %s.', static::MAX_ITEMS)
+      );
     }
 
     $entity_type = $this->entityTypeManager->getStorage($type);
@@ -181,7 +144,9 @@ class EntityListProducerBase extends DataProducerPluginBase implements Container
     if (isset($sortBy)) {
       foreach ($sortBy as $sort) {
         if (!empty($sort['field'])) {
-          if (!empty($sort['direction']) && strtolower($sort['direction']) == 'desc') {
+          if (!empty($sort['direction']) && strtolower(
+              $sort['direction']
+            ) == 'desc') {
             $direction = 'DESC';
           }
           else {
@@ -199,8 +164,7 @@ class EntityListProducerBase extends DataProducerPluginBase implements Container
 
     $cacheContext->addCacheTags($entityType->getListCacheTags());
     $cacheContext->addCacheContexts($entityType->getListCacheContexts());
-
-    return new EntityListResponse($query);
+    return $query;
   }
 
 }

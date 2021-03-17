@@ -3,23 +3,19 @@
 namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
 use Drupal\graphql\GraphQL\Execution\FieldContext;
-use Drupal\taxonomy\TermInterface;
 use Drupal\thunder_gqls\Wrappers\EntityListResponse;
 
 /**
- * The channel list producer class.
+ * The entity list producer class.
  *
  * @DataProducer(
- *   id = "entities_with_term",
- *   name = @Translation("Term entity list"),
- *   description = @Translation("Loads a list of entities for a term."),
+ *   id = "entity_list",
+ *   name = @Translation("Entity list"),
+ *   description = @Translation("Loads a list of entities."),
  *   produces = @ContextDefinition("any",
- *     label = @Translation("Term entity list")
+ *     label = @Translation("Entity list")
  *   ),
  *   consumes = {
- *     "term" = @ContextDefinition("entity",
- *       label = @Translation("Term entity")
- *     ),
  *     "type" = @ContextDefinition("string",
  *       label = @Translation("Entity type")
  *     ),
@@ -28,11 +24,6 @@ use Drupal\thunder_gqls\Wrappers\EntityListResponse;
  *       multiple = TRUE,
  *       required = FALSE,
  *       default_value = {}
- *     ),
- *     "field" = @ContextDefinition("any",
- *       label = @Translation("The term reference field"),
- *       multiple = FALSE,
- *       required = TRUE
  *     ),
  *     "offset" = @ContextDefinition("integer",
  *       label = @Translation("Offset"),
@@ -43,6 +34,12 @@ use Drupal\thunder_gqls\Wrappers\EntityListResponse;
  *       label = @Translation("Limit"),
  *       required = FALSE,
  *       default_value = 100
+ *     ),
+ *     "conditions" = @ContextDefinition("any",
+ *       label = @Translation("Filter conditions"),
+ *       multiple = FALSE,
+ *       required = FALSE,
+ *       default_value = {}
  *     ),
  *     "languages" = @ContextDefinition("string",
  *       label = @Translation("Entity languages"),
@@ -56,37 +53,28 @@ use Drupal\thunder_gqls\Wrappers\EntityListResponse;
  *       default_value = {},
  *       required = FALSE
  *     ),
- *     "depth" = @ContextDefinition("integer",
- *       label = @Translation("Depth"),
- *       required = FALSE,
- *       default_value = 0
- *     ),
  *   }
  * )
  */
-class EntitiesWithTerm extends ThunderEntityListProducerBase {
+class EntityList extends ThunderEntityListProducerBase {
 
   /**
-   * Build entity query for entities, that reference a specific term.
+   * Resolve entity query.
    *
-   * @param \Drupal\taxonomy\TermInterface $term
-   *   The term entity interface.
    * @param string $type
    *   Entity type.
    * @param string[] $bundles
    *   List of bundles to be filtered.
-   * @param string $field
-   *   The term reference field of the bundle.
    * @param int $offset
    *   Query only entities owned by current user.
    * @param int $limit
    *   Maximum number of queried entities.
+   * @param array $conditions
+   *   List of conditions to filter the entities.
    * @param string[] $languages
    *   Languages for queried entities.
    * @param array $sortBy
    *   List of sorts.
-   * @param int $depth
-   *   The depth of children of the term.
    * @param \Drupal\graphql\GraphQL\Execution\FieldContext $cacheContext
    *   The caching context related to the current field.
    *
@@ -96,24 +84,7 @@ class EntitiesWithTerm extends ThunderEntityListProducerBase {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function resolve(TermInterface $term, string $type, array $bundles, string $field, int $offset, int $limit, array $languages, array $sortBy, int $depth, FieldContext $cacheContext): EntityListResponse {
-    $termIds = [$term->id()];
-
-    if ($depth > 0) {
-      $terms = $this->entityTypeManager
-        ->getStorage('taxonomy_term')
-        ->loadTree($term->bundle(), $term->id(), $depth);
-      $termIds = array_merge($termIds, array_column($terms, 'tid'));
-    }
-
-    $conditions = [
-      [
-        'field' => $field,
-        'value' => $termIds,
-        'operator' => 'IN',
-      ],
-    ];
-
+  protected function resolve(string $type, array $bundles, int $offset, int $limit, array $conditions, array $languages, array $sortBy, FieldContext $cacheContext): EntityListResponse {
     $query = $this->query(
       $type,
       $bundles,
