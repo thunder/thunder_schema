@@ -1,6 +1,7 @@
 query ($id: Int!) {
   article(id: $id) {
     id
+    uuid
     url
     name
     entity

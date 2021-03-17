@@ -1,62 +1,52 @@
 {
   "data": {
     "article": {
-      "id": 4,
-      "url": "/celebrating-20-certified-thunder-integrators",
-      "name": "Thunder worldwide",
+      "id": 7,
+      "uuid": "36b2e2b2-3df0-43eb-a282-d792b0999c07",
+      "url": "/come-drupalcon-new-orleans",
+      "name": "Come to DrupalCon New Orleans",
       "entity": "node",
       "language": "en",
       "published": true,
       "author": {
-        "id": 1,
-        "name": "admin",
-        "mail": "admin@example.com",
+        "id": 3,
+        "name": "test-seo",
+        "mail": null,
         "entity": "user",
-        "url": "/user/1",
+        "url": "/user/3",
         "language": "en"
       },
       "channel": {
-        "id": 1,
+        "id": 2,
         "published": true,
-        "name": "News",
-        "url": "/news",
+        "name": "Events",
+        "url": "/events",
         "parent": null
       },
       "tags": [
         {
-          "id": 7,
-          "name": "Agency",
-          "url": "/agency"
-        },
-        {
-          "id": 8,
-          "name": "Business",
-          "url": "/business"
+          "id": 5,
+          "name": "Drupal",
+          "url": "/drupal"
         }
       ],
-      "seoTitle": "Celebrating 20 Certified Thunder Integrators",
+      "seoTitle": "Come to DrupalCon New Orleans",
       "content": [
         {
-          "id": 24,
+          "id": 9,
+          "entity": "paragraph",
+          "__typename": "ParagraphGallery"
+        },
+        {
+          "id": 7,
           "entity": "paragraph",
           "__typename": "ParagraphText"
         },
         {
-          "id": 25,
+          "id": 17,
           "entity": "paragraph",
-          "__typename": "ParagraphText"
-        },
-        {
-          "id": 26,
-          "entity": "paragraph",
-          "__typename": "ParagraphImage"
-        },
-        {
-          "id": 27,
-          "entity": "paragraph",
-          "__typename": "ParagraphText"
-        },
-        null
+          "__typename": "ParagraphTwitter"
+        }
       ]
     }
   }

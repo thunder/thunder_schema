@@ -24,7 +24,7 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
    */
   protected static $modules = [
     'thunder_gqls',
-    'thunder_demo',
+    'thunder_testing_demo',
   ];
 
   /**
@@ -150,6 +150,31 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
    */
   public function getExpectedResponseFromFile(string $name): string {
     return file_get_contents($this->getQueriesDirectory() . '/' . $name . '.response.json');
+  }
+
+  /**
+   * Execute query and compare to expected response.
+   *
+   * @param string $schema
+   *   The schema to test.
+   *
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
+  protected function runAndTestQuery(string $schema): void {
+    $query = $this->getQueryFromFile($schema);
+    $variables = $this->getVariablesFromFile($schema);
+
+    $response = $this->query($query, $variables);
+
+    $this->assertEquals(200, $response->getStatusCode(), 'Response not 200');
+
+    $responseData = json_decode($response->getBody(), TRUE)['data'];
+    $expectedData = json_decode(
+      $this->getExpectedResponseFromFile($schema),
+      TRUE
+    )['data'];
+
+    $this->assertEqualsCanonicalizing($expectedData, $responseData);
   }
 
 }
