@@ -30,7 +30,6 @@ type Article implements Page {
   tags: [Tags]
   seoTitle: String!
   content: [Paragraph]
-  recent(offset: Int = 0, limit: Int, languages: [String]): EntityList
 }
 
 type Tags implements Page {

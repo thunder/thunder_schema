@@ -2,8 +2,6 @@
 
 namespace Drupal\Tests\thunder_gqls\Functional;
 
-use Twig\Error\RuntimeError;
-
 /**
  * Test the page schemata.
  *
@@ -29,7 +27,6 @@ class PageSchemaTest extends ThunderGqlsTestBase {
     $responseData = json_decode($response->getBody(), TRUE)['data'];
     $expectedData = json_decode($this->getExpectedResponseFromFile($articleExample), TRUE)['data'];
 
-    file_put_contents('/tmp/compare.txt', print_r($expectedData, TRUE) . print_r($responseData, TRUE));
     $this->assertEqualsCanonicalizing($expectedData, $responseData);
   }
 

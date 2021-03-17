@@ -81,21 +81,6 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('entity', $this->builder->fromParent())
         ->map('field', $this->builder->fromValue('field_paragraphs'))
     );
-    $this->addFieldResolverIfNotExists('Article', 'recent',
-      $this->builder->produce('entity_list')
-        ->map('type', $this->builder->fromValue('node'))
-        ->map('bundles', $this->builder->fromValue(['article']))
-        ->map('offset', $this->builder->fromArgument('offset'))
-        ->map('limit', $this->builder->fromArgument('limit'))
-        ->map('conditions', $this->builder->fromValue([]))
-        ->map('languages', $this->builder->fromArgument('languages'))
-        ->map('sortBy', $this->builder->fromValue([
-          [
-            'field' => 'created',
-            'direction' => 'DESC',
-          ],
-        ]))
-    );
 
     // Tags.
     $this->resolvePageInterfaceFields('Tags');
@@ -202,39 +187,6 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         return $entityList->items();
       })
     );
-  }
-
-  /**
-   * Add content query field resolvers.
-   */
-  protected function resolveQueryFields() {
-    $this->addFieldResolverIfNotExists('Query', 'article',
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue('node'))
-        ->map('bundles', $this->builder->fromValue(['article']))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
-
-    $this->addFieldResolverIfNotExists('Query', 'channel',
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue('taxonomy_term'))
-        ->map('bundles', $this->builder->fromValue(['channel']))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
-
-    $this->addFieldResolverIfNotExists('Query', 'tags',
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue('taxonomy_term'))
-        ->map('bundles', $this->builder->fromValue(['tags']))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
-
-    $this->addFieldResolverIfNotExists('Query', 'user',
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue('user'))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
-
   }
 
   /**
