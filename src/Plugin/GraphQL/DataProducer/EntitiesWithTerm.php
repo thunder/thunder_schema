@@ -114,7 +114,7 @@ class EntitiesWithTerm extends EntityListProducerBase {
       ],
     ];
 
-    $query = parent::query(
+    return parent::resolve(
       $type,
       $bundles,
       $offset,
@@ -125,7 +125,6 @@ class EntitiesWithTerm extends EntityListProducerBase {
       $cacheContext
     );
 
-    return new EntityListResponse($query);
   }
 
 }
