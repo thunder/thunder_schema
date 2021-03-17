@@ -33,6 +33,30 @@
           "name": "Business",
           "url": "/business"
         }
+      ],
+      "seoTitle": "Celebrating 20 Certified Thunder Integrators",
+      "content": [
+        {
+          "id": 24,
+          "entity": "paragraph",
+          "__typename": "ParagraphText"
+        },
+        {
+          "id": 25,
+          "entity": "paragraph",
+          "__typename": "ParagraphText"
+        },
+        {
+          "id": 26,
+          "entity": "paragraph",
+          "__typename": "ParagraphImage"
+        },
+        {
+          "id": 27,
+          "entity": "paragraph",
+          "__typename": "ParagraphText"
+        },
+        null
       ]
     }
   }

@@ -34,7 +34,7 @@ query ($id: Int!) {
     content {
       id
       entity
-      name
+      __typename
     }
   }
 }
