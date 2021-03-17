@@ -208,21 +208,4 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     }
   }
 
-  /**
-   * Add content query field resolvers.
-   *
-   * @param string $page_type
-   *   The page type name.
-   * @param string $entity_type
-   *   The entity type name.
-   */
-  protected function resolvePageInterfaceQueryFields(string $page_type, string $entity_type) {
-    $this->addFieldResolverIfNotExists('Query', $page_type,
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue($entity_type))
-        ->map('bundles', $this->builder->fromValue([$page_type]))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
-  }
-
 }
