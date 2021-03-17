@@ -42,6 +42,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *       required = FALSE,
  *       default_value = 100
  *     ),
+ *     "conditions" = @ContextDefinition("any",
+ *       label = @Translation("Filter conditions"),
+ *       multiple = FALSE,
+ *       required = FALSE,
+ *       default_value = {}
+ *     ),
  *     "languages" = @ContextDefinition("string",
  *       label = @Translation("Entity languages"),
  *       multiple = TRUE,
