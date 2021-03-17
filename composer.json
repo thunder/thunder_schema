@@ -1,5 +1,5 @@
 {
-    "name": "drupal-testing-drupal-testing-thunder/thunder_gqls",
+    "name": "thunder/thunder_gqls",
     "description": "GraphQL Schema for Thunder.",
     "type": "drupal-module",
     "license": "GPL-2.0-or-later",
