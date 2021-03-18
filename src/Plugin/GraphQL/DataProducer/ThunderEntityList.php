@@ -9,7 +9,7 @@ use Drupal\thunder_gqls\Wrappers\EntityListResponse;
  * The entity list producer class.
  *
  * @DataProducer(
- *   id = "entity_list",
+ *   id = "thunder_entity_list",
  *   name = @Translation("Entity list"),
  *   description = @Translation("Loads a list of entities."),
  *   produces = @ContextDefinition("any",
@@ -56,7 +56,7 @@ use Drupal\thunder_gqls\Wrappers\EntityListResponse;
  *   }
  * )
  */
-class EntityList extends ThunderEntityListProducerBase {
+class ThunderEntityList extends ThunderEntityListProducerBase {
 
   /**
    * Resolve entity query.
