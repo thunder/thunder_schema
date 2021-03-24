@@ -81,18 +81,20 @@ class MetaTags extends DataProducerPluginBase implements ContainerFactoryPluginI
     $this->renderer = $renderer;
   }
 
-
   /**
    * Resolve the metadata.
    *
    * @param mixed $value
+   *   The root value.
    * @param string|null $type
+   *   The root type.
    * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $metadata
+   *   The cacheable dependency interface.
    *
    * @return mixed
+   *   Normalized metatags.
    */
-  public function resolve($value, ?string $type, RefinableCacheableDependencyInterface $metadata
-  ) {
+  public function resolve($value, ?string $type, RefinableCacheableDependencyInterface $metadata) {
     if (!($value instanceof TypedDataInterface) && !empty($type)) {
       $manager = $this->getTypedDataManager();
       $definition = $manager->createDataDefinition($type);
