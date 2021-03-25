@@ -12,7 +12,7 @@ interface Page {
 
 type MetaTag {
   tag: String
-  attributes: [String]
+  attributes: String
 }
 
 type EntityList {

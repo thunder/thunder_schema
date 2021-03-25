@@ -2,6 +2,7 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\BubbleableMetadata;
@@ -84,7 +85,7 @@ class MetaTags extends DataProducerPluginBase implements ContainerFactoryPluginI
   /**
    * Resolve the metadata.
    *
-   * @param mixed $value
+   * @param mixed $metatags
    *   The root value.
    * @param string|null $type
    *   The root type.
@@ -94,14 +95,14 @@ class MetaTags extends DataProducerPluginBase implements ContainerFactoryPluginI
    * @return mixed
    *   Normalized metatags.
    */
-  public function resolve($value, ?string $type, RefinableCacheableDependencyInterface $metadata) {
-    if (!($value instanceof TypedDataInterface) && !empty($type)) {
+  public function resolve($metatags, ?string $type, RefinableCacheableDependencyInterface $metadata) {
+    if (!($metatags instanceof TypedDataInterface) && !empty($type)) {
       $manager = $this->getTypedDataManager();
       $definition = $manager->createDataDefinition($type);
-      $value = $manager->create($definition, $value);
+      $metatags = $manager->create($definition, $metatags);
     }
 
-    if (!($value instanceof TypedDataInterface)) {
+    if (!($metatags instanceof TypedDataInterface)) {
       throw new \BadMethodCallException('Could not derive typed data type.');
     }
 
@@ -111,8 +112,12 @@ class MetaTags extends DataProducerPluginBase implements ContainerFactoryPluginI
     $context = new RenderContext();
     $path = 'metatag';
 
-    $result = $this->renderer->executeInRenderContext($context, function () use ($fetcher, $value, $path, $bubbleable) {
-      return $fetcher->fetchDataByPropertyPath($value, $path, $bubbleable)->getValue();
+    $result = $this->renderer->executeInRenderContext($context, function () use ($fetcher, $metatags, $path, $bubbleable) {
+      $metatags = $fetcher->fetchDataByPropertyPath($metatags, $path, $bubbleable)->getValue();
+      foreach ($metatags as $key => $metatag) {
+        $metatags[$key]['attributes'] = Json::encode($metatag['attributes']);
+      }
+      return $metatags;
     });
 
     if (!$context->isEmpty()) {
