@@ -8,10 +8,8 @@ use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Render\RenderContext;
 use Drupal\Core\Render\RendererInterface;
-use Drupal\Core\TypedData\TypedDataInterface;
 use Drupal\Core\TypedData\TypedDataTrait;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
 use Drupal\metatag\MetatagManagerInterface;
@@ -103,7 +101,6 @@ class MetaTags extends DataProducerPluginBase implements ContainerFactoryPluginI
     RendererInterface $renderer,
     MetatagManagerInterface $metatagManager,
     ModuleHandlerInterface $moduleHandler
-
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition);
     $this->renderer = $renderer;
@@ -152,7 +149,10 @@ class MetaTags extends DataProducerPluginBase implements ContainerFactoryPluginI
 
         $data = [];
         foreach ($elements as $element) {
-          $data[] = ['tag' => $element['#tag'], 'attributes' => Json::encode($element['#attributes'])];
+          $data[] = [
+            'tag' => $element['#tag'],
+            'attributes' => Json::encode($element['#attributes']),
+          ];
         }
 
         return $data;
