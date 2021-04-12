@@ -1,69 +1,49 @@
 {
   "data": {
     "page": {
-      "id": 6,
-      "uuid": "0bd5c257-2231-450f-b4c2-ab156af7b78d",
-      "url": "/burda-launches-open-source-cms-thunder",
-      "name": "Burda Launches Open-Source CMS Thunder",
+      "id": 7,
+      "uuid": "36b2e2b2-3df0-43eb-a282-d792b0999c07",
+      "url": "/come-drupalcon-new-orleans",
+      "name": "Come to DrupalCon New Orleans",
       "entity": "node",
       "language": "en",
       "published": true,
       "author": {
-        "id": 2,
-        "name": "test-editor",
+        "id": 3,
+        "name": "test-seo",
         "mail": null,
         "entity": "user",
-        "url": "/user/2",
+        "url": "/user/3",
         "language": "en"
       },
       "channel": {
-        "id": 1,
+        "id": 2,
         "published": true,
-        "name": "News",
-        "url": "/news",
+        "name": "Events",
+        "url": "/events",
         "parent": null
       },
       "tags": [
-        {
-          "id": 3,
-          "name": "Burda",
-          "url": "/burda"
-        },
-        {
-          "id": 4,
-          "name": "Thunder",
-          "url": "/thunder"
-        },
         {
           "id": 5,
           "name": "Drupal",
           "url": "/drupal"
         }
       ],
-      "seoTitle": "Burda Launches Open-Source CMS Thunder",
+      "seoTitle": "Come to DrupalCon New Orleans",
       "content": [
         {
-          "id": 6,
+          "id": 9,
           "entity": "paragraph",
-          "__typename": "ParagraphImage"
+          "__typename": "ParagraphGallery"
         },
         {
-          "id": 1,
-          "entity": "paragraph",
-          "__typename": "ParagraphText"
-        },
-        {
-          "id": 3,
+          "id": 7,
           "entity": "paragraph",
           "__typename": "ParagraphText"
         },
         {
-          "id": 4,
-          "entity": "paragraph",
-          "__typename": "ParagraphTwitter"
-        },
-        {
-          "id": 5,
+          "id": 17,
           "entity": "paragraph",
           "__typename": "ParagraphTwitter"
         }
