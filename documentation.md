@@ -387,26 +387,59 @@ just make your oen definition in the MySchemaSchemaExtension.php. Say, you would
 the content field from field_paragraph to field_my_paragraph, you change the producer in your registerResolvers()
 method to something like this:
 
-    $this->addFieldResolverIfNotExists('Article', 'content',
+    $this->registry->addFieldResolver('Article', 'content',
       $this->builder->produce('entity_reference_revisions')
         ->map('entity', $this->builder->fromParent())
         ->map('field', $this->builder->fromValue('field_my_paragraphs'))
     );
 
-### Type resolver
+#### Thunder entity list producer and entities with term producer
 
-By default, we provide automated type resolver for every interface we define. For pages, media and paragraphs.
-as described earlier, those types are derived from bundle machine names in Drupal.
-In case of node- and taxonomy bundles, we simply do a conversion from snake case to camel case. For a content type called
-video_page you could provide a GraphQL type VideoPage, that implements the "Page" interface without changing the
-type resolver. Media bundles and Paragraph bundles are treated differently, these types are getting prefixed with the
-interface name. This way you can have a youtube media bundle which will be the MediaYoutube type in GraphQL and a
-youtube paragraph, which will be the ParagraphYoutube type in GraphQL. We need to do this, because different types
-cannot have the same name in GraphQL, even if they are not of the same interface.
+The thunder_entity_list producer is a highly configurable producer to create list of entity based on entity field queries.
+You can use it as a field producer for you custom fields. It can also be used as a base producer class for more specific
+producers. We include the entities_with_term as an example, which adds the ability to define a term depth (similar to
+views) in your queries, when you want to have results for terms as well as their child terms, and presets specific
+query conditions, which simplifies the usage.
 
-In most cases you will not need to change this behaviour and just use the automatically generated tape name. But when you
-want your GraphQL types to be independent of your Drupal name - e.g. you changed it internally, but you want to keep the
-API stable - then you have to override the existing type resolver.
+To use the producer for a field, you first have to define that field in your graphqls file. In this example we add a
+related articles field to the existing article type, so we have to add it to myschema.extension.graphqls.
 
+    extend type Article {
+      hero: MediaImage
+      promotedArticles(offset: Int = 0, limit: Int = 50): EntityList
+    }
 
+As you can see in the example, it is possible to expose parameters to the GraphQL client, we recommend limiting the
+exposed parameters as much as possible, and not give too much control to the consumer, because generating lists can
+produce great load on the server, and you might expose data, you did not expect. Offset and limit should be fine.
+any limit that will be set greater than 100 will not be accepted.
 
+Back in the MySchemaSchemaExtension.php we can now use the thunder_entity_list producer to
+resolve that field.
+
+    // Example for the thunder_entity_list list producer.
+    $this->registry->addFieldResolver('Article', 'promotedArticles',
+      $this->builder->produce('thunder_entity_list')
+        ->map('type', $this->builder->fromValue('node'))
+        ->map('bundles', $this->builder->fromValue(['article']))
+        ->map('offset', $this->builder->fromArgument('offset'))
+        ->map('limit', $this->builder->fromArgument('limit'))
+        ->map('conditions', $this->builder->fromValue([
+          [
+            'field' => 'promote',
+            'value' => 1,
+          ],
+        ]))
+        ->map('sortBy', $this->builder->fromValue([
+          [
+            'field' => 'created',
+            'direction' => 'DESC',
+          ],
+        ]))
+    );
+
+As you can see, you can give either set hard coded values for the producers parameters, or values from query arguments
+(offset and limit in this example). When you want to use context dependent parameters to the conditions, you would
+have to use either more query arguments (which could be bad), or implement your own data producer based on
+ThunderEntityListProducerBase. You can find en example in EntitiesWithTerm.php where we dynamically add term IDs
+to the query conditions.
