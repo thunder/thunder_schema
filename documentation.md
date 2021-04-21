@@ -6,6 +6,10 @@ Version 4 of the GraphQL module does not provide an out of the box API for Drupa
 provides us tha ability to define a schema independent of the underlying Drupal installation, and means to map fields
 defined in that schema to data from Drupal.
 
+To get most of this documentation, you should have a basic understanding of what GraphQl is, and how to do requests
+against GraphQl endpoints. A good starting point for this is the official
+[GraphQl documentation](https://graphql.org/learn/).
+
 ## Motivation
 
 Drupal core provides already a turn-key implementation for JSON-API, which basically just needs to be enabled and
@@ -50,7 +54,7 @@ very drupal specific. Also, drupal specific field prefixes should be avoided, th
 
 One example would be the Image type, which is implementing the media interface.
 In Drupal media entities fields are distributed between several entities, because the file entity does provide
-the basic file information and the media entiry adds more data fields to that, while referencing a file. Directly
+the basic file information, and the media entity adds more data fields to that, while referencing a file. Directly
 translated to a GraphQl API it would look similar to:
 
     type MediaImage {
@@ -75,22 +79,334 @@ When you think about images as a frontend developer, you might expect datastruct
       height
     }
 
-Much cleaner and less noise.
+This is much cleaner and does not expose internal Drupal structures and naming.
 
 # Usage
 
-The starting point for most requests will be some kind of route
-
 ## Routing
-## Pages
+The starting point for most requests will be a URL. Usually, you cannot know what kind of content you will find behind
+that url, meaning, which fields you would be able to request. We have simplified this in the Thunder GraphQL schema by
+introducing the page() request, which internally routes the URL to the correct entity and returns the entity or entity
+bundle as a Page interface. Multiple page types can then be queried with the "... on Type" construct.
+
+Let's take a look at some examples.
+
+## Pages query
+
+All examples can be tested in the GraphQl explorer (admin/config/graphql/servers/manage/thunder_graphql/explorer).
+The explorer will also give you a nice autocomplete, and show you all currently available fields.
+
+### Basic example
+First a basic example for a page query. All we know is, that the path is "/example-page". So, how do we get the content?
+
+    {
+      page(path: "/example-page") {
+        name
+        ... on User {
+          mail
+        }
+        ... on Channel {
+          parent {
+            name
+          }
+        }
+        ... on Article {
+          seoTitle
+        }
+    }
+
+This will return whatever it finds behind /example-page, and depending on whether it is a user page, a term (channel)
+or Article node is, i t will contain the requested fields.
+
+### Paragraphs example
+
+Articles and taxonomy term contain paragraph fields in Thunder, the following example show how the paragraphs content can be
+requested.
+
+    {
+      page(path: "/example-page") {
+        name
+        ... on Article {
+          seoTitle
+          content {
+            ... on ParagraphPinterest {
+              url
+            }
+            ... on ParagraphText {
+              text
+            }
+          }
+        }
+    }
+
+As you can see, the paragraphs are located in the content field, different paragraphs do have different fields,
+so we again use the "... on" Syntax to request the correct ones. In the ParagraphPinterest example, the url
+is directly located on the paragraphs level, and not inside the entity_reference field, where it can be found in the
+Drupal schema. This is an example on how we try to simplify and hide drupal specific implementations.
+
 ## Entity lists
 
+Some fields contain lists of entities, an example are the article lists for taxonomy terms. Those fields have parameters
+for offset and limit. The result will contain a list of entities, and the number of total items for that list.
+E.g. the channel page has a list of articles within that channel:
+
+    {
+      page(path: "/example-term") {
+        name
+        ... on Channel {
+          articles(offset: 0 limit: 10) {
+            total
+            items {
+              name
+              url
+            }
+          }
+        }
+    }
+
 # Extending
+
+The graphql module has an extension mechanism, called composable schema, that can be used in your projects to extend the Thunder schema with your
+custom types. We added some base classes and helper methods to simplify that work.
+The basic idea of the composable schema is described in the [GraphQl Module documentation](https://drupal-graphql.gitbook.io/graphql/v/8.x-4.x/advanced/composable-schemas)
+As described in the documentation, you will need three files to extend the schema. Two schema files in the graphql folder
+of your module:
+
+- your_schema_name.base.graphqls
+- your_schema_name.extension.graphqls
+
+And a PHP class file in src/Plugin/GraphQL/SchemaExtension
+
+- YourSchemaNameSchemaExtension.php
+
+You will find example for that in the thunder_gqls module, for all the schema extension we provide.
+
+Let's do some examples. We will extend the Thunder schema with our own types. To do so, we first create a new
+custom module called myschema
+
+    drush generate module --answers='{"name": "My Schema", "machine_name": "myschema", "install_file": false, "libraries.yml": false, "permissions.yml": false, "event_subscriber": false, "block_plugin": false, "controller": false, "settings_form": false}'
+
+This will create a barebone module called myschema in the modules folder. To continue working on your extension go ahead
+and create a new folder called graphql and put two empty files in it called myschema.base.graphqls and myschema.extension.graphqls in it.
+Now create another empty file called MySchemaSchemaExtension.php in the src/Plugin/GraphQL/SchemaExtension folder.
+
+Your modules file structure should be similar to this now:
+
+    +-- myschema.info.yml
+    +-- myschema.module
+    +-- graphql
+    |   +-- myschema.base.graphqls
+    |   +-- myschema.extension.graphqls
+    +-- src
+        +-- Plugin
+            +-- GraphQL
+                +-- SchemaExtension
+                    +-- MySchemaSchemaExtension.php
+
+The content of MySchemaSchemaExtension.php should be:
+
+    <?php
+
+    namespace Drupal\myschema\Plugin\GraphQL\SchemaExtension;
+
+    use Drupal\graphql\GraphQL\ResolverRegistryInterface;
+    use Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension\ThunderSchemaExtensionPluginBase;
+
+    /**
+     * My schema extension.
+     *
+     * @SchemaExtension(
+     *   id = "myschema",
+     *   name = "My schema extension",
+     *   description = "Adds my schema.",
+     *   schema = "thunder"
+     * )
+     */
+    class MySchemaExtension extends ThunderSchemaExtensionPluginBase {
+
+    }
+
+When you enable the module, your (currently empty) schema extension will be added to the list of available schema extensions.
+You will now be able to find and enable it on the admin page admin/config/graphql/servers/manage/thunder_graphql
+
 ## Add new type
+A common task will be to add a new data type. To do so, you will have to add a new type definition in myschema.base.graphqls
+Say, you have added a new content type. Your myschema.base.graphqls should look no like this:
+
+    type MyContentType implements Page {
+      id: Int!
+      uuid: String!
+      name: String!
+      entity: String!
+      url: String!
+      created: String!
+      changed: String!
+      language: String
+      metatags: [MetaTag]
+      myCustomField: String
+    }
+
+This declares the fields, that will be available through the API. Since it is a node content type, it will have an url
+and should implement the Page interface. This makes it possible to be requested with the page() query.
+
+We have implemented an automatic type resolver for page types, that creates a GraphQL type from bundle names. It
+CamelCases the words separated by underscores and then removes the underscore. If you create a node content type - or
+taxonomy vocabulary - called my_content_type, we will automatically create the MyContentType GraphQL type for you.
+
+The first 9 fields, from id to metatags, are mandatory fields from the Page interface, they will be taken care of by
+calling `resolvePageInterfaceFields()` (see example below). The "mycustomfield" field is a custom
+fields, which we do not know about, so you would have to implement producers for them by yourself. This will be done in
+the MySchemaSchemaExtension.php file.
+
+    <?php
+
+    namespace Drupal\myschema\Plugin\GraphQL\SchemaExtension;
+
+    use Drupal\graphql\GraphQL\ResolverRegistryInterface;
+    use Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension\ThunderSchemaExtensionPluginBase;
+
+    /**
+     * My schema extension.
+     *
+     * @SchemaExtension(
+     *   id = "myschema",
+     *   name = "My schema extension",
+     *   description = "Adds my schema.",
+     *   schema = "thunder"
+     * )
+     */
+    class MySchemaExtension extends ThunderSchemaExtensionPluginBase {
+      /**
+       * {@inheritdoc}
+       */
+      public function registerResolvers(ResolverRegistryInterface $registry) {
+        // Call the parent resolver first.
+        parent::registerResolvers($registry);
+
+        // This adds all the page interface fields to the resolver,
+        $this->resolvePageInterfaceFields('MyContentType');
+
+        // Now we add field resolver for our new fields. In this case we simply get
+        // the value from the field_mycustomfield. parent::registerResolvers($registry)
+        // stores $registry into the registry property, which we should use instead
+        // of $registry.
+        $this->registry->addFieldResolver('MyContentType', 'mycustomfield',
+          $this->builder->produce('property_path')
+            ->map('type', $this->builder->fromValue('entity:node'))
+            ->map('value', $this->builder->fromParent())
+            ->map('path', $this->builder->fromValue('field_mycustomfield.value'))
+        );
+      }
+    }
+
+That's it, most of it os boilerplate, just the `$this->registry->addFieldResolver('MyContentType', 'mycustomfield',` part
+is necessary for your custom field. To learn more about producers, and which ones are available out of the box, please
+read the [Drupal GraphQl module documentation](https://drupal-graphql.gitbook.io/graphql/v/8.x-4.x/data-producers/producers).
+
+Similar extensions can be made for new media types and new paragraph types, the main difference is, that media- and paragraph
+type name are prefixed with Media and Paragraph. If you have a custom paragraph called my_paragraph, the GraphQL
+type name would be ParagraphMyParagraph, and the media my_media would be called MediaMyMedia.
+
 ## Extend existing types
-## Change existing definitions
-### Fields
-### Type resolver
+
+Another common task is extending existing content types with new fields. When adding more fields to the Article content
+type, you will have to add the producers for those fields.
+
+This is very similar to creating a new type, but instead of using the myschema.base.graphqls file to declare your schema,
+you have to use the myschema.extension.graphqls file to extend the existing schema.
+
+    extend type Article {
+      hero: MediaImage
+    }
+
+This will add a new image field to the Article type. Similar to adding a new content type, we need to add the data producer for
+that field in our MySchemaSchemaExtension.php
+
+    <?php
+
+    namespace Drupal\myschema\Plugin\GraphQL\SchemaExtension;
+
+    use Drupal\graphql\GraphQL\ResolverRegistryInterface;
+    use Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension\ThunderSchemaExtensionPluginBase;
+
+    /**
+     * My schema extension.
+     *
+     * @SchemaExtension(
+     *   id = "myschema",
+     *   name = "My schema extension",
+     *   description = "Adds my schema.",
+     *   schema = "thunder"
+     * )
+     */
+    class MySchemaExtension extends ThunderSchemaExtensionPluginBase {
+      /**
+       * {@inheritdoc}
+       */
+      public function registerResolvers(ResolverRegistryInterface $registry) {
+        // Call the parent resolver first.
+        parent::registerResolvers($registry);
+
+        // This adds all the page interface fields to the resolver,
+        $this->resolvePageInterfaceFields('MyContentType');
+
+        // Now we add field resolver for our new fields. In this case we simply get
+        // the value from the field_mycustomfield. parent::registerResolvers($registry)
+        // stores $registry into the registry property, which we should use instead
+        // of $registry.
+        $this->registry->addFieldResolver('MyContentType', 'myCustomField',
+          $this->builder->produce('property_path')
+            ->map('type', $this->builder->fromValue('entity:node'))
+            ->map('value', $this->builder->fromParent())
+            ->map('path', $this->builder->fromValue('field_mycustomfield.value'))
+        );
+
+        // Extending the article
+        $this->registry->addFieldResolver('Article', 'hero',
+          $this->builder->produce('property_path')
+            ->map('type', $this->builder->fromValue('entity:node'))
+            ->map('value', $this->builder->fromParent())
+            ->map('path', $this->builder->fromValue('field_hero.entity'))
+        );
+      }
+    }
+
 ### Entity lists
+
+We have a base class for entity lists, which can be used to create your own list definitions.
+
+## Change existing definitions
+
+It is also possible to change existing resolvers. Field resolver and type resolver are simply overridable in your
+schema extension class.
+
+### Fields
+
+Existing fields, where you would like to change the producer, e.g. to use a different Drupal field, are very easy,
+just make your oen definition in the MySchemaSchemaExtension.php. Say, you would like to use a different Drupal field for
+the content field from field_paragraph to field_my_paragraph, you change the producer in your registerResolvers()
+method to something like this:
+
+    $this->addFieldResolverIfNotExists('Article', 'content',
+      $this->builder->produce('entity_reference_revisions')
+        ->map('entity', $this->builder->fromParent())
+        ->map('field', $this->builder->fromValue('field_my_paragraphs'))
+    );
+
+### Type resolver
+
+By default, we provide automated type resolver for every interface we define. For pages, media and paragraphs.
+as described earlier, those types are derived from bundle machine names in Drupal.
+In case of node- and taxonomy bundles, we simply do a conversion from snake case to camel case. For a content type called
+video_page you could provide a GraphQL type VideoPage, that implements the "Page" interface without changing the
+type resolver. Media bundles and Paragraph bundles are treated differently, these types are getting prefixed with the
+interface name. This way you can have a youtube media bundle which will be the MediaYoutube type in GraphQL and a
+youtube paragraph, which will be the ParagraphYoutube type in GraphQL. We need to do this, because different types
+cannot have the same name in GraphQL, even if they are not of the same interface.
+
+In most cases you will not need to change this behaviour and just use the automatically generated tape name. But when you
+want your GraphQL types to be independent of your Drupal name - e.g. you changed it internally, but you want to keep the
+API stable - then you have to override the existing type resolver.
+
 
 
