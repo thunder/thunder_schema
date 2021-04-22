@@ -8,6 +8,7 @@ interface Page {
   changed: String!
   language: String
   metatags: [MetaTag]
+  jsonld: String
 }
 
 type MetaTag {
@@ -30,6 +31,7 @@ type Article implements Page {
   changed: String!
   language: String
   metatags: [MetaTag]
+  jsonld: String
 
   author: User
   published: Boolean!
@@ -49,6 +51,7 @@ type Tags implements Page {
   changed: String!
   language: String
   metatags: [MetaTag]
+  jsonld: String
 
   author: User
   published: Boolean!
@@ -66,6 +69,7 @@ type Channel implements Page {
   changed: String!
   language: String
   metatags: [MetaTag]
+  jsonld: String
 
   parent: Channel
   author: User
@@ -84,6 +88,7 @@ type User implements Page {
   changed: String!
   language: String
   metatags: [MetaTag]
+  jsonld: String
 
   mail: String
 }
