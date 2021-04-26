@@ -1,0 +1,19 @@
+extend interface Page {
+  jsonld: String
+}
+
+extend type Article {
+  jsonld: String
+}
+
+extend type Tags {
+  jsonld: String
+}
+
+extend type Channel {
+  jsonld: String
+}
+
+extend type User {
+  jsonld: String
+}

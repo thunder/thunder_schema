@@ -20,12 +20,5 @@
     "scripts": {
         "cs": "phpcs",
         "cbf": "phpcbf"
-    },
-    "extra": {
-        "patches": {
-            "drupal/schema_metatag": {
-                "getRenderedJsonld does not work": "https://www.drupal.org/files/issues/2021-04-22/3210212.patch"
-            }
-        }
     }
 }

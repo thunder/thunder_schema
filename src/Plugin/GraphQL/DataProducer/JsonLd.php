@@ -10,7 +10,8 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\RenderContext;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
-use Drupal\schema_metatag\SchemaMetatagManagerInterface;
+use Drupal\metatag\MetatagManagerInterface;
+use Drupal\schema_metatag\SchemaMetatagManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -47,11 +48,11 @@ class JsonLd extends DataProducerPluginBase implements ContainerFactoryPluginInt
   protected $moduleHandler;
 
   /**
-   * The schema metatag manager service.
+   * The metatag manager service.
    *
-   * @var \Drupal\schema_metatag\SchemaMetatagManagerInterface
+   * @var \Drupal\metatag\MetatagManagerInterface
    */
-  protected $schemaMetatagManager;
+  protected $metatagManager;
 
   /**
    * {@inheritdoc}
@@ -65,7 +66,7 @@ class JsonLd extends DataProducerPluginBase implements ContainerFactoryPluginInt
       $pluginDefinition,
       $container->get('renderer'),
       $container->get('module_handler'),
-      $container->get('schema_metatag.schema_metatag_manager'),
+      $container->get('metatag.manager')
     );
   }
 
@@ -82,8 +83,8 @@ class JsonLd extends DataProducerPluginBase implements ContainerFactoryPluginInt
    *   The renderer service.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
    *   The module handler.
-   * @param \Drupal\schema_metatag\SchemaMetatagManagerInterface $schemaMetatagManager
-   *   The schema metatag manager service.
+   * @param \Drupal\metatag\MetatagManagerInterface $metatagManager
+   *   The metatag manager service.
    */
   public function __construct(
     array $configuration,
@@ -91,12 +92,11 @@ class JsonLd extends DataProducerPluginBase implements ContainerFactoryPluginInt
     $pluginDefinition,
     RendererInterface $renderer,
     ModuleHandlerInterface $moduleHandler,
-    SchemaMetatagManagerInterface $schemaMetatagManager
+    MetatagManagerInterface $metatagManager
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition);
     $this->renderer = $renderer;
-
-    $this->schemaMetatagManager = $schemaMetatagManager;
+    $this->metatagManager = $metatagManager;
     $this->moduleHandler = $moduleHandler;
   }
 
@@ -117,7 +117,7 @@ class JsonLd extends DataProducerPluginBase implements ContainerFactoryPluginInt
     }
     $context = new RenderContext();
     $result = $this->renderer->executeInRenderContext($context, function () use ($entity) {
-      return $this->schemaMetatagManager->getRenderedJsonld($entity);
+      return $this->getRenderedJsonld($entity);
     });
 
     if (!$context->isEmpty()) {
@@ -125,6 +125,40 @@ class JsonLd extends DataProducerPluginBase implements ContainerFactoryPluginInt
     }
 
     return $result ?? '';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRenderedJsonld($entity = NULL, $entity_type = NULL) {
+    // If nothing was passed in, assume the current entity.
+    // @see schema_metatag_entity_load() to understand why this works.
+    if (empty($entity)) {
+      $entity = metatag_get_route_entity();
+    }
+    // Get all the metatags for this entity.
+    if (!empty($entity) && $entity instanceof ContentEntityInterface) {
+      foreach ($this->metatagManager->tagsFromEntityWithDefaults($entity) as $tag => $data) {
+        $metatags[$tag] = $data;
+      }
+    }
+
+    // Trigger hook_metatags_alter().
+    // Allow modules to override tags or the entity used for token replacements.
+    $context = ['entity' => $entity];
+    $this->moduleHandler->alter('metatags', $metatags, $context);
+    $elements = $this->metatagManager->generateElements($metatags, $entity);
+
+    // Parse the Schema.org metatags out of the array.
+    if ($items = SchemaMetatagManager::parseJsonld($elements['#attached']['html_head'])) {
+
+      // Encode the Schema.org metatags as JSON LD.
+      if ($jsonld = SchemaMetatagManager::encodeJsonld($items)) {
+        // Pass back the rendered result.
+        $html = SchemaMetatagManager::renderArrayJsonLd($jsonld);
+        return $this->renderer->render($html);
+      }
+    }
   }
 
 }
