@@ -98,6 +98,7 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
       $this->builder->produce('entity_label')
         ->map('entity', $this->builder->fromParent())
     );
+
   }
 
   /**
@@ -139,6 +140,12 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
       $this->builder->produce('thunder_metatags')
         ->map('type', $this->builder->fromValue('entity'))
         ->map('value', $this->builder->fromParent())
+    );
+
+    $this->addFieldResolverIfNotExists($type, 'menus',
+      $this->builder->produce('entity_load_multiple')
+        ->map('type', $this->builder->fromValue('menu'))
+        ->map('ids', $this->builder->fromArgument('ids'))
     );
 
   }
