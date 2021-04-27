@@ -14,29 +14,44 @@ You can enable the thunder_demo module to have some articles to work with.
 
 Back on admin/config/graphql choose "Explorer" from the drop down button
 
-If all works, you should be able to test some queries in the Explorer.
+If all works, you should be able to test some queries in the Explorer. For the example query you have to add
+the query variable `{"path": "/your-path"}`
 
 # Example
 
-    {
-      page(path: "/your-path") {
-        uuid
-        url
+    query ($path: String!) {
+      mainMenu: menu(id: "main" path: $path) {
         name
-        menus(ids: ["main" "footer"]) {
-          name
-          id
-          items {
+        id
+        items {
+          title
+          url
+          inActiveTrail
+          children {
             title
             url
             inActiveTrail
-            children {
-              title
-              url
-              inActiveTrail
-            }
           }
         }
+      }
+      footerMenu: menu(id: "footer" path: $path) {
+        name
+        id
+        items {
+          title
+          url
+          inActiveTrail
+          children {
+            title
+            url
+            inActiveTrail
+          }
+        }
+      }
+      page(path: $path) {
+        uuid
+        url
+        name
         ... on User {
           mail
         }

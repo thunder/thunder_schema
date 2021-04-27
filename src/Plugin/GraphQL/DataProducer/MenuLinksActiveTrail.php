@@ -102,18 +102,21 @@ class MenuLinksActiveTrail extends DataProducerPluginBase implements ContainerFa
    * @throws \Drupal\Core\Entity\EntityMalformedException
    */
   public function resolve(MenuInterface $menu, ContentEntityInterface $entity) {
+    $parameters = new MenuTreeParameters();
     $links = $this->menuLinkManager->loadLinksByRoute($entity->toUrl()->getRouteName(), $entity->toUrl()->getRouteParameters(), $menu->id());
 
     $activeLink = reset($links);
-    $activeTrail = ['' => ''];
+    if ($activeLink) {
+      $activeTrail = ['' => ''];
 
-    if ($parents = $this->menuLinkManager->getParentIds($activeLink->getPluginId())) {
-      $activeTrail = $parents + $activeTrail;
+      if ($parents = $this->menuLinkManager->getParentIds(
+        $activeLink->getPluginId()
+      )) {
+        $activeTrail = $parents + $activeTrail;
+      }
+
+      $parameters->setActiveTrail($activeTrail);
     }
-
-    $parameters = new MenuTreeParameters();
-    $parameters->setActiveTrail($activeTrail);
-
     $tree = $this->menuLinkTree->load($menu->id(), $parameters);
 
     $manipulators = [
