@@ -30,6 +30,7 @@ class ThunderMenuSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('path', $this->builder->fromArgument('path')),
       $this->builder->produce('route_entity')
         ->map('url', $this->builder->fromParent()),
+      $this->builder->context('entity', $this->builder->fromParent()),
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('menu'))
         ->map('id', $this->builder->fromArgument('id'))
@@ -61,6 +62,7 @@ class ThunderMenuSchemaExtension extends ThunderSchemaExtensionPluginBase {
       'items',
       $this->builder->produce('menu_links_active_trail')
         ->map('menu', $this->builder->fromParent())
+        ->map('entity', $this->builder->fromContext('entity'))
     );
 
     // Menu title.

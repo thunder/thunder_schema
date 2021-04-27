@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer\Menu;
+namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -29,11 +29,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   consumes = {
  *     "menu" = @ContextDefinition("entity:menu",
  *       label = @Translation("Menu")
- *     )
+ *     ),
+ *     "entity" = @ContextDefinition("entity",
+ *       label = @Translation("The entity")
+ *     ),
  *   }
  * )
  */
-class MenuLinks extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
+class MenuLinksActiveTrail extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
   use DependencySerializationTrait;
 
   /**
@@ -92,14 +95,13 @@ class MenuLinks extends DataProducerPluginBase implements ContainerFactoryPlugin
    *
    * @param \Drupal\system\MenuInterface $menu
    *   The menu interface.
-   * @param \Drupal\Core\Entity\ContentEntityInterface|null $entity
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   The content entity interface.
    *
    * @return array
    * @throws \Drupal\Core\Entity\EntityMalformedException
    */
-  public function resolve(MenuInterface $menu) {
-
+  public function resolve(MenuInterface $menu, ContentEntityInterface $entity) {
     $links = $this->menuLinkManager->loadLinksByRoute($entity->toUrl()->getRouteName(), $entity->toUrl()->getRouteParameters(), $menu->id());
 
     $activeLink = reset($links);
