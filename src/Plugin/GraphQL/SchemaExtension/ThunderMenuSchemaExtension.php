@@ -2,10 +2,7 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 
-use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
-use Drupal\media\MediaInterface;
-use GraphQL\Type\Definition\ResolveInfo;
 
 /**
  * The menu schema extension.
@@ -99,7 +96,7 @@ class ThunderMenuSchemaExtension extends ThunderSchemaExtensionPluginBase {
       'url',
       $this->builder->compose(
         $this->builder->produce('menu_link_url')
-            ->map('link',  $this->builder->produce('menu_tree_link')
+          ->map('link', $this->builder->produce('menu_tree_link')
             ->map('element', $this->builder->fromParent())
         ),
         $this->builder->produce('url_path')

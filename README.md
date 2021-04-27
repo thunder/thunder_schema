@@ -14,8 +14,8 @@ You can enable the thunder_demo module to have some articles to work with.
 
 Back on admin/config/graphql choose "Explorer" from the drop down button
 
-If all works, you should be able to test some queries in the Explorer. For the example query you have to add
-the query variable `{"path": "/your-path"}`
+If all works, you should be able to test some queries in the Explorer. For the
+example query you have to add the query variable `{"path": "/your-path"}`
 
 # Example
 

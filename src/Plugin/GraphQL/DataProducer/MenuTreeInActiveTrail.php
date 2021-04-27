@@ -32,7 +32,8 @@ class MenuTreeInActiveTrail extends DataProducerPluginBase {
    * @param \Drupal\Core\Menu\MenuLinkTreeElement $element
    *   The menu link tree element.
    *
-   * @return \Drupal\Core\Menu\MenuLinkInterface
+   * @return bool
+   *   Is current element in active trail.
    */
   public function resolve(MenuLinkTreeElement $element) {
     return $element->inActiveTrail;

@@ -17,7 +17,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Return the menu links of a menu with active trail.
  *
- *
  * @DataProducer(
  *   id = "menu_links_active_trail",
  *   name = @Translation("Menu links"),
@@ -99,6 +98,8 @@ class MenuLinksActiveTrail extends DataProducerPluginBase implements ContainerFa
    *   The content entity interface.
    *
    * @return array
+   *   The menu links.
+   *
    * @throws \Drupal\Core\Entity\EntityMalformedException
    */
   public function resolve(MenuInterface $menu, ContentEntityInterface $entity) {
