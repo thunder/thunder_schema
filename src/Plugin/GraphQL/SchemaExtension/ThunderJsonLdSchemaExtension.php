@@ -22,24 +22,14 @@ class ThunderJsonLdSchemaExtension extends ThunderSchemaExtensionPluginBase {
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
-    $this->addFieldResolver('Article');
-    $this->addFieldResolver('BasicPage');
-    $this->addFieldResolver('Tags');
-    $this->addFieldResolver('Channel');
-    $this->addFieldResolver('User');
-  }
-
-  /**
-   * Add jsonld field to a given type.
-   *
-   * @param string $type
-   *   The name of the type.
-   */
-  protected function addFieldResolver($type) {
-    $this->addFieldResolverIfNotExists($type, 'jsonld',
+    $this->addFieldResolverIfNotExists('Query', 'jsonld', $this->builder->compose(
+      $this->builder->produce('route_load')
+        ->map('path', $this->builder->fromArgument('path')),
+      $this->builder->produce('route_entity')
+        ->map('url', $this->builder->fromParent()),
       $this->builder->produce('thunder_jsonld')
         ->map('entity', $this->builder->fromParent())
-    );
+    ));
   }
 
 }

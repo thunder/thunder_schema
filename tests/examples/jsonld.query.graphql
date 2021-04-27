@@ -1,11 +1,3 @@
 query ($path: String!) {
-  page(path: $path) {
-    id
-    uuid
-    url
-    name
-    ... on Article {
-      jsonld
-    }
-  }
+  jsonld(path: $path)
 }
