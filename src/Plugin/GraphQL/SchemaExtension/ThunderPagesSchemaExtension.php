@@ -6,7 +6,6 @@ use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
-use Drupal\thunder_gqls\Event\SchemaExtendEvent;
 use Drupal\thunder_gqls\Wrappers\EntityListResponse;
 use Drupal\user\UserInterface;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -37,10 +36,6 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->resolveFields();
-
-    $event = new SchemaExtendEvent($this->registry);
-    $event_dispatcher = \Drupal::service('event_dispatcher');
-    $event_dispatcher->dispatch(SchemaExtendEvent::EVENT_NAME, $event);
   }
 
   /**

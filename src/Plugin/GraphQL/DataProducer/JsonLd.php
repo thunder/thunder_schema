@@ -15,14 +15,14 @@ use Drupal\schema_metatag\SchemaMetatagManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Resolves a jsonld string for en entity.
+ * Resolves a JSON-LD script tag for an entity.
  *
  * @DataProducer(
  *   id = "thunder_jsonld",
- *   name = @Translation("JsonLD"),
- *   description = @Translation("Resolves json+ld."),
+ *   name = @Translation("JSON-LD"),
+ *   description = @Translation("Resolves a JSON-LD script tag for an entity."),
  *   produces = @ContextDefinition("string",
- *     label = @Translation("JsonLd script tag")
+ *     label = @Translation("JSON-LD script tag")
  *   ),
  *   consumes = {
  *     "entity" = @ContextDefinition("entity",
@@ -101,7 +101,7 @@ class JsonLd extends DataProducerPluginBase implements ContainerFactoryPluginInt
   }
 
   /**
-   * Resolve the jsonld script string.
+   * Resolve the JSON-LD script tag string.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity.
@@ -109,7 +109,7 @@ class JsonLd extends DataProducerPluginBase implements ContainerFactoryPluginInt
    *   The cacheable dependency interface.
    *
    * @return mixed
-   *   Normalized metatags.
+   *   The JSON-LD script tag.
    */
   public function resolve(EntityInterface $entity, RefinableCacheableDependencyInterface $metadata) {
     if (!$this->moduleHandler->moduleExists('schema_metatag') || !($entity instanceof ContentEntityInterface)) {

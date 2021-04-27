@@ -1,8 +1,8 @@
-extend interface Page {
+extend type Article {
   jsonld: String
 }
 
-extend type Article {
+extend type BasicPage {
   jsonld: String
 }
 

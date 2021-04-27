@@ -2,30 +2,39 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 
-use Drupal\Component\EventDispatcher\Event;
-use Drupal\thunder_gqls\Event\SchemaExtendEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 
 /**
- * Schema extension for page types.
+ * Extension to add the JSON-LD script tag to all content page types.
  *
  * @SchemaExtension(
  *   id = "thunder_jsonld",
- *   name = "JsonLd extension",
- *   description = "Adds page types and their fields.",
+ *   name = "JSON-LD extension",
+ *   description = "Adds the JSON-LD script tag to all content page types.",
  *   schema = "thunder"
  * )
  */
 class ThunderJsonLdSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
-  public static function getSubscribedEvents() {
-    return [
-      SchemaExtendEvent::EVENT_NAME => 'extendSchema',
-    ];
+  /**
+   * {@inheritdoc}
+   */
+  public function registerResolvers(ResolverRegistryInterface $registry) {
+    parent::registerResolvers($registry);
+
+    $this->addFieldResolver('Article');
+    $this->addFieldResolver('BasicPage');
+    $this->addFieldResolver('Tags');
+    $this->addFieldResolver('Channel');
+    $this->addFieldResolver('User');
+
   }
 
-  public function extendSchema(SchemaExtendEvent $event) {
-    $this->addFieldResolverIfNotExists('Article', 'jsonld',
+  /**
+   * @param $type
+   */
+  protected function addFieldResolver($type) {
+    $this->addFieldResolverIfNotExists($type, 'jsonld',
       $this->builder->produce('thunder_jsonld')
         ->map('entity', $this->builder->fromParent())
     );
