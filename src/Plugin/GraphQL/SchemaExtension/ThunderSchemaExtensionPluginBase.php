@@ -142,12 +142,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
         ->map('value', $this->builder->fromParent())
     );
 
-    $this->addFieldResolverIfNotExists($type, 'menus',
-      $this->builder->produce('entity_load_multiple')
-        ->map('type', $this->builder->fromValue('menu'))
-        ->map('ids', $this->builder->fromArgument('ids'))
-    );
-
   }
 
   /**
@@ -193,12 +187,12 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    *   The entity type name.
    */
   protected function resolvePageInterfaceQueryFields(string $page_type, string $entity_type) {
-    $this->addFieldResolverIfNotExists('Query', $page_type,
-      $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue($entity_type))
-        ->map('bundles', $this->builder->fromValue([$page_type]))
-        ->map('id', $this->builder->fromArgument('id'))
-    );
+      $this->addFieldResolverIfNotExists('Query', $page_type,
+        $this->builder->produce('entity_load')
+          ->map('type', $this->builder->fromValue($entity_type))
+          ->map('bundles', $this->builder->fromValue([$page_type]))
+          ->map('id', $this->builder->fromArgument('id'))
+      );
   }
 
 }

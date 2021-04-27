@@ -23,6 +23,20 @@ If all works, you should be able to test some queries in the Explorer.
         uuid
         url
         name
+        menus(ids: ["main" "footer"]) {
+          name
+          id
+          items {
+            title
+            url
+            inActiveTrail
+            children {
+              title
+              url
+              inActiveTrail
+            }
+          }
+        }
         ... on User {
           mail
         }

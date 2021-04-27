@@ -8,16 +8,16 @@ use Drupal\media\MediaInterface;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
- * The Common types schema extension.
+ * The menu schema extension.
  *
  * @SchemaExtension(
- *   id = "thunder_common",
- *   name = "Common types",
- *   description = "Commonly used type definitions.",
+ *   id = "thunder_menu",
+ *   name = "Menu types",
+ *   description = "Menu type definitions.",
  *   schema = "thunder"
  * )
  */
-class ThunderCommonTypesSchemaExtension extends ThunderSchemaExtensionPluginBase {
+class ThunderMenuSchemaExtension extends ThunderSchemaExtensionPluginBase {
 
   /**
    * {@inheritdoc}
@@ -25,13 +25,15 @@ class ThunderCommonTypesSchemaExtension extends ThunderSchemaExtensionPluginBase
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
-    // Url path field.
-    $this->addFieldResolverIfNotExists(
-      'Url',
-      'path',
-      $this->builder->produce('url_path')
-        ->map('url', $this->builder->fromParent())
-    );
+    $this->addFieldResolverIfNotExists('Query', 'menu', $this->builder->compose(
+      $this->builder->produce('route_load')
+        ->map('path', $this->builder->fromArgument('path')),
+      $this->builder->produce('route_entity')
+        ->map('url', $this->builder->fromParent()),
+      $this->builder->produce('entity_load')
+        ->map('type', $this->builder->fromValue('menu'))
+        ->map('id', $this->builder->fromArgument('id'))
+    ));
 
     // Menu id.
     $this->addFieldResolverIfNotExists(
@@ -57,7 +59,7 @@ class ThunderCommonTypesSchemaExtension extends ThunderSchemaExtensionPluginBase
     $this->addFieldResolverIfNotExists(
       'Menu',
       'items',
-      $this->builder->produce('menu_links')
+      $this->builder->produce('menu_links_active_trail')
         ->map('menu', $this->builder->fromParent())
     );
 
@@ -93,12 +95,14 @@ class ThunderCommonTypesSchemaExtension extends ThunderSchemaExtensionPluginBase
     $this->addFieldResolverIfNotExists(
       'MenuItem',
       'url',
-      $this->builder->produce('menu_link_url')
-        ->map(
-          'link',
-          $this->builder->produce('menu_tree_link')
+      $this->builder->compose(
+        $this->builder->produce('menu_link_url')
+            ->map('link',  $this->builder->produce('menu_tree_link')
             ->map('element', $this->builder->fromParent())
-        )
+        ),
+        $this->builder->produce('url_path')
+          ->map('url', $this->builder->fromParent())
+      )
     );
 
   }

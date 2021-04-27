@@ -30,6 +30,7 @@ class MenuTreeInActiveTrail extends DataProducerPluginBase {
    * Resolver.
    *
    * @param \Drupal\Core\Menu\MenuLinkTreeElement $element
+   *   The menu link tree element.
    *
    * @return \Drupal\Core\Menu\MenuLinkInterface
    */

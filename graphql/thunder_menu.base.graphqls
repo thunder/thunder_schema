@@ -6,11 +6,7 @@ type Menu {
 
 type MenuItem {
   title: String!
-  url: Url!
+  url: String!
   inActiveTrail: Boolean!
   children: [MenuItem]
-}
-
-type Url {
-  path: String
 }
