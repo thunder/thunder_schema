@@ -27,11 +27,13 @@ class ThunderJsonLdSchemaExtension extends ThunderSchemaExtensionPluginBase {
     $this->addFieldResolver('Tags');
     $this->addFieldResolver('Channel');
     $this->addFieldResolver('User');
-
   }
 
   /**
-   * @param $type
+   * Add jsonld field to a given type.
+   *
+   * @param string $type
+   *   The name of the type.
    */
   protected function addFieldResolver($type) {
     $this->addFieldResolverIfNotExists($type, 'jsonld',
