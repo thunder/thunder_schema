@@ -31,6 +31,7 @@ class ThunderMenuSchemaExtension extends ThunderSchemaExtensionPluginBase {
       $this->builder->produce('entity_load')
         ->map('type', $this->builder->fromValue('menu'))
         ->map('id', $this->builder->fromArgument('id'))
+        ->map('access', $this->builder->fromValue(FALSE))
     ));
 
     // Menu id.
