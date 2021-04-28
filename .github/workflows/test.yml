@@ -54,7 +54,6 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-npm-cache
           restore-keys: ${{ runner.os }}-npm-cache
-
       - name: Get build environment
         run: composer global require thunder/drupal-testing
 
@@ -69,6 +68,9 @@ jobs:
         run: test-drupal-project install
         env:
           DRUPAL_TESTING_TEST_DEPRECATION: false
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
 
       - name: Start webserver and run the tests
         run: test-drupal-project
