@@ -1,6 +1,6 @@
 {
   "data": {
-    "menu": {
+    "main": {
       "name": "Main navigation",
       "id": "main",
       "items": [
@@ -12,14 +12,26 @@
         },
         {
           "title": "News",
-          "url": "/news",
+          "url": "/taxonomy/term/1",
           "inActiveTrail": false,
           "children": []
         },
         {
           "title": "Events",
-          "url": "/events",
-          "inActiveTrail": true,
+          "url": "/taxonomy/term/2",
+          "inActiveTrail": false,
+          "children": []
+        }
+      ]
+    },
+    "admin": {
+      "name": "Administration",
+      "id": "admin",
+      "items": [
+        {
+          "title": "Inaccessible",
+          "url": "/",
+          "inActiveTrail": false,
           "children": []
         }
       ]

@@ -1,5 +1,19 @@
 query ($path: String!) {
-  menu(id: "main", path: $path) {
+  main: menu(id: "main", path: $path) {
+    name
+    id
+    items {
+      title
+      url
+      inActiveTrail
+      children {
+        title
+        url
+        inActiveTrail
+      }
+    }
+  }
+  admin: menu(id: "admin", path: $path) {
     name
     id
     items {
