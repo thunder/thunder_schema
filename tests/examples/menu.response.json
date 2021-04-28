@@ -1,6 +1,6 @@
 {
   "data": {
-    "main": {
+    "menu": {
       "name": "Main navigation",
       "id": "main",
       "items": [
@@ -12,29 +12,29 @@
         },
         {
           "title": "News",
-          "url": "/taxonomy/term/1",
+          "url": "/news",
           "inActiveTrail": false,
           "children": []
         },
         {
           "title": "Events",
-          "url": "/taxonomy/term/2",
-          "inActiveTrail": false,
-          "children": []
-        }
-      ]
-    },
-    "admin": {
-      "name": "Administration",
-      "id": "admin",
-      "items": [
-        {
-          "title": "Inaccessible",
-          "url": "/",
-          "inActiveTrail": false,
+          "url": "/events",
+          "inActiveTrail": true,
           "children": []
         }
       ]
     }
+  },
+  "admin": {
+    "name": "Administration",
+    "id": "admin",
+    "items": [
+      {
+        "title": "Inaccessible",
+        "url": "/",
+        "inActiveTrail": false,
+        "children": []
+      }
+    ]
   }
 }
