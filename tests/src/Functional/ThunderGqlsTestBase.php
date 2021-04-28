@@ -174,6 +174,7 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
       TRUE
     )['data'];
 
+    file_put_contents('/tmp/debug.txt', print_r($responseData, TRUE), FILE_APPEND);
     $this->assertEqualsCanonicalizing($expectedData, $responseData);
   }
 
