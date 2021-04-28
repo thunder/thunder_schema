@@ -58,6 +58,7 @@ abstract class ThunderGqlsTestBase extends BrowserTestBase {
       'view media',
       'view published terms in channel',
       'view published terms in tags',
+      'administer menu'
     ]);
 
   }

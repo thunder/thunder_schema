@@ -20,7 +20,7 @@ class SchemaTest extends ThunderGqlsTestBase {
    * @dataProvider schemas
    */
   public function testSchema(string $schema) {
-    $this->logWithRole('editor');
+    $this->drupalLogin($this->graphqlUser);
     $this->runAndTestQuery($schema);
   }
 
