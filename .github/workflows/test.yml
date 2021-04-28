@@ -54,6 +54,7 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-npm-cache
           restore-keys: ${{ runner.os }}-npm-cache
+
       - name: Get build environment
         run: composer global require thunder/drupal-testing
 
