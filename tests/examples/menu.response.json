@@ -1,6 +1,6 @@
 {
   "data": {
-    "menu": {
+    "main": {
       "name": "Main navigation",
       "id": "main",
       "items": [
@@ -23,18 +23,18 @@
           "children": []
         }
       ]
+    },
+    "admin": {
+      "name": "Administration",
+      "id": "admin",
+      "items": [
+        {
+          "title": "Inaccessible",
+          "url": "/",
+          "inActiveTrail": false,
+          "children": []
+        }
+      ]
     }
-  },
-  "admin": {
-    "name": "Administration",
-    "id": "admin",
-    "items": [
-      {
-        "title": "Inaccessible",
-        "url": "/",
-        "inActiveTrail": false,
-        "children": []
-      }
-    ]
   }
 }
