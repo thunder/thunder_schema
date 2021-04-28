@@ -8,8 +8,6 @@ use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
 /**
  * Returns if menu tree element is in active trail.
  *
- * @todo Fix input and output context type.
- *
  * @DataProducer(
  *   id = "menu_tree_in_active_trail",
  *   name = @Translation("Menu tree element is in active trail"),
