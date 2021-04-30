@@ -2,14 +2,8 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
-use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\NestedArray;
-use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
-use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Menu\LocalTaskManager;
 use Drupal\Core\Menu\LocalTaskManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
 use Drupal\Core\PathProcessor\PathProcessorManager;
@@ -19,7 +13,6 @@ use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\Core\TypedData\TypedDataTrait;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
-use Drupal\metatag\MetatagManagerInterface;
 use Drupal\typed_data\DataFetcherTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,6 +37,7 @@ use Symfony\Component\Routing\RouterInterface;
  * )
  */
 class LocalTasks extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
+
   use TypedDataTrait;
   use DataFetcherTrait;
 
@@ -62,6 +56,7 @@ class LocalTasks extends DataProducerPluginBase implements ContainerFactoryPlugi
   protected $localTasksManager;
 
   protected $currentRequest;
+
   protected $currentRouteMatch;
 
   /**
@@ -85,9 +80,6 @@ class LocalTasks extends DataProducerPluginBase implements ContainerFactoryPlugi
    */
   protected $router;
 
-
-
-
   /**
    * {@inheritdoc}
    *
@@ -109,7 +101,7 @@ class LocalTasks extends DataProducerPluginBase implements ContainerFactoryPlugi
   }
 
   /**
-   * MetaTags constructor.
+   * LocalTasks constructor.
    *
    * @param array $configuration
    *   The plugin configuration array.
@@ -158,21 +150,12 @@ class LocalTasks extends DataProducerPluginBase implements ContainerFactoryPlugi
    *   Normalized metatags.
    */
   public function resolve(EntityInterface $entity, RefinableCacheableDependencyInterface $metadata) {
-
-    // routing system, which makes it necessary to fake a route match.
-
-/*
-    $this->currentRequest->attributes->set($entity->getEntityTypeId(), $entity);
-    $this->currentRequest->attributes->set('_content_moderation_entity_type', $entity->getEntityTypeId());
-
-    $this->currentRouteMatch->resetRouteMatch();
-  */
-
     $context = new RenderContext();
     $result = $this->renderer->executeInRenderContext($context, function () use ($entity) {
       $new_request = Request::create($entity->toUrl()->toString());
       $request_stack = new RequestStack();
-      $processed = $this->pathProcessor->processInbound($entity->toUrl()->toUriString(), $new_request);
+      $processed = $this->pathProcessor->processInbound($entity->toUrl()
+        ->toUriString(), $new_request);
 
       $this->currentPath->setPath($processed);
       $this->currentRequest->attributes->add($this->router->matchRequest($new_request));
@@ -182,14 +165,16 @@ class LocalTasks extends DataProducerPluginBase implements ContainerFactoryPlugi
       $container = \Drupal::getContainer();
       $container->set('request_stack', $request_stack);
 
-
-
-      $tasks = $this->localTasksManager->getLocalTasks($entity->toUrl()->getRouteName());
+      $tasks = $this->localTasksManager->getLocalTasks($entity->toUrl()
+        ->getRouteName());
 
       $links = [];
       foreach ($tasks['tabs'] as $task) {
         if (!$task['#access']->isForbidden()) {
-          $links[] = ['url' => $task['#link']['url']->toString(), 'title' => $task['#link']['title']];
+          $links[] = [
+            'url' => $task['#link']['url']->toString(),
+            'title' => $task['#link']['title'],
+          ];
         }
       }
       return $links;
@@ -198,10 +183,6 @@ class LocalTasks extends DataProducerPluginBase implements ContainerFactoryPlugi
       $metadata->addCacheableDependency($context->pop());
     }
 
-    file_put_contents('foo.txt', print_r($result,1));
-
-
-    #var_dump($tasks);
     return $result ?? NULL;
   }
 
