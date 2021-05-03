@@ -7,7 +7,6 @@ use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatch;
-use Drupal\Core\Routing\Router;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -32,11 +31,15 @@ use Symfony\Component\Routing\RouterInterface;
 class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
 
   /**
+   * The router.
+   *
    * @var \Symfony\Component\Routing\RouterInterface
    */
   private RouterInterface $router;
 
   /**
+   * The breadcrumb manager.
+   *
    * @var \Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface
    */
   private BreadcrumbBuilderInterface $breadcrumbManager;
@@ -65,6 +68,8 @@ class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFacto
    *   The plugin id.
    * @param mixed $pluginDefinition
    *   The plugin definition.
+   * @param \Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface $breadcrumbManager
+   *   The breadcrumb manager.
    * @param \Symfony\Component\Routing\RouterInterface $router
    *   The router.
    */
