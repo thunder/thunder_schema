@@ -10,6 +10,8 @@ use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * Plugin to resolve all the links for an entity.
+ *
  * @DataProducer(
  *   id = "entity_links",
  *   name = @Translation("Entity links"),
@@ -70,10 +72,13 @@ class EntityLinks extends DataProducerPluginBase implements ContainerFactoryPlug
   }
 
   /**
+   * Resolve all the links for an entity.
+   *
    * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity to act on.
    *
    * @return string[]
-   * @throws \Drupal\Core\Entity\EntityMalformedException
+   *   The entity links.
    */
   public function resolve(EntityInterface $entity) {
     $context = new RenderContext();

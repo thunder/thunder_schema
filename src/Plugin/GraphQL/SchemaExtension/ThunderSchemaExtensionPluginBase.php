@@ -138,6 +138,10 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
         ->map('value', $this->builder->fromParent())
     );
 
+    $this->addFieldResolverIfNotExists($type, 'links',
+      $this->builder->produce('entity_links')
+        ->map('entity', $this->builder->fromParent())
+    );
   }
 
   /**
