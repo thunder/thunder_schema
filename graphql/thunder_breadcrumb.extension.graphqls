@@ -1,3 +1,3 @@
 extend type Query {
-  breadcrumb(path: String!, id: String!): [String]
+  breadcrumb(path: String!): String
 }
