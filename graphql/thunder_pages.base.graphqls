@@ -19,6 +19,17 @@ type Teaser {
   text: String
 }
 
+type Links {
+  canonical: String
+  delete_form: String
+  delete_multiple_form: String
+  edit_form: String
+  version_history: String
+  revision: String
+  create: String
+  latest_version: String
+}
+
 type Article implements Page {
   id: Int!
   uuid: String!
@@ -36,6 +47,7 @@ type Article implements Page {
   seoTitle: String!
   content: [Paragraph]
   teaser: Teaser
+  links: Links
 }
 
 type BasicPage implements Page {

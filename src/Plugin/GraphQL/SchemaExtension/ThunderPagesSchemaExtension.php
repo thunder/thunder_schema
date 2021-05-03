@@ -77,6 +77,11 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('field', $this->builder->fromValue('field_paragraphs'))
     );
 
+    $this->addFieldResolverIfNotExists('Article', 'links',
+      $this->builder->produce('entity_links')
+        ->map('entity', $this->builder->fromParent())
+    );
+
     $this->addFieldResolverIfNotExists('Article', 'teaser',
      $this->builder->callback(function (ContentEntityInterface $entity) {
        return [
