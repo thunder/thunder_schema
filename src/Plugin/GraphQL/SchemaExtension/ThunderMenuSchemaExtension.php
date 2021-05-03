@@ -35,23 +35,13 @@ class ThunderMenuSchemaExtension extends ThunderSchemaExtensionPluginBase {
     ));
 
     // Menu id.
-    $this->addFieldResolverIfNotExists(
-      'Menu',
-      'id',
-      $this->builder->fromPath(
-        'entity:menu',
-        'id',
-        $this->builder->fromParent())
+    $this->addFieldResolverIfNotExists('Menu', 'id',
+      $this->builder->fromPath('entity:menu', 'id')
     );
 
     // Menu name.
-    $this->addFieldResolverIfNotExists(
-      'Menu',
-      'name',
-      $this->builder->fromPath(
-        'entity:menu',
-        'label',
-        $this->builder->fromParent())
+    $this->addFieldResolverIfNotExists('Menu', 'name',
+      $this->builder->fromPath('entity:menu', 'label')
     );
 
     // Menu items.

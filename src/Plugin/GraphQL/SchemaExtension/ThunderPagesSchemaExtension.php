@@ -57,17 +57,11 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->addFieldResolverIfNotExists('Article', 'seoTitle',
-      $this->builder->fromPath(
-        'entity',
-        'field_seo_title.value',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'field_seo_title.value')
     );
 
     $this->addFieldResolverIfNotExists('Article', 'channel',
-      $this->builder->fromPath(
-        'entity',
-        'field_channel.entity',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'field_channel.entity')
     );
 
     $this->addFieldResolverIfNotExists('Article', 'tags',
@@ -96,10 +90,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->addFieldResolverIfNotExists('BasicPage', 'content',
-      $this->builder->fromPath(
-        'entity',
-        'body.processed',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'body.processed')
     );
 
     // Tags.
@@ -160,10 +151,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->addFieldResolverIfNotExists('Channel', 'parent',
-      $this->builder->fromPath(
-        'entity',
-        'parent.entity',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'parent.entity')
     );
 
     $this->addFieldResolverIfNotExists('Channel', 'articles',
@@ -189,10 +177,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     $this->resolvePageInterfaceQueryFields('user', 'node');
 
     $this->addFieldResolverIfNotExists('User', 'mail',
-      $this->builder->fromPath(
-        'entity',
-        'mail.value',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'mail.value')
     );
 
     // Entity List.

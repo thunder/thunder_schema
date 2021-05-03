@@ -43,56 +43,35 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
     // Image.
     $this->resolveBaseFields('MediaImage');
     $this->addFieldResolverIfNotExists('MediaImage', 'copyright',
-      $this->builder->fromPath(
-        'entity',
-        'field_copyright.value',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'field_copyright.value')
     );
 
     $this->addFieldResolverIfNotExists('MediaImage', 'description',
-      $this->builder->fromPath(
-        'entity',
-        'field_description.processed',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'field_description.processed')
     );
 
     $this->addFieldResolverIfNotExists('MediaImage', 'src',
       $this->builder->compose(
-        $this->builder->fromPath(
-          'entity',
-          'field_image.entity',
-          $this->builder->fromParent()),
+        $this->builder->fromPath('entity', 'field_image.entity'),
         $this->builder->produce('image_url')
           ->map('entity', $this->builder->fromParent())
       )
     );
 
     $this->addFieldResolverIfNotExists('MediaImage', 'width',
-      $this->builder->fromPath(
-        'entity',
-        'field_image.width',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'field_image.width')
     );
 
     $this->addFieldResolverIfNotExists('MediaImage', 'height',
-      $this->builder->fromPath(
-        'entity',
-        'field_image.height',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'field_image.height')
     );
 
     $this->addFieldResolverIfNotExists('MediaImage', 'title',
-      $this->builder->fromPath(
-        'entity',
-        'field_image.title',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'field_image.title')
     );
 
     $this->addFieldResolverIfNotExists('MediaImage', 'alt',
-      $this->builder->fromPath(
-        'entity',
-        'field_image.alt',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'field_image.alt')
     );
 
     $this->addFieldResolverIfNotExists('MediaImage', 'tags',

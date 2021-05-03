@@ -129,10 +129,7 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
     );
 
     $this->addFieldResolverIfNotExists($type, 'language',
-      $this->builder->fromPath(
-        'entity',
-        'langcode.value',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'langcode.value')
     );
 
     $this->addFieldResolverIfNotExists($type, 'metatags',
@@ -153,10 +150,7 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    *   The data producer proxy.
    */
   protected function referencedEntityProducer(string $referenceFieldName) : DataProducerProxy {
-    return $this->builder->fromPath(
-      'entity',
-      $referenceFieldName . '.entity',
-      $this->builder->fromParent());
+    return $this->builder->fromPath('entity', $referenceFieldName . '.entity');
   }
 
   /**

@@ -43,20 +43,14 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     $this->resolveBaseFields('ParagraphText');
 
     $this->addFieldResolverIfNotExists('ParagraphText', 'text',
-      $this->builder->fromPath(
-        'entity',
-        'field_text.processed',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'field_text.processed')
     );
 
     // Image.
     $this->resolveBaseFields('ParagraphImage');
 
     $this->addFieldResolverIfNotExists('ParagraphImage', 'image',
-      $this->builder->fromPath(
-        'entity',
-        'field_image.entity',
-        $this->builder->fromParent())
+      $this->builder->fromPath('entity', 'field_image.entity')
     );
 
     // Twitter.
@@ -66,10 +60,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     $this->addFieldResolverIfNotExists('ParagraphTwitter', 'url',
       $this->builder->compose(
         $embedEntityProducer,
-        $this->builder->fromPath(
-          'entity',
-          'field_url.value',
-          $this->builder->fromParent())
+        $this->builder->fromPath('entity', 'field_url.value')
       )
     );
 
@@ -80,10 +71,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     $this->addFieldResolverIfNotExists('ParagraphInstagram', 'url',
       $this->builder->compose(
         $embedEntityProducer,
-        $this->builder->fromPath(
-          'entity',
-          'field_url.value',
-          $this->builder->fromParent())
+        $this->builder->fromPath('entity', 'field_url.value')
       )
     );
 
@@ -94,10 +82,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     $this->addFieldResolverIfNotExists('ParagraphPinterest', 'url',
       $this->builder->compose(
         $embedEntityProducer,
-        $this->builder->fromPath(
-          'entity',
-          'field_url.value',
-          $this->builder->fromParent())
+        $this->builder->fromPath('entity', 'field_url.value')
       )
     );
 
