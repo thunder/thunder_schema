@@ -38,20 +38,20 @@ class ThunderMenuSchemaExtension extends ThunderSchemaExtensionPluginBase {
     $this->addFieldResolverIfNotExists(
       'Menu',
       'id',
-      $this->builder->produce('property_path')
-        ->map('type', $this->builder->fromValue('entity:menu'))
-        ->map('value', $this->builder->fromParent())
-        ->map('path', $this->builder->fromValue('id'))
+      $this->builder->fromPath(
+        'entity:menu',
+        'id',
+        $this->builder->fromParent())
     );
 
     // Menu name.
     $this->addFieldResolverIfNotExists(
       'Menu',
       'name',
-      $this->builder->produce('property_path')
-        ->map('type', $this->builder->fromValue('entity:menu'))
-        ->map('value', $this->builder->fromParent())
-        ->map('path', $this->builder->fromValue('label'))
+      $this->builder->fromPath(
+        'entity:menu',
+        'label',
+        $this->builder->fromParent())
     );
 
     // Menu items.
