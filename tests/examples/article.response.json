@@ -31,9 +31,9 @@
       "name": "Come to DrupalCon New Orleans",
       "entity": "node",
       "language": "en",
-      "links": {
+      "entityLinks": {
         "canonical": "/come-drupalcon-new-orleans",
-        "edit_form": "/node/7/edit"
+        "editForm": "/node/7/edit"
       },
       "published": true,
       "author": {

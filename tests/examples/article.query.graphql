@@ -20,9 +20,9 @@ query ($path: String!) {
     name
     entity
     language
-    links {
+    entityLinks {
       canonical
-      edit_form
+      editForm
     }
     ... on Article {
       published
