@@ -1,4 +1,18 @@
 query ($path: String!) {
+  menu(id: "main", path: $path) {
+    name
+    id
+    items {
+      title
+      url
+      inActiveTrail
+      children {
+        title
+        url
+        inActiveTrail
+      }
+    }
+  }
   page(path: $path) {
     id
     uuid
@@ -6,6 +20,10 @@ query ($path: String!) {
     name
     entity
     language
+    entityLinks {
+      canonical
+      editForm
+    }
     ... on Article {
       published
       author {
@@ -37,6 +55,12 @@ query ($path: String!) {
         id
         entity
         __typename
+      }
+      teaser {
+        text
+        image {
+          id
+        }
       }
     }
   }

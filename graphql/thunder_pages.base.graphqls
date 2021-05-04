@@ -7,17 +7,28 @@ interface Page {
   created: String!
   changed: String!
   language: String
-  metatags: [MetaTag]
-}
-
-type MetaTag {
-  tag: String
-  attributes: String
+  entityLinks: EntityLinks
 }
 
 type EntityList {
   total: Int!
   items: [Page!]
+}
+
+type Teaser {
+  image: MediaImage
+  text: String
+}
+
+type EntityLinks {
+  canonical: String
+  deleteForm: String
+  deleteMultipleForm: String
+  editForm: String
+  versionHistory: String
+  revision: String
+  create: String
+  latestVersion: String
 }
 
 type Article implements Page {
@@ -29,7 +40,7 @@ type Article implements Page {
   created: String!
   changed: String!
   language: String
-  metatags: [MetaTag]
+  entityLinks: EntityLinks
 
   author: User
   published: Boolean!
@@ -37,6 +48,23 @@ type Article implements Page {
   tags: [Tags]
   seoTitle: String!
   content: [Paragraph]
+  teaser: Teaser
+}
+
+type BasicPage implements Page {
+  id: Int!
+  uuid: String!
+  name: String!
+  entity: String!
+  url: String!
+  created: String!
+  changed: String!
+  language: String
+  entityLinks: EntityLinks
+
+  author: User
+  published: Boolean!
+  content: String
 }
 
 type Tags implements Page {
@@ -48,7 +76,7 @@ type Tags implements Page {
   created: String!
   changed: String!
   language: String
-  metatags: [MetaTag]
+  entityLinks: EntityLinks
 
   author: User
   published: Boolean!
@@ -65,7 +93,7 @@ type Channel implements Page {
   created: String!
   changed: String!
   language: String
-  metatags: [MetaTag]
+  entityLinks: EntityLinks
 
   parent: Channel
   author: User
@@ -83,7 +111,7 @@ type User implements Page {
   created: String!
   changed: String!
   language: String
-  metatags: [MetaTag]
+  entityLinks: EntityLinks
 
   mail: String
 }

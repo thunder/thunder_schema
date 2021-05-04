@@ -2,6 +2,7 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\node\NodeInterface;
@@ -57,17 +58,11 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->addFieldResolverIfNotExists('Article', 'seoTitle',
-      $this->builder->produce('property_path')
-        ->map('type', $this->builder->fromValue('entity:node'))
-        ->map('value', $this->builder->fromParent())
-        ->map('path', $this->builder->fromValue('field_seo_title.value'))
+      $this->builder->fromPath('entity', 'field_seo_title.value')
     );
 
     $this->addFieldResolverIfNotExists('Article', 'channel',
-      $this->builder->produce('property_path')
-        ->map('type', $this->builder->fromValue('entity:taxonomy_term'))
-        ->map('value', $this->builder->fromParent())
-        ->map('path', $this->builder->fromValue('field_channel.entity'))
+      $this->builder->fromPath('entity', 'field_channel.entity')
     );
 
     $this->addFieldResolverIfNotExists('Article', 'tags',
@@ -80,6 +75,32 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
       $this->builder->produce('entity_reference_revisions')
         ->map('entity', $this->builder->fromParent())
         ->map('field', $this->builder->fromValue('field_paragraphs'))
+    );
+
+    $this->addFieldResolverIfNotExists('Article', 'teaser',
+     $this->builder->callback(function (ContentEntityInterface $entity) {
+       return [
+         'image' => $entity->field_teaser_media->entity,
+         'text' => $entity->field_teaser_text->value,
+       ];
+     })
+    );
+
+    // Basic page.
+    $this->resolvePageInterfaceFields('BasicPage');
+
+    $this->addFieldResolverIfNotExists('BasicPage', 'published',
+      $this->builder->produce('entity_published')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->addFieldResolverIfNotExists('BasicPage', 'author',
+      $this->builder->produce('entity_owner')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->addFieldResolverIfNotExists('BasicPage', 'content',
+      $this->builder->fromPath('entity', 'body.processed')
     );
 
     // Tags.
@@ -140,10 +161,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->addFieldResolverIfNotExists('Channel', 'parent',
-      $this->builder->produce('property_path')
-        ->map('type', $this->builder->fromValue('entity:taxonomy_term'))
-        ->map('value', $this->builder->fromParent())
-        ->map('path', $this->builder->fromValue('parent.entity'))
+      $this->builder->fromPath('entity', 'parent.entity')
     );
 
     $this->addFieldResolverIfNotExists('Channel', 'articles',
@@ -169,10 +187,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     $this->resolvePageInterfaceQueryFields('user', 'node');
 
     $this->addFieldResolverIfNotExists('User', 'mail',
-      $this->builder->produce('property_path')
-        ->map('type', $this->builder->fromValue('entity'))
-        ->map('value', $this->builder->fromParent())
-        ->map('path', $this->builder->fromValue('mail.value'))
+      $this->builder->fromPath('entity', 'mail.value')
     );
 
     // Entity List.
@@ -204,6 +219,9 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
    */
   protected function resolvePageTypes($value, ResolveContext $context, ResolveInfo $info): string {
     if ($value instanceof NodeInterface || $value instanceof TermInterface || $value instanceof UserInterface) {
+      if ($value->bundle() === 'page') {
+        return 'BasicPage';
+      }
       return $this->mapBundleToSchemaName($value->bundle());
     }
   }
