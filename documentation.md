@@ -2,22 +2,22 @@
 
 The thunder_gqls module provides a GraphQL API schema and implementation for Thunder based on the Drupal GraphQL module
 version 4.
-Version 4 of the GraphQL module does not provide an out of the box API for Drupal, as preious versions did. Instead it
-provides us tha ability to define a schema independent of the underlying Drupal installation, and means to map fields
+Version 4 of the GraphQL module does not provide an out-of-the-box API for Drupal, as previous versions did. Instead, it
+provides the ability to define a schema independent of the underlying Drupal installation, and utilities to map fields
 defined in that schema to data from Drupal.
 
-To get most of this documentation, you should have a basic understanding of what GraphQl is, and how to do requests
-against GraphQl endpoints. A good starting point for this is the official
+To get most of this documentation, you should have a basic understanding of what GraphQL is, and how to do requests
+against GraphQL endpoints. A good starting point for this is the official
 [GraphQl documentation](https://graphql.org/learn/).
 
-## Motivation
+## Motivation to go with GraphQL 4
 
 Drupal core provides already a turn-key implementation for JSON-API, which basically just needs to be enabled and
-configured, and it is good to go. Similarly, version 3 of the GraphQl module is as quickly usable. Both modules expose
+configured, and it is good to go. Similarly, version 3 of the GraphQL module is as quickly usable. Both modules expose
 all data structures from Drupal as they are.
 
 So why did we manually implement an API? While it is very convenient to have schemas automatically created, it also
-leads to an API that is very close to the inner workings of Drupal. A consumer would have to know the relationships of
+leads to an API that is very close to the structure of Drupal. A consumer would have to know the relationships of
 entities within Drupal. Especially when working with paragraphs, and media entities, you would have to be aware of the
 Entity references to get to the actual data.
 For example, we have Media entities for images in Paragraphs. The referencing goes unconventionally deep in this case.
@@ -25,14 +25,14 @@ If you wanted to get the src attribute of an image in such a paragraph, you woul
 Article => Paragraph => Media Entity => File Entity (src).
 
 Another pain point is, that field names are automatically created. This leads to two separate problems. Field names are
-awkward and again very Drupal specific. in GraphQl 3 we have entityUuid instead of uuid and fieldMyField instead of
+awkward and again very Drupal specific. in GraphQL 3 we have entityUuid instead of uuid and fieldMyField instead of
 just myField.
 Furthermore, since field names are automatically generated of machine name, the API would change, as soon as you change
 machine name. This sounds not very likely, and for actual fields it should not really happen, but sometime even plugin
 names are used to create the schema, and plugins could be exchanged (we had an example of a views-plugin, that was exchanged).
 
 Finally, routing with those automated APIs is very often a process that requires two requests, instead of one.
-Usually you just have some url string, that could be a rout to a node, a user, a term or any other entity. To get #
+Usually you just have some URL string, that could be a rout to a node, a user, a term or any other entity. To get #
 the actual data, you will have to first do a route query, to get the information what kind of entity we are looking at
 (plus its ID), and then we would have to do a specific node, term or user query to get the actual page.
 
@@ -55,7 +55,7 @@ very drupal specific. Also, drupal specific field prefixes should be avoided, th
 One example would be the Image type, which is implementing the media interface.
 In Drupal media entities fields are distributed between several entities, because the file entity does provide
 the basic file information, and the media entity adds more data fields to that, while referencing a file. Directly
-translated to a GraphQl API it would look similar to:
+translated to a GraphQL API it would look similar to:
 
     type MediaImage {
       entityLabel
@@ -85,7 +85,7 @@ This is much cleaner and does not expose internal Drupal structures and naming.
 
 ## Routing
 The starting point for most requests will be a URL. Usually, you cannot know what kind of content you will find behind
-that url, meaning, which fields you would be able to request. We have simplified this in the Thunder GraphQL schema by
+that URL, meaning, which fields you would be able to request. We have simplified this in the Thunder GraphQL schema by
 introducing the page() request, which internally routes the URL to the correct entity and returns the entity or entity
 bundle as a Page interface. Multiple page types can then be queried with the "... on Type" construct.
 
@@ -93,7 +93,7 @@ Let's take a look at some examples.
 
 ## Pages query
 
-All examples can be tested in the GraphQl explorer (admin/config/graphql/servers/manage/thunder_graphql/explorer).
+All examples can be tested in the GraphQL explorer (admin/config/graphql/servers/manage/thunder_graphql/explorer).
 The explorer will also give you a nice autocomplete, and show you all currently available fields.
 
 ### Basic example
@@ -140,7 +140,7 @@ requested.
     }
 
 As you can see, the paragraphs are located in the content field, different paragraphs do have different fields,
-so we again use the "... on" Syntax to request the correct ones. In the ParagraphPinterest example, the url
+so we again use the "... on" Syntax to request the correct ones. In the ParagraphPinterest example, the URL
 is directly located on the paragraphs level, and not inside the entity_reference field, where it can be found in the
 Drupal schema. This is an example on how we try to simplify and hide drupal specific implementations.
 
@@ -246,7 +246,7 @@ Say, you have added a new content type. Your myschema.base.graphqls should look 
       myCustomField: String
     }
 
-This declares the fields, that will be available through the API. Since it is a node content type, it will have an url
+This declares the fields, that will be available through the API. Since it is a node content type, it will have an URL
 and should implement the Page interface. This makes it possible to be requested with the page() query.
 
 We have implemented an automatic type resolver for page types, that creates a GraphQL type from bundle names. It
@@ -395,7 +395,7 @@ method to something like this:
 
 #### Thunder entity list producer and entities with term producer
 
-The thunder_entity_list producer is a highly configurable producer to create list of entity based on entity field queries.
+The thunder_entity_list producer is a highly configurable producer to create lists of entities based on entity field queries.
 You can use it as a field producer for you custom fields. It can also be used as a base producer class for more specific
 producers. We include the entities_with_term as an example, which adds the ability to define a term depth (similar to
 views) in your queries, when you want to have results for terms as well as their child terms, and presets specific
@@ -409,10 +409,10 @@ related articles field to the existing article type, so we have to add it to mys
       promotedArticles(offset: Int = 0, limit: Int = 50): EntityList
     }
 
-As you can see in the example, it is possible to expose parameters to the GraphQL client, we recommend limiting the
+As you can see in the example, it is possible to expose parameters to the GraphQL client. We recommend limiting the
 exposed parameters as much as possible, and not give too much control to the consumer, because generating lists can
-produce great load on the server, and you might expose data, you did not expect. Offset and limit should be fine.
-any limit that will be set greater than 100 will not be accepted.
+produce great load on the server, and you might expose data that you did not expect. Offset and limit should be fine.
+Any limit that will be set greater than 100 will not be accepted.
 
 Back in the MySchemaSchemaExtension.php we can now use the thunder_entity_list producer to
 resolve that field.
@@ -441,5 +441,5 @@ resolve that field.
 As you can see, you can give either set hard coded values for the producers parameters, or values from query arguments
 (offset and limit in this example). When you want to use context dependent parameters to the conditions, you would
 have to use either more query arguments (which could be bad), or implement your own data producer based on
-ThunderEntityListProducerBase. You can find en example in EntitiesWithTerm.php where we dynamically add term IDs
+ThunderEntityListProducerBase. You can find an example in EntitiesWithTerm.php where we dynamically add term IDs
 to the query conditions.
