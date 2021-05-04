@@ -3,7 +3,6 @@
 namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
 use Drupal\Component\Serialization\Json;
-use Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\EventSubscriber\MainContentViewSubscriber;
@@ -13,7 +12,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Resolves breadcrumbs for an entity.
@@ -33,20 +31,6 @@ use Symfony\Component\Routing\RouterInterface;
  * )
  */
 class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * The router.
-   *
-   * @var \Symfony\Component\Routing\RouterInterface
-   */
-  protected $router;
-
-  /**
-   * The breadcrumb manager.
-   *
-   * @var \Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface
-   */
-  protected $breadcrumbManager;
 
   /**
    * The HTTP kernel service.
@@ -72,8 +56,6 @@ class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFacto
       $configuration,
       $pluginId,
       $pluginDefinition,
-      $container->get('breadcrumb'),
-      $container->get('router'),
       $container->get('http_kernel'),
       $container->get('request_stack')
     );
@@ -88,10 +70,6 @@ class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFacto
    *   The plugin id.
    * @param mixed $pluginDefinition
    *   The plugin definition.
-   * @param \Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface $breadcrumbManager
-   *   The breadcrumb manager.
-   * @param \Symfony\Component\Routing\RouterInterface $router
-   *   The router.
    * @param \Symfony\Component\HttpKernel\HttpKernelInterface $httpKernel
    *   The HTTP kernel service.
    * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
@@ -101,14 +79,10 @@ class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFacto
     array $configuration,
     string $pluginId,
     $pluginDefinition,
-    BreadcrumbBuilderInterface $breadcrumbManager,
-    RouterInterface $router,
     HttpKernelInterface $httpKernel,
     RequestStack $requestStack
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition);
-    $this->breadcrumbManager = $breadcrumbManager;
-    $this->router = $router;
     $this->httpKernel = $httpKernel;
     $this->requestStack = $requestStack;
   }
