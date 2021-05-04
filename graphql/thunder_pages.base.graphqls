@@ -22,13 +22,13 @@ type Teaser {
 
 type Links {
   canonical: String
-  delete_form: String
-  delete_multiple_form: String
-  edit_form: String
-  version_history: String
+  deleteForm: String
+  deleteMultipleForm: String
+  editForm: String
+  versionHistory: String
   revision: String
   create: String
-  latest_version: String
+  latestVersion: String
 }
 
 type Article implements Page {

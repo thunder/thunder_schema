@@ -94,12 +94,23 @@ class EntityLinks extends DataProducerPluginBase implements ContainerFactoryPlug
         }
       });
 
-      $transformed_keys = array_map(function ($key) {
-        return str_replace('-', '_', $key);
-      }, array_keys($links));
+      $transformed_keys = array_map([$this, 'toCamelCase'], array_keys($links));
       return array_combine($transformed_keys, $links);
     });
     return $result ?? NULL;
+  }
+
+  /**
+   * Convert string to camel case.
+   *
+   * @param string $input
+   *   Input string.
+   *
+   * @return string
+   *   Camel case string.
+   */
+  public static function toCamelCase($input) {
+    return lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $input))));
   }
 
 }
