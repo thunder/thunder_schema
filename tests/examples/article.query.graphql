@@ -60,6 +60,9 @@ query ($path: String!) {
         text
         image {
           id
+          derivative(style: "medium") {
+            width
+          }
         }
       }
     }
