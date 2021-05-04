@@ -5,6 +5,12 @@ interface Media {
   name: String
 }
 
+type ImageDerivative {
+  url: String
+  width: Int
+  height: Int
+}
+
 type MediaImage implements Media {
   id: Int!
   uuid: String!
@@ -16,6 +22,7 @@ type MediaImage implements Media {
   copyright: String
   description: String
   src: String
+  derivative(style: String!): ImageDerivative
   width: Int
   height: Int
   tags: [Tags]
