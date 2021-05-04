@@ -11,7 +11,9 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Default main content renderer for JSON requests.
+ * Thunder GraphQL Schema content renderer.
+ *
+ * @internal
  */
 class ThunderGqlsRenderer implements MainContentRendererInterface {
 
@@ -20,7 +22,7 @@ class ThunderGqlsRenderer implements MainContentRendererInterface {
    *
    * @var \Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface
    */
-  private BreadcrumbBuilderInterface $breadcrumbManager;
+  protected $breadcrumbManager;
 
   /**
    * The route match service.
@@ -48,13 +50,14 @@ class ThunderGqlsRenderer implements MainContentRendererInterface {
   public function renderResponse(array $main_content, Request $request, RouteMatchInterface $route_match) {
     $json = [];
 
-
-    $breadCrumbString = '';
+    $breadCrumb = [];
     foreach ($this->breadcrumbManager->build($this->currentRouteMatch->getCurrentRouteMatch())->getLinks() as $link) {
-      $breadCrumbString .= $link->toString();
+      $breadCrumb[] = [
+        'url' => $link->getUrl()->toString(),
+        'title' => $link->getText(),
+      ];
     }
-    $json['breadcrumb'] = $breadCrumbString;
-
+    $json['breadcrumb'] = $breadCrumb;
 
     $response = new CacheableJsonResponse($json, 200);
     $response->addCacheableDependency(CacheableMetadata::createFromRenderArray($main_content));

@@ -8,10 +8,10 @@ use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\EventSubscriber\MainContentViewSubscriber;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Routing\RouteMatch;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -39,14 +39,28 @@ class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFacto
    *
    * @var \Symfony\Component\Routing\RouterInterface
    */
-  private RouterInterface $router;
+  protected $router;
 
   /**
    * The breadcrumb manager.
    *
    * @var \Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface
    */
-  private BreadcrumbBuilderInterface $breadcrumbManager;
+  protected $breadcrumbManager;
+
+  /**
+   * The HTTP kernel service.
+   *
+   * @var \Symfony\Component\HttpKernel\HttpKernelInterface
+   */
+  protected $httpKernel;
+
+  /**
+   * The request stack service.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
 
   /**
    * {@inheritdoc}
@@ -59,7 +73,9 @@ class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFacto
       $pluginId,
       $pluginDefinition,
       $container->get('breadcrumb'),
-      $container->get('router')
+      $container->get('router'),
+      $container->get('http_kernel'),
+      $container->get('request_stack')
     );
   }
 
@@ -76,17 +92,25 @@ class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFacto
    *   The breadcrumb manager.
    * @param \Symfony\Component\Routing\RouterInterface $router
    *   The router.
+   * @param \Symfony\Component\HttpKernel\HttpKernelInterface $httpKernel
+   *   The HTTP kernel service.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+   *   The request stack service.
    */
   public function __construct(
     array $configuration,
     string $pluginId,
     $pluginDefinition,
     BreadcrumbBuilderInterface $breadcrumbManager,
-    RouterInterface $router
+    RouterInterface $router,
+    HttpKernelInterface $httpKernel,
+    RequestStack $requestStack
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition);
     $this->breadcrumbManager = $breadcrumbManager;
     $this->router = $router;
+    $this->httpKernel = $httpKernel;
+    $this->requestStack = $requestStack;
   }
 
   /**
@@ -97,22 +121,15 @@ class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFacto
    * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $metadata
    *   The cacheable dependency interface.
    *
+   * @throws \Drupal\Core\Entity\EntityMalformedException
+   *
    * @return mixed
    *   The breadcrumb.
    */
   public function resolve(EntityInterface $entity, RefinableCacheableDependencyInterface $metadata) {
-
-    /** @var \Symfony\Component\HttpKernel\HttpKernel $httpKernel */
-    $httpKernel = \Drupal::service('http_kernel');
-
-    $requestStack = \Drupal::service('request_stack');
-
-
-    $url = $entity->toUrl();
-
-    $currentRequest = $requestStack->getCurrentRequest();
+    $currentRequest = $this->requestStack->getCurrentRequest();
     $request = Request::create(
-      $url->getInternalPath(),
+      $entity->toUrl()->getInternalPath(),
       'GET',
       [MainContentViewSubscriber::WRAPPER_FORMAT => 'thunder_gqls'],
       $currentRequest->cookies->all(),
@@ -125,9 +142,9 @@ class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFacto
     }
 
     /** @var \Symfony\Component\HttpFoundation\JsonResponse $response */
-    $response = $httpKernel->handle($request, HttpKernelInterface::SUB_REQUEST);
+    $response = $this->httpKernel->handle($request, HttpKernelInterface::SUB_REQUEST);
 
-    $content = (string)$response->getContent();
+    $content = (string) $response->getContent();
 
     return Json::decode($content)['breadcrumb'];
   }
