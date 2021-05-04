@@ -2,13 +2,17 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\EventSubscriber\MainContentViewSubscriber;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatch;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -97,17 +101,35 @@ class ThunderBreadcrumb extends DataProducerPluginBase implements ContainerFacto
    *   The breadcrumb.
    */
   public function resolve(EntityInterface $entity, RefinableCacheableDependencyInterface $metadata) {
-    $routName = $entity->toUrl()->getRouteName();
-    $routes = $this->router->getRouteCollection();
 
-    $route = $routes->get($routName);
-    $routeMatch = new RouteMatch($routName, $route, ['entity' => $entity], ['entity' => $entity->uuid()]);
+    /** @var \Symfony\Component\HttpKernel\HttpKernel $httpKernel */
+    $httpKernel = \Drupal::service('http_kernel');
 
-    $breadCrumbString = '';
-    foreach ($this->breadcrumbManager->build($routeMatch)->getLinks() as $link) {
-      $breadCrumbString .= $link->toString();
+    $requestStack = \Drupal::service('request_stack');
+
+
+    $url = $entity->toUrl();
+
+    $currentRequest = $requestStack->getCurrentRequest();
+    $request = Request::create(
+      $url->getInternalPath(),
+      'GET',
+      [MainContentViewSubscriber::WRAPPER_FORMAT => 'thunder_gqls'],
+      $currentRequest->cookies->all(),
+      $currentRequest->files->all(),
+      $currentRequest->server->all()
+    );
+
+    if ($session = $currentRequest->getSession()) {
+      $request->setSession($session);
     }
-    return $breadCrumbString;
+
+    /** @var \Symfony\Component\HttpFoundation\JsonResponse $response */
+    $response = $httpKernel->handle($request, HttpKernelInterface::SUB_REQUEST);
+
+    $content = (string)$response->getContent();
+
+    return Json::decode($content)['breadcrumb'];
   }
 
 }
