@@ -11,6 +11,11 @@ type ImageDerivative {
   height: Int
 }
 
+type FocalPoint {
+  x: Int
+  y: Int
+}
+
 type MediaImage implements Media {
   id: Int!
   uuid: String!
@@ -23,6 +28,7 @@ type MediaImage implements Media {
   description: String
   src: String
   derivative(style: String!): ImageDerivative
+  focalPoint: FocalPoint
   width: Int
   height: Int
   tags: [Tags]
