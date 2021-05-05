@@ -124,9 +124,7 @@ class ThunderImage extends DataProducerPluginBase implements ContainerFactoryPlu
     return [
       'src' => '',
       'width' => 0,
-      'height' => 0,
-      'alt' => '',
-      'title' => ''
+      'height' => 0
     ];
   }
 
