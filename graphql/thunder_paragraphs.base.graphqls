@@ -76,3 +76,12 @@ type ParagraphVideo implements Paragraph {
 
   video: MediaVideo
 }
+
+type ParagraphQuote implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  text: String
+}
