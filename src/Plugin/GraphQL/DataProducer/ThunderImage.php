@@ -9,7 +9,6 @@ use Drupal\Core\Render\RenderContext;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\file\FileInterface;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
-use Drupal\thunder_gqls\Wrappers\ImageResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -94,7 +93,7 @@ class ThunderImage extends DataProducerPluginBase implements ContainerFactoryPlu
    * @param \Drupal\file\FileInterface $entity
    * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $metadata
    *
-   * @return string|null
+   * @return array
    */
   public function resolve(FileInterface $entity, RefinableCacheableDependencyInterface $metadata) {
     $access = $entity->access('view', NULL, TRUE);
@@ -117,15 +116,12 @@ class ThunderImage extends DataProducerPluginBase implements ContainerFactoryPlu
         $metadata->addCacheableDependency($context->pop());
       }
 
-      return new ImageResponse($data);
+      return $data;
+      //return new ImageResponse($data);
 
     }
 
-    return [
-      'src' => '',
-      'width' => 0,
-      'height' => 0
-    ];
+    return [];
   }
 
 }

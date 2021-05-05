@@ -5,7 +5,6 @@ namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\media\MediaInterface;
-use Drupal\thunder_gqls\Wrappers\ImageResponse;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
@@ -42,20 +41,20 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
   protected function resolveFields() {
     // Thumbnail.
     $this->addFieldResolverIfNotExists('Thumbnail', 'src',
-      $this->builder->callback(function (ImageResponse $imageData) {
-        return $imageData->src();
+      $this->builder->callback(function ($imageData) {
+        return $imageData['src'];
       })
     );
 
     $this->addFieldResolverIfNotExists('Thumbnail', 'width',
-      $this->builder->callback(function (ImageResponse $imageData) {
-        return $imageData->width();
+      $this->builder->callback(function ($imageData) {
+        return $imageData['width'];
       })
     );
 
     $this->addFieldResolverIfNotExists('Thumbnail', 'height',
-      $this->builder->callback(function (ImageResponse $imageData) {
-        return $imageData->height();
+      $this->builder->callback(function ($imageData) {
+        return $imageData['height'];
       })
     );
 
