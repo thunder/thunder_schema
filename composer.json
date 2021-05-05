@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "drupal/graphql": "4.x-dev@dev"
+        "drupal/graphql": "^4.0"
     },
     "require-dev": {
         "drupal/coder": "^8.3",

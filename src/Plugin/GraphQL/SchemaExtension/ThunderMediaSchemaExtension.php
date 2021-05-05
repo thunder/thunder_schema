@@ -5,6 +5,7 @@ namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\media\MediaInterface;
+use Drupal\thunder_gqls\Wrappers\ImageResponse;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
@@ -39,6 +40,24 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * Add image media field resolvers.
    */
   protected function resolveFields() {
+    // Thumbnail.
+    $this->addFieldResolverIfNotExists('Thumbnail', 'src',
+      $this->builder->callback(function (ImageResponse $imageData) {
+        return $imageData->src();
+      })
+    );
+
+    $this->addFieldResolverIfNotExists('Thumbnail', 'width',
+      $this->builder->callback(function (ImageResponse $imageData) {
+        return $imageData->width();
+      })
+    );
+
+    $this->addFieldResolverIfNotExists('Thumbnail', 'height',
+      $this->builder->callback(function (ImageResponse $imageData) {
+        return $imageData->height();
+      })
+    );
 
     // Image.
     $this->resolveBaseFields('MediaImage');
@@ -79,6 +98,39 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('entity', $this->builder->fromParent())
         ->map('field', $this->builder->fromValue('field_tags'))
     );
+
+    // Video
+    $this->resolveBaseFields('MediaVideo');
+
+    $this->addFieldResolverIfNotExists('MediaVideo', 'src',
+      $this->builder->fromPath('entity', 'field_media_video_embed_field.value')
+    );
+
+    $this->addFieldResolverIfNotExists('MediaVideo', 'thumbnail',
+      $this->builder->produce('thunder_image')
+        ->map('entity', $this->builder->fromPath('entity', 'thumbnail.entity'))
+    );
+
+    $this->addFieldResolverIfNotExists('MediaVideo', 'author',
+      $this->builder->fromPath('entity', 'field_author.value')
+    );
+
+    $this->addFieldResolverIfNotExists('MediaVideo', 'caption',
+      $this->builder->fromPath('entity', 'field_caption.processed')
+    );
+
+    $this->addFieldResolverIfNotExists('MediaVideo', 'copyright',
+      $this->builder->fromPath('entity', 'field_copyright.value')
+    );
+
+    $this->addFieldResolverIfNotExists('MediaVideo', 'description',
+      $this->builder->fromPath('entity', 'field_description.processed')
+    );
+
+    $this->addFieldResolverIfNotExists('MediaVideo', 'source',
+      $this->builder->fromPath('entity', 'field_source.value')
+    );
+
   }
 
   /**
