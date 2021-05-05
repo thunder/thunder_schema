@@ -3,6 +3,7 @@ interface Media {
   uuid: String!
   entity: String!
   name: String
+  thumbnail: Thumbnail
 }
 
 interface Image {
@@ -22,6 +23,7 @@ type MediaImage implements Media & Image {
   uuid: String!
   entity: String!
   name: String
+  thumbnail: Thumbnail
 
   src: String
   width: Int
@@ -39,9 +41,9 @@ type MediaVideo implements Media {
   uuid: String!
   entity: String!
   name: String
+  thumbnail: Thumbnail
 
   src: String
-  thumbnail: Thumbnail
   author: String
   caption: String
   copyright: String

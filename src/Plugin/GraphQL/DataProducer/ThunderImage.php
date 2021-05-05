@@ -91,9 +91,12 @@ class ThunderImage extends DataProducerPluginBase implements ContainerFactoryPlu
    * Resolver.
    *
    * @param \Drupal\file\FileInterface $entity
+   *   The file entity.
    * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $metadata
+   *   The cacheable dependency interface.
    *
    * @return array
+   *   The image meta data
    */
   public function resolve(FileInterface $entity, RefinableCacheableDependencyInterface $metadata) {
     $access = $entity->access('view', NULL, TRUE);
@@ -108,7 +111,7 @@ class ThunderImage extends DataProducerPluginBase implements ContainerFactoryPlu
         return [
           'src' => file_create_url($uri),
           'width' => $image->getWidth(),
-          'height' => $image->getHeight()
+          'height' => $image->getHeight(),
         ];
       });
 
@@ -117,8 +120,7 @@ class ThunderImage extends DataProducerPluginBase implements ContainerFactoryPlu
       }
 
       return $data;
-      //return new ImageResponse($data);
-
+      // Return new ImageResponse($data);
     }
 
     return [];

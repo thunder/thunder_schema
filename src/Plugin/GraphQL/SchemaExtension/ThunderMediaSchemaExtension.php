@@ -59,7 +59,7 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     // Image.
-    $this->resolveBaseFields('MediaImage');
+    $this->resolveMediaInterfaceFields('MediaImage');
     $this->addFieldResolverIfNotExists('MediaImage', 'copyright',
       $this->builder->fromPath('entity', 'field_copyright.value')
     );
@@ -98,16 +98,11 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
         ->map('field', $this->builder->fromValue('field_tags'))
     );
 
-    // Video
-    $this->resolveBaseFields('MediaVideo');
+    // Video.
+    $this->resolveMediaInterfaceFields('MediaVideo');
 
     $this->addFieldResolverIfNotExists('MediaVideo', 'src',
       $this->builder->fromPath('entity', 'field_media_video_embed_field.value')
-    );
-
-    $this->addFieldResolverIfNotExists('MediaVideo', 'thumbnail',
-      $this->builder->produce('thunder_image')
-        ->map('entity', $this->builder->fromPath('entity', 'thumbnail.entity'))
     );
 
     $this->addFieldResolverIfNotExists('MediaVideo', 'author',
