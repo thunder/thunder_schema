@@ -18,42 +18,42 @@ all data structures from Drupal as they are.
 
 So why did we manually implement an API? While it is very convenient to have schemas automatically created, it also
 leads to an API that is very close to the structure of Drupal. A consumer would have to know the relationships of
-entities within Drupal. Especially when working with paragraphs, and media entities, you would have to be aware of the
-Entity references to get to the actual data.
-For example, we have Media entities for images in Paragraphs. The referencing goes unconventionally deep in this case.
+entities within Drupal. Especially when working with paragraphs and media entities, you would have to be aware of the
+entity references to get to the actual data.
+For example, we use Media entities for images in Paragraphs. The referencing goes unconventionally deep in this case:
 If you wanted to get the src attribute of an image in such a paragraph, you would have to dereference
 Article => Paragraph => Media Entity => File Entity (src).
 
-Another pain point is, that field names are automatically created. This leads to two separate problems. Field names are
-awkward and again very Drupal specific. in GraphQL 3 we have entityUuid instead of uuid and fieldMyField instead of
-just myField.
-Furthermore, since field names are automatically generated of machine name, the API would change, as soon as you change
-machine name. This sounds not very likely, and for actual fields it should not really happen, but sometime even plugin
+Another pain point is, that field names are automatically created. This leads to two separate problems: First, field
+names are awkward and again very Drupal specific. In GraphQL 3 we have entityUuid instead of uuid and fieldMyField
+instead of just myField.
+Second, since field names are automatically generated out of the machine name, the API would change, as soon as you change
+machine name. This sounds not very likely, and for actual fields it should not happen, but sometimes even plugin
 names are used to create the schema, and plugins could be exchanged (we had an example of a views-plugin, that was exchanged).
 
 Finally, routing with those automated APIs is very often a process that requires two requests, instead of one.
-Usually you just have some URL string, that could be a rout to a node, a user, a term or any other entity. To get #
-the actual data, you will have to first do a route query, to get the information what kind of entity we are looking at
-(plus its ID), and then we would have to do a specific node, term or user query to get the actual page.
+Usually you just have some URL string, that could be a rout to a node, a user, a term or any other entity. To get
+the actual data, you will have to do a route query first, to get the information on what kind of entity you are looking at
+(plus its ID), and then you would have to do a specific node, term or user query to get the actual page.
 
 # Basic Ideas
 
-We introduce three main interfaces for which covers all main data types used in Thunder.
+We introduce three main interfaces for which cover all main data types used in Thunder.
 
 1) Page
 2) Media
 3) Paragraph
 
-The page interface is for all drupal entities that have a URL, in Thunder that could be nodes, terms, users. This gives
-us the possibility to request a page from a route without knowing if it is an article or a channel for example.
+The page interface is for all Drupal entities that have a URL, in Thunder that could be nodes, terms, users and similar.
+This gives us the possibility to request a page from a route without knowing if it is an article or a channel for example.
 
 The Media Interface is for all media entities, and the Paragraph interface for all paragraph entities.
 
-As described above,we try to minimize references and keep fields as flat as possible. Especially if the references are
-very drupal specific. Also, drupal specific field prefixes should be avoided, they make no sense for the frontend.
+As described above, we try to minimize references and keep fields as flat as possible - especially if the references are
+very Drupal specific. Also, Drupal specific field prefixes should be avoided, they make no sense for the frontend.
 
 One example would be the Image type, which is implementing the media interface.
-In Drupal media entities fields are distributed between several entities, because the file entity does provide
+In Drupal, media entity fields are distributed between several entities, because the file entity does provide
 the basic file information, and the media entity adds more data fields to that, while referencing a file. Directly
 translated to a GraphQL API it would look similar to:
 
@@ -97,7 +97,8 @@ All examples can be tested in the GraphQL explorer (admin/config/graphql/servers
 The explorer will also give you a nice autocomplete, and show you all currently available fields.
 
 ### Basic example
-First a basic example for a page query. All we know is, that the path is "/example-page". So, how do we get the content?
+First a basic example for a page query. All we know so far is that the path is "/example-page". So, how do we get the
+content?
 
     {
       page(path: "/example-page") {
@@ -116,12 +117,12 @@ First a basic example for a page query. All we know is, that the path is "/examp
     }
 
 This will return whatever it finds behind /example-page, and depending on whether it is a user page, a term (channel)
-or Article node is, i t will contain the requested fields.
+or Article node is, it will contain the requested fields.
 
 ### Paragraphs example
 
-Articles and taxonomy term contain paragraph fields in Thunder, the following example show how the paragraphs content can be
-requested.
+Articles and taxonomy terms contain paragraph fields in Thunder, the following example shows how to request paragraphs'
+content.
 
     {
       page(path: "/example-page") {
@@ -139,10 +140,10 @@ requested.
         }
     }
 
-As you can see, the paragraphs are located in the content field, different paragraphs do have different fields,
+As you can see, the paragraphs are located in the content field. Different paragraphs have different fields,
 so we again use the "... on" Syntax to request the correct ones. In the ParagraphPinterest example, the URL
 is directly located on the paragraphs level, and not inside the entity_reference field, where it can be found in the
-Drupal schema. This is an example on how we try to simplify and hide drupal specific implementations.
+Drupal schema. This is an example on how we try to simplify and hide Drupal specific implementations.
 
 ## Entity lists
 
@@ -169,7 +170,7 @@ E.g. the channel page has a list of articles within that channel:
 The graphql module has an extension mechanism, called composable schema, that can be used in your projects to extend the Thunder schema with your
 custom types. We added some base classes and helper methods to simplify that work.
 The basic idea of the composable schema is described in the [GraphQl Module documentation](https://drupal-graphql.gitbook.io/graphql/v/8.x-4.x/advanced/composable-schemas)
-As described in the documentation, you will need three files to extend the schema. Two schema files in the graphql folder
+As described in the documentation, you will need three files to extend the schema: Two schema files in the graphql folder
 of your module:
 
 - your_schema_name.base.graphqls
@@ -179,10 +180,10 @@ And a PHP class file in src/Plugin/GraphQL/SchemaExtension
 
 - YourSchemaNameSchemaExtension.php
 
-You will find example for that in the thunder_gqls module, for all the schema extension we provide.
+You will find examples for that in the thunder_gqls module, for all the schema extension we provide.
 
-Let's do some examples. We will extend the Thunder schema with our own types. To do so, we first create a new
-custom module called myschema
+Let's do some examples: We will extend the Thunder schema with our own types. To do so, we first create a new
+custom module called myschema:
 
     drush generate module --answers='{"name": "My Schema", "machine_name": "myschema", "install_file": false, "libraries.yml": false, "permissions.yml": false, "event_subscriber": false, "block_plugin": false, "controller": false, "settings_form": false}'
 
@@ -190,7 +191,7 @@ This will create a barebone module called myschema in the modules folder. To con
 and create a new folder called graphql and put two empty files in it called myschema.base.graphqls and myschema.extension.graphqls in it.
 Now create another empty file called MySchemaSchemaExtension.php in the src/Plugin/GraphQL/SchemaExtension folder.
 
-Your modules file structure should be similar to this now:
+your modules' file structure should be similar to this now:
 
     +-- myschema.info.yml
     +-- myschema.module
@@ -230,8 +231,8 @@ When you enable the module, your (currently empty) schema extension will be adde
 You will now be able to find and enable it on the admin page admin/config/graphql/servers/manage/thunder_graphql
 
 ## Add new type
-A common task will be to add a new data type. To do so, you will have to add a new type definition in myschema.base.graphqls
-Say, you have added a new content type. Your myschema.base.graphqls should look no like this:
+A common task will be to add a new data type. To do so, you will have to add a new type definition in myschema.base.graphqls.
+Say, you have added a new content type. Your myschema.base.graphqls should look like this now:
 
     type MyContentType implements Page {
       id: Int!
@@ -255,7 +256,7 @@ taxonomy vocabulary - called my_content_type, we will automatically create the M
 
 The first 9 fields, from id to metatags, are mandatory fields from the Page interface, they will be taken care of by
 calling `resolvePageInterfaceFields()` (see example below). The "mycustomfield" field is a custom
-fields, which we do not know about, so you would have to implement producers for them by yourself. This will be done in
+field, which we do not know about, so you would have to implement producers for it by yourself. This is done in
 the MySchemaSchemaExtension.php file.
 
     <?php
@@ -286,24 +287,21 @@ the MySchemaSchemaExtension.php file.
         // This adds all the page interface fields to the resolver,
         $this->resolvePageInterfaceFields('MyContentType');
 
-        // Now we add field resolver for our new fields. In this case we simply get
+        // Now we add field resolvers for our new fields. In this case we simply get
         // the value from the field_mycustomfield. parent::registerResolvers($registry)
         // stores $registry into the registry property, which we should use instead
         // of $registry.
         $this->registry->addFieldResolver('MyContentType', 'mycustomfield',
-          $this->builder->produce('property_path')
-            ->map('type', $this->builder->fromValue('entity:node'))
-            ->map('value', $this->builder->fromParent())
-            ->map('path', $this->builder->fromValue('field_mycustomfield.value'))
+          $this->builder->fromPath('entity', 'field_mycustomfield.value')
         );
       }
     }
 
-That's it, most of it os boilerplate, just the `$this->registry->addFieldResolver('MyContentType', 'mycustomfield',` part
-is necessary for your custom field. To learn more about producers, and which ones are available out of the box, please
+That's it, most of it is boilerplate code, just the `$this->registry->addFieldResolver('MyContentType', 'mycustomfield',` part
+is necessary for your custom field. To learn more about producers and which are available out of the box, please
 read the [Drupal GraphQl module documentation](https://drupal-graphql.gitbook.io/graphql/v/8.x-4.x/data-producers/producers).
 
-Similar extensions can be made for new media types and new paragraph types, the main difference is, that media- and paragraph
+Similar extensions can be made for new media types and new paragraph types. The main difference is, that media- and paragraph
 type name are prefixed with Media and Paragraph. If you have a custom paragraph called my_paragraph, the GraphQL
 type name would be ParagraphMyParagraph, and the media my_media would be called MediaMyMedia.
 
@@ -320,7 +318,7 @@ you have to use the myschema.extension.graphqls file to extend the existing sche
     }
 
 This will add a new image field to the Article type. Similar to adding a new content type, we need to add the data producer for
-that field in our MySchemaSchemaExtension.php
+that field in our MySchemaSchemaExtension.php:
 
     <?php
 
@@ -350,23 +348,17 @@ that field in our MySchemaSchemaExtension.php
         // This adds all the page interface fields to the resolver,
         $this->resolvePageInterfaceFields('MyContentType');
 
-        // Now we add field resolver for our new fields. In this case we simply get
+        // Now we add field resolvers for our new fields. In this case we simply get
         // the value from the field_mycustomfield. parent::registerResolvers($registry)
         // stores $registry into the registry property, which we should use instead
         // of $registry.
         $this->registry->addFieldResolver('MyContentType', 'myCustomField',
-          $this->builder->produce('property_path')
-            ->map('type', $this->builder->fromValue('entity:node'))
-            ->map('value', $this->builder->fromParent())
-            ->map('path', $this->builder->fromValue('field_mycustomfield.value'))
+          $this->builder->fromPath('entity', 'field_mycustomfield.value')
         );
 
         // Extending the article
         $this->registry->addFieldResolver('Article', 'hero',
-          $this->builder->produce('property_path')
-            ->map('type', $this->builder->fromValue('entity:node'))
-            ->map('value', $this->builder->fromParent())
-            ->map('path', $this->builder->fromValue('field_hero.entity'))
+          $this->builder->fromPath('entity', 'field_hero.entity')
         );
       }
     }
@@ -382,8 +374,8 @@ schema extension class.
 
 ### Fields
 
-Existing fields, where you would like to change the producer, e.g. to use a different Drupal field, are very easy,
-just make your oen definition in the MySchemaSchemaExtension.php. Say, you would like to use a different Drupal field for
+Existing fields, where you would like to change the producer, e.g. to use a different Drupal field, are very easy: Just
+make your own definition in the MySchemaSchemaExtension.php. If you would like to change the Drupal field for
 the content field from field_paragraph to field_my_paragraph, you change the producer in your registerResolvers()
 method to something like this:
 
