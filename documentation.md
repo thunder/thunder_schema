@@ -142,7 +142,7 @@ content.
 
 As you can see, the paragraphs are located in the content field. Different paragraphs have different fields,
 so we again use the "... on" Syntax to request the correct ones. In the ParagraphPinterest example, the URL
-is directly located on the paragraphs level, and not inside the entity_reference field, where it can be found in the
+is directly located on the paragraphs' level, and not inside the entity_reference field, where it can be found in the
 Drupal schema. This is an example on how we try to simplify and hide Drupal specific implementations.
 
 ## Entity lists
