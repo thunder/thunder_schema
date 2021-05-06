@@ -120,7 +120,6 @@ class ThunderImage extends DataProducerPluginBase implements ContainerFactoryPlu
       }
 
       return $data;
-      // Return new ImageResponse($data);
     }
 
     return [];
