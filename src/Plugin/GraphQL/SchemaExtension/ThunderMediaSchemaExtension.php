@@ -39,25 +39,6 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * Add image media field resolvers.
    */
   protected function resolveFields() {
-    // Thumbnail.
-    $this->addFieldResolverIfNotExists('Thumbnail', 'src',
-      $this->builder->callback(function ($imageData) {
-        return $imageData['src'];
-      })
-    );
-
-    $this->addFieldResolverIfNotExists('Thumbnail', 'width',
-      $this->builder->callback(function ($imageData) {
-        return $imageData['width'];
-      })
-    );
-
-    $this->addFieldResolverIfNotExists('Thumbnail', 'height',
-      $this->builder->callback(function ($imageData) {
-        return $imageData['height'];
-      })
-    );
-
     // Image.
     $this->resolveMediaInterfaceFields('MediaImage');
     $this->addFieldResolverIfNotExists('MediaImage', 'copyright',
