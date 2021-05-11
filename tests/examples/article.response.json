@@ -67,8 +67,7 @@
       "entity": "node",
       "language": "en",
       "entityLinks": {
-        "canonical": "/come-drupalcon-new-orleans",
-        "editForm": "/node/6/edit"
+        "canonical": "/come-drupalcon-new-orleans"
       },
       "published": true,
       "author": {
@@ -76,7 +75,6 @@
         "name": "test-seo",
         "mail": null,
         "entity": "user",
-        "url": "/user/31",
         "language": "en"
       },
       "channel": {

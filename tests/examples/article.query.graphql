@@ -21,7 +21,6 @@ query ($path: String!) {
     language
     entityLinks {
       canonical
-      editForm
     }
     ... on Article {
       published
@@ -30,7 +29,6 @@ query ($path: String!) {
         name
         mail
         entity
-        url
         language
       }
       channel {
