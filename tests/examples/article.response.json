@@ -7,7 +7,7 @@
       },
       "locations": [
         {
-          "line": 53,
+          "line": 51,
           "column": 7
         }
       ],
@@ -24,7 +24,7 @@
       },
       "locations": [
         {
-          "line": 53,
+          "line": 51,
           "column": 7
         }
       ],
@@ -48,13 +48,13 @@
         },
         {
           "title": "News",
-          "url": "/events",
+          "url": "/news",
           "inActiveTrail": false,
           "children": []
         },
         {
           "title": "Events",
-          "url": "/drupal",
+          "url": "/events",
           "inActiveTrail": false,
           "children": []
         }

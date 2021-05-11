@@ -12,13 +12,13 @@
         },
         {
           "title": "News",
-          "url": "/events",
-          "inActiveTrail": false,
+          "url": "/news",
+          "inActiveTrail": true,
           "children": []
         },
         {
           "title": "Events",
-          "url": "/drupal",
+          "url": "/events",
           "inActiveTrail": false,
           "children": []
         }
