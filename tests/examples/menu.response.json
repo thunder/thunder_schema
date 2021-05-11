@@ -13,7 +13,7 @@
         {
           "title": "News",
           "url": "/events",
-          "inActiveTrail": true,
+          "inActiveTrail": false,
           "children": []
         },
         {
@@ -29,56 +29,10 @@
       "id": "admin",
       "items": [
         {
-          "title": "Administration",
-          "url": "/admin",
+          "title": "Inaccessible",
+          "url": "/",
           "inActiveTrail": false,
-          "children": [
-            {
-              "title": "Tools",
-              "url": "/",
-              "inActiveTrail": false
-            },
-            {
-              "title": "Content",
-              "url": "/admin/content",
-              "inActiveTrail": false
-            },
-            {
-              "title": "Structure",
-              "url": "/admin/structure",
-              "inActiveTrail": false
-            },
-            {
-              "title": "Appearance",
-              "url": "/admin/appearance",
-              "inActiveTrail": false
-            },
-            {
-              "title": "Extend",
-              "url": "/admin/modules",
-              "inActiveTrail": false
-            },
-            {
-              "title": "Configuration",
-              "url": "/admin/config",
-              "inActiveTrail": false
-            },
-            {
-              "title": "People",
-              "url": "/admin/people",
-              "inActiveTrail": false
-            },
-            {
-              "title": "Reports",
-              "url": "/admin/reports",
-              "inActiveTrail": false
-            },
-            {
-              "title": "Help",
-              "url": "/admin/help",
-              "inActiveTrail": false
-            }
-          ]
+          "children": []
         }
       ]
     }
