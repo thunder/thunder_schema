@@ -14,7 +14,6 @@ query ($path: String!) {
     }
   }
   page(path: $path) {
-    id
     uuid
     url
     name
@@ -27,7 +26,7 @@ query ($path: String!) {
     ... on Article {
       published
       author {
-        id
+        uuid
         name
         mail
         entity
@@ -35,7 +34,7 @@ query ($path: String!) {
         language
       }
       channel {
-        id
+        uuid
         published
         name
         url
@@ -46,20 +45,20 @@ query ($path: String!) {
         }
       }
       tags {
-        id
+        uuid
         name
         url
       }
       seoTitle
       content {
-        id
+        uuid
         entity
         __typename
       }
       teaser {
         text
         image {
-          id
+          uuid
         }
       }
     }
