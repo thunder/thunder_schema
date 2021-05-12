@@ -102,6 +102,7 @@ class ThunderEntitySubRequest extends DataProducerPluginBase implements Containe
    *
    * @return mixed
    *   The data.
+   *
    * @throws \Drupal\Core\Entity\EntityMalformedException
    */
   public function resolve(EntityInterface $entity, string $key, RefinableCacheableDependencyInterface $metadata) {

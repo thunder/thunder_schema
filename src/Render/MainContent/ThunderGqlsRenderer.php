@@ -98,7 +98,7 @@ class ThunderGqlsRenderer implements MainContentRendererInterface {
    * Generate the breadcrumb for current route.
    *
    * @return array
-   *  The breadcrumb.
+   *   The breadcrumb.
    */
   protected function breadcrumb(): array {
     $breadCrumb = [];
@@ -117,7 +117,7 @@ class ThunderGqlsRenderer implements MainContentRendererInterface {
    * Generate the jsonld string for current route.
    *
    * @return string
-   *  The jsonld string.
+   *   The jsonld string.
    */
   protected function jsonld(): string {
     // If nothing was passed in, assume the current entity.
