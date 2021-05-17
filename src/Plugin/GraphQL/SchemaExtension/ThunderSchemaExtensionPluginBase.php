@@ -115,23 +115,7 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
         ->map('entity', $this->builder->fromPath('entity', 'thumbnail.entity'))
     );
 
-    $this->addFieldResolverIfNotExists('Link', 'url',
-      $this->builder->callback(function ($parent) {
-        $url = '';
-        if (!empty($parent) && isset($parent['uri'])) {
-          $url_obj = Url::fromUri($parent['uri']);
-          $url = $url_obj->toString(TRUE)->getGeneratedUrl();
-        }
-        return $url;
-      })
-    );
-
-    $this->addFieldResolverIfNotExists('Link', 'title',
-      $this->builder->callback(function ($parent) {
-        return $parent['title'];
-      })
-    );
-
+    $this->resolveBaseTypes();
   }
 
   /**
@@ -221,6 +205,31 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
         ->map('type', $this->builder->fromValue($entity_type))
         ->map('bundles', $this->builder->fromValue([$page_type]))
         ->map('id', $this->builder->fromArgument('id'))
+    );
+  }
+
+  /**
+   * Resolve custom types, that are used in multiple places.
+   */
+  private function resolveBaseTypes() {
+    $this->addFieldResolverIfNotExists('Link', 'url',
+      $this->builder->callback(
+        function ($parent) {
+          if (!empty($parent) && isset($parent['uri'])) {
+            $url_obj = Url::fromUri($parent['uri']);
+            $url = $url_obj->toString(TRUE)->getGeneratedUrl();
+          }
+          return $url ?? '';
+        }
+      )
+    );
+
+    $this->addFieldResolverIfNotExists('Link', 'title',
+      $this->builder->callback(
+        function ($parent) {
+          return $parent['title'];
+        }
+      )
     );
   }
 
