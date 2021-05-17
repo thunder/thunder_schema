@@ -214,19 +214,19 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   private function resolveBaseTypes() {
     $this->addFieldResolverIfNotExists('Link', 'url',
       $this->builder->callback(function ($parent) {
-          if (!empty($parent) && isset($parent['uri'])) {
-            $urlObject = Url::fromUri($parent['uri']);
-            $url = $urlObject->toString(TRUE)->getGeneratedUrl();
-          }
-          return $url ?? '';
+        if (!empty($parent) && isset($parent['uri'])) {
+          $urlObject = Url::fromUri($parent['uri']);
+          $url = $urlObject->toString(TRUE)->getGeneratedUrl();
         }
+          return $url ?? '';
+      }
       )
     );
 
     $this->addFieldResolverIfNotExists('Link', 'title',
       $this->builder->callback(function ($parent) {
           return $parent['title'];
-        }
+      }
       )
     );
   }
