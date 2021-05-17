@@ -2,6 +2,7 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 
+use Drupal\Core\Url;
 use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\paragraphs\ParagraphInterface;
@@ -110,15 +111,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     // Link.
     $this->resolveBaseFields('ParagraphLink');
     $this->addFieldResolverIfNotExists('ParagraphLink', 'links',
-      $this->builder->compose(
-        $this->builder->fromPath('entity', 'field_link'),
-        $this->builder->callback(function ($links) {
-          foreach ($links as $key => $link) {
-            $links[$key]['url'] = $link['uri'];
-          }
-          return $links;
-        }),
-      )
+      $this->builder->fromPath('entity', 'field_link')
     );
 
     // Video.
