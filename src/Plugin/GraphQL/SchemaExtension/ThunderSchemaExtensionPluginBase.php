@@ -219,15 +219,13 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
           $url = $urlObject->toString(TRUE)->getGeneratedUrl();
         }
           return $url ?? '';
-      }
-      )
+      })
     );
 
     $this->addFieldResolverIfNotExists('Link', 'title',
       $this->builder->callback(function ($parent) {
           return $parent['title'];
-      }
-      )
+      })
     );
   }
 
