@@ -22,14 +22,23 @@ class ThunderRoutingSchemaExtension extends ThunderSchemaExtensionPluginBase {
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
-    $this->addFieldResolverIfNotExists('Query', 'page', $this->builder->compose(
-      $this->builder->produce('access_unpublished_route_load')
-        ->map('path', $this->builder->fromArgument('path'))
-        ->map('token', $this->builder->fromArgument('auHash')),
-      $this->builder->produce('route_entity')
-        ->map('url', $this->builder->fromParent())
-
-    ));
+    if ($this->moduleHandler->moduleExists('access_unpublished')) {
+      $this->addFieldResolverIfNotExists('Query', 'page', $this->builder->compose(
+        $this->builder->produce('access_unpublished_route_load')
+          ->map('path', $this->builder->fromArgument('path'))
+          ->map('token', $this->builder->fromArgument('auHash')),
+        $this->builder->produce('route_entity')
+          ->map('url', $this->builder->fromParent())
+      ));
+    }
+    else {
+      $this->addFieldResolverIfNotExists('Query', 'page', $this->builder->compose(
+        $this->builder->produce('route_load')
+          ->map('path', $this->builder->fromArgument('path')),
+        $this->builder->produce('route_entity')
+          ->map('url', $this->builder->fromParent())
+      ));
+    }
   }
 
 }
