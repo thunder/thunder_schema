@@ -3,10 +3,23 @@ interface Media {
   uuid: String!
   entity: String!
   name: String
+  thumbnail: Thumbnail
 }
 
-type ImageDerivative {
-  url: String
+interface Image {
+  src: String
+  width: Int
+  height: Int
+}
+
+type ImageDerivative implements Image {
+  src: String
+  width: Int
+  height: Int
+}
+
+type Thumbnail implements Image {
+  src: String
   width: Int
   height: Int
 }
@@ -16,20 +29,37 @@ type FocalPoint {
   y: Int
 }
 
-type MediaImage implements Media {
+type MediaImage implements Media & Image {
   id: Int!
   uuid: String!
   entity: String!
   name: String
+  thumbnail: Thumbnail
+
+  src: String
+  width: Int
+  height: Int
+  derivative(style: String!): ImageDerivative
+  focalPoint: FocalPoint
 
   title: String
   alt: String
   copyright: String
   description: String
-  src: String
-  derivative(style: String!): ImageDerivative
-  focalPoint: FocalPoint
-  width: Int
-  height: Int
   tags: [Tags]
+}
+
+type MediaVideo implements Media {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+  thumbnail: Thumbnail
+
+  src: String
+  author: String
+  caption: String
+  copyright: String
+  description: String
+  source: String
 }

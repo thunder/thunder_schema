@@ -106,6 +106,26 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
           ->map('field', $this->builder->fromValue('field_media_images'))
       )
     );
+
+    // Link.
+    $this->resolveBaseFields('ParagraphLink');
+    $this->addFieldResolverIfNotExists('ParagraphLink', 'links',
+      $this->builder->fromPath('entity', 'field_link')
+    );
+
+    // Video.
+    $this->resolveBaseFields('ParagraphVideo');
+    $this->addFieldResolverIfNotExists('ParagraphVideo', 'video',
+      $this->builder->fromPath('entity', 'field_video.entity')
+    );
+
+    // Quote.
+    $this->resolveBaseFields('ParagraphQuote');
+
+    $this->addFieldResolverIfNotExists('ParagraphQuote', 'text',
+      $this->builder->fromPath('entity', 'field_text.processed')
+    );
+
   }
 
   /**

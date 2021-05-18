@@ -2,6 +2,7 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 
+use Drupal\Core\Url;
 use Drupal\graphql\GraphQL\Resolver\ResolverInterface;
 use Drupal\graphql\GraphQL\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
@@ -101,6 +102,23 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   }
 
   /**
+   * Add fields common to all media types.
+   *
+   * @param string $type
+   *   The type name.
+   */
+  protected function resolveMediaInterfaceFields(string $type) {
+    $this->resolveBaseFields($type);
+
+    $this->addFieldResolverIfNotExists($type, 'thumbnail',
+      $this->builder->produce('thunder_image')
+        ->map('entity', $this->builder->fromPath('entity', 'thumbnail.entity'))
+    );
+
+    $this->resolveBaseTypes();
+  }
+
+  /**
    * Add fields common to all page types.
    *
    * @param string $type
@@ -187,6 +205,27 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
         ->map('type', $this->builder->fromValue($entity_type))
         ->map('bundles', $this->builder->fromValue([$page_type]))
         ->map('id', $this->builder->fromArgument('id'))
+    );
+  }
+
+  /**
+   * Resolve custom types, that are used in multiple places.
+   */
+  private function resolveBaseTypes() {
+    $this->addFieldResolverIfNotExists('Link', 'url',
+      $this->builder->callback(function ($parent) {
+        if (!empty($parent) && isset($parent['uri'])) {
+          $urlObject = Url::fromUri($parent['uri']);
+          $url = $urlObject->toString(TRUE)->getGeneratedUrl();
+        }
+        return $url ?? '';
+      })
+    );
+
+    $this->addFieldResolverIfNotExists('Link', 'title',
+      $this->builder->callback(function ($parent) {
+        return $parent['title'];
+      })
     );
   }
 
