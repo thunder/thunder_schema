@@ -20,7 +20,7 @@ So why did we manually implement an API? While it is very convenient to have sch
 leads to an API that is very close to the structure of Drupal. A consumer would have to know the relationships of
 entities within Drupal. Especially when working with paragraphs and media entities, you would have to be aware of the
 entity references to get to the actual data.
-For example, we use Media entities for images in Paragraphs. The referencing goes unconventionally deep in this case:
+For example, we use media entities for images in paragraphs. The referencing goes unconventionally deep in this case:
 If you wanted to get the src attribute of an image in such a paragraph, you would have to dereference
 Article => Paragraph => Media Entity => File Entity (src).
 
@@ -28,31 +28,31 @@ Another pain point is, that field names are automatically created. This leads to
 names are awkward and again very Drupal specific. In GraphQL 3 we have entityUuid instead of uuid and fieldMyField
 instead of just myField.
 Second, since field names are automatically generated out of the machine name, the API would change, as soon as you change
-machine name. This sounds not very likely, and for actual fields it should not happen, but sometimes even plugin
+the machine name. This sounds not very likely, and for actual fields it should not happen, but sometimes even plugin
 names are used to create the schema, and plugins could be exchanged (we had an example of a views-plugin, that was exchanged).
 
 Finally, routing with those automated APIs is very often a process that requires two requests, instead of one.
-Usually you just have some URL string, that could be a rout to a node, a user, a term or any other entity. To get
+Usually you just have some URL string, that could be a route to a node, a user, a term or any other entity. To get
 the actual data, you will have to do a route query first, to get the information on what kind of entity you are looking at
 (plus its ID), and then you would have to do a specific node, term or user query to get the actual page.
 
 # Basic Ideas
 
-We introduce three main interfaces for which cover all main data types used in Thunder.
+We introduce three main interfaces for which interfaces covering all main data types used in Thunder.
 
 1) Page
 2) Media
 3) Paragraph
 
-The page interface is for all Drupal entities that have a URL, in Thunder that could be nodes, terms, users and similar.
+The Page interface is for all Drupal entities that have a URL, in Thunder that could be nodes, terms, users and similar.
 This gives us the possibility to request a page from a route without knowing if it is an article or a channel for example.
 
-The Media Interface is for all media entities, and the Paragraph interface for all paragraph entities.
+The Media interface is for all media entities, and the Paragraph interface for all paragraph entities.
 
 As described above, we try to minimize references and keep fields as flat as possible - especially if the references are
 very Drupal specific. Also, Drupal specific field prefixes should be avoided, they make no sense for the frontend.
 
-One example would be the Image type, which is implementing the media interface.
+One example would be the Image type, which is implementing the Media interface.
 In Drupal, media entity fields are distributed between several entities, because the file entity does provide
 the basic file information, and the media entity adds more data fields to that, while referencing a file. Directly
 translated to a GraphQL API it would look similar to:
@@ -117,7 +117,7 @@ content?
     }
 
 This will return whatever it finds behind /example-page, and depending on whether it is a user page, a term (channel)
-or Article node is, it will contain the requested fields.
+or article node is, it will contain the requested fields.
 
 ### Paragraphs example
 
@@ -141,7 +141,7 @@ content.
     }
 
 As you can see, the paragraphs are located in the content field. Different paragraphs have different fields,
-so we again use the "... on" Syntax to request the correct ones. In the ParagraphPinterest example, the URL
+so we again use the "... on" syntax to request the correct ones. In the ParagraphPinterest example, the URL
 is directly located on the paragraphs' level, and not inside the entity_reference field, where it can be found in the
 Drupal schema. This is an example on how we try to simplify and hide Drupal specific implementations.
 
@@ -149,7 +149,7 @@ Drupal schema. This is an example on how we try to simplify and hide Drupal spec
 
 Some fields contain lists of entities, an example are the article lists for taxonomy terms. Those fields have parameters
 for offset and limit. The result will contain a list of entities, and the number of total items for that list.
-E.g. the channel page has a list of articles within that channel:
+For example the channel page has a list of articles within that channel:
 
     {
       page(path: "/example-term") {
@@ -191,7 +191,7 @@ This will create a barebone module called myschema in the modules folder. To con
 and create a new folder called graphql and put two empty files in it called myschema.base.graphqls and myschema.extension.graphqls in it.
 Now create another empty file called MySchemaSchemaExtension.php in the src/Plugin/GraphQL/SchemaExtension folder.
 
-your modules' file structure should be similar to this now:
+Your modules' file structure should be similar to this now:
 
     +-- myschema.info.yml
     +-- myschema.module
@@ -247,10 +247,10 @@ Say, you have added a new content type. Your myschema.base.graphqls should look 
       myCustomField: String
     }
 
-This declares the fields, that will be available through the API. Since it is a node content type, it will have an URL
+This declares the fields, that will be available through the API. Since it is a node content type, it will have a URL
 and should implement the Page interface. This makes it possible to be requested with the page() query.
 
-We have implemented an automatic type resolver for page types, that creates a GraphQL type from bundle names. It
+We have implemented an automatic type resolver for Page types, that creates a GraphQL type from bundle names. It
 CamelCases the words separated by underscores and then removes the underscore. If you create a node content type - or
 taxonomy vocabulary - called my_content_type, we will automatically create the MyContentType GraphQL type for you.
 
@@ -284,7 +284,7 @@ the MySchemaSchemaExtension.php file.
         // Call the parent resolver first.
         parent::registerResolvers($registry);
 
-        // This adds all the page interface fields to the resolver,
+        // This adds all the Page interface fields to the resolver,
         $this->resolvePageInterfaceFields('MyContentType');
 
         // Now we add field resolvers for our new fields. In this case we simply get
@@ -301,13 +301,13 @@ That's it, most of it is boilerplate code, just the `$this->registry->addFieldRe
 is necessary for your custom field. To learn more about producers and which are available out of the box, please
 read the [Drupal GraphQl module documentation](https://drupal-graphql.gitbook.io/graphql/v/8.x-4.x/data-producers/producers).
 
-Similar extensions can be made for new media types and new paragraph types. The main difference is, that media- and paragraph
-type name are prefixed with Media and Paragraph. If you have a custom paragraph called my_paragraph, the GraphQL
+Similar extensions can be made for new media types and new paragraph types. The main difference is, that media and paragraph
+type names are prefixed with Media and Paragraph. If you have a custom paragraph called my_paragraph, the GraphQL
 type name would be ParagraphMyParagraph, and the media my_media would be called MediaMyMedia.
 
 ## Extend existing types
 
-Another common task is extending existing content types with new fields. When adding more fields to the Article content
+Another common task is extending existing content types with new fields. When adding more fields to the article content
 type, you will have to add the producers for those fields.
 
 This is very similar to creating a new type, but instead of using the myschema.base.graphqls file to declare your schema,
@@ -345,7 +345,7 @@ that field in our MySchemaSchemaExtension.php:
         // Call the parent resolver first.
         parent::registerResolvers($registry);
 
-        // This adds all the page interface fields to the resolver,
+        // This adds all the Page interface fields to the resolver,
         $this->resolvePageInterfaceFields('MyContentType');
 
         // Now we add field resolvers for our new fields. In this case we simply get
