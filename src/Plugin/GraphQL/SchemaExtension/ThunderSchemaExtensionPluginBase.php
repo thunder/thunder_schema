@@ -115,6 +115,16 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
         ->map('entity', $this->builder->fromPath('entity', 'thumbnail.entity'))
     );
 
+    $this->addFieldResolverIfNotExists($type, 'published',
+      $this->builder->produce('entity_published')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->addFieldResolverIfNotExists($type, 'fallbackMedia',
+      $this->builder->produce('media_expire_fallback_entity')
+        ->map('entity', $this->builder->fromParent())
+    );
+
     $this->resolveBaseTypes();
   }
 
