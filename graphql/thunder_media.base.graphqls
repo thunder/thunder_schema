@@ -38,7 +38,7 @@ type MediaImage implements Media & Image {
   name: String
   thumbnail: Thumbnail
   published: Boolean
-  fallbackMedia: Media
+  fallbackMedia: MediaImage
 
   src: String
   width: Int
@@ -61,7 +61,7 @@ type MediaVideo implements Media {
   name: String
   thumbnail: Thumbnail
   published: Boolean
-  fallbackMedia: Media
+  fallbackMedia: MediaVideo
 
   src: String
   author: String
