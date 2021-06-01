@@ -86,6 +86,14 @@ example query you have to add the query variable `{"path": "/your-path"}`
             url
             name
           }
+          teaser {
+            image {
+              published
+              fallbackMedia {
+                src
+              }
+            }
+          }
           content {
             id
             __typename
