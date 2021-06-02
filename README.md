@@ -88,6 +88,7 @@ example query you have to add the query variable `{"path": "/your-path"}`
           }
           teaser {
             image {
+              src
               published
               fallbackMedia {
                 src
