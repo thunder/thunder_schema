@@ -139,7 +139,18 @@ GQL;
     $variables = ['path' => $node->toUrl()->toString()];
     $response = $this->query($query, Json::encode($variables));
     $this->assertEquals(200, $response->getStatusCode(), 'Response not 200');
-    $this->assertEqualsCanonicalizing(['name' => 'Burda Launches Open-Source CMS Thunder', 'teaser' => ['image' => ['name' => 'Thunder', 'published' => FALSE, 'fallbackMedia' => ['name' => 'Image 1']]] ], json_decode($response->getBody(), TRUE)['data']['page']);
+    $this->assertEqualsCanonicalizing([
+      'name' => 'Burda Launches Open-Source CMS Thunder',
+      'teaser' => [
+        'image' => [
+          'name' => 'Thunder',
+          'published' => FALSE,
+          'fallbackMedia' => [
+            'name' => 'Image 1',
+          ],
+        ],
+      ],
+    ], json_decode($response->getBody(), TRUE)['data']['page']);
   }
 
 }
