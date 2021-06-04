@@ -108,7 +108,7 @@ GQL;
    */
   public function testExpiredImage() {
 
-    $this->loadMediaByUuid('17965877-27b2-428f-8b8c-7dccba9786e5')
+    \Drupal::service('entity.repository')->loadEntityByUuid('media', '17965877-27b2-428f-8b8c-7dccba9786e5')
       ->setUnpublished()
       ->save();
 
@@ -135,7 +135,7 @@ GQL;
       }
 GQL;
 
-    $node = $this->loadNodeByUuid('0bd5c257-2231-450f-b4c2-ab156af7b78d');
+    $node = \Drupal::service('entity.repository')->loadEntityByUuid('node', '0bd5c257-2231-450f-b4c2-ab156af7b78d');
     $variables = ['path' => $node->toUrl()->toString()];
     $response = $this->query($query, Json::encode($variables));
     $this->assertEquals(200, $response->getStatusCode(), 'Response not 200');
