@@ -28,7 +28,7 @@ class ThunderRoutingSchemaExtension extends ThunderSchemaExtensionPluginBase {
     ];
 
     if ($this->dataProducerManager->hasDefinition('access_unpublished_token_set')) {
-      array_unshift($args , $this->builder->compose(
+      array_unshift($args, $this->builder->compose(
         $this->builder->produce('access_unpublished_token_set')
           ->map('token', $this->builder->fromArgument('auHash')),
         )
