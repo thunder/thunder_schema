@@ -14,7 +14,6 @@ schema_configuration:
       thunder_menu: thunder_menu
       thunder_routing: thunder_routing
       thunder_pages: thunder_pages
-      thunder_jsonld: 0
 persisted_queries_settings: {  }
 endpoint: /graphql
 debug_flag: 0
