@@ -5,6 +5,9 @@ namespace Drupal\thunder_gqls\Traits;
 use Drupal\graphql\GraphQL\Resolver\ResolverInterface;
 use Drupal\graphql\GraphQL\ResolverBuilder;
 
+/**
+ * Helper functions for field resolvers.
+ */
 trait ResolverHelperTrait {
 
   /**
@@ -45,4 +48,3 @@ trait ResolverHelperTrait {
   }
 
 }
-

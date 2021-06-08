@@ -3,13 +3,14 @@
 namespace Drupal\thunder_gqls\Plugin\GraphQL\Schema;
 
 use Drupal\Core\Url;
-use Drupal\graphql\GraphQL\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistry;
 use Drupal\graphql\Plugin\GraphQL\Schema\ComposableSchema;
 use Drupal\graphql\Plugin\GraphQL\Schema\SdlSchemaPluginBase;
 use Drupal\thunder_gqls\Traits\ResolverHelperTrait;
 
 /**
+ * Tha base schema for Thunder composable schema.
+ *
  * @Schema(
  *   id = "thunder",
  *   name = "Thunder composable schema"
@@ -30,7 +31,6 @@ class ThunderSchema extends ComposableSchema {
 
     return $this->registry;
   }
-
 
   /**
    * {@inheritdoc}
@@ -59,4 +59,5 @@ class ThunderSchema extends ComposableSchema {
       })
     );
   }
+
 }
