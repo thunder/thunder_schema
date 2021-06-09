@@ -14,7 +14,8 @@ function thunder_gqls_update_8001() {
   $extensions = $config->get('schema_configuration.composable.extensions');
 
   if ($extensions) {
-    $config->set('schema', 'thunder')
+    $config->clear('schema_configuration.composable')
+      ->set('schema', 'thunder')
       ->set('schema_configuration.thunder.extensions', $extensions)
       ->save(TRUE);
   }
