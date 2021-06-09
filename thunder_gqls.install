@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Install, update and uninstall functions for the thunder_gqls module.
+ */
+
+/**
  * Use thunder schema instead of composable.
  */
 function thunder_gqls_update_8001() {
@@ -8,7 +13,7 @@ function thunder_gqls_update_8001() {
   $config = \Drupal::service('config.factory')->getEditable('graphql.graphql_servers.thunder_graphql');
   $extensions = $config->get('schema_configuration.composable.extensions');
 
-  if($extensions) {
+  if ($extensions) {
     $config->clear('schema_configuration.composable')
       ->set('schema', 'thunder')
       ->set('schema_configuration.thunder.extensions', $extensions)
