@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Use thunder schema instead of composable.
+ */
+function thunder_gqls_8001() {
+  /** @var Drupal\Core\Config\Config $config */
+  $config = \Drupal::service('config.factory')->getEditable('graphql.graphql_servers.thunder_graphql');
+  $extensions = $config->get('schema_configuration.composable.extensions');
+
+  if($extensions) {
+    $config->clear('schema_configuration.composable.extensions')
+      ->set('schema_configuration.thunder.extensions', $extensions)
+      ->save(TRUE);
+  }
+}
