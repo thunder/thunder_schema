@@ -12,7 +12,7 @@ function thunder_gqls_update_8001() {
   /** @var Drupal\Core\Config\Config $config */
   $config = \Drupal::service('config.factory')->getEditable('graphql.graphql_servers.thunder_graphql');
   $extensions = $config->get('schema_configuration.composable.extensions');
-
+  $coin = '';
   if ($extensions) {
     $config->clear('schema_configuration.composable')
       ->set('schema', 'thunder')
