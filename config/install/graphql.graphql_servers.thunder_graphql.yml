@@ -8,9 +8,7 @@ schema_configuration:
   thunder:
     extensions:
       thunder_breadcrumb: thunder_breadcrumb
-      thunder_paragraphs: thunder_paragraphs
       thunder_metatags: thunder_metatags
-      thunder_media: thunder_media
       thunder_menu: thunder_menu
       thunder_routing: thunder_routing
       thunder_pages: thunder_pages
