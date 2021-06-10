@@ -31,28 +31,21 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
   public function registerResolvers(ResolverRegistryInterface $registry) {
     parent::registerResolvers($registry);
 
-    $this->registry->addTypeResolver('Page',
-      \Closure::fromCallable([
+    $this->registry
+      ->addTypeResolver('Page', \Closure::fromCallable([
         __CLASS__,
-        'resolvePageTypes',
-      ])
-    );
+        'resolveTypes',
+      ]))
+      ->addTypeResolver('Media', \Closure::fromCallable([
+        __CLASS__,
+        'resolveTypes',
+      ]))
+      ->addTypeResolver('Paragraph', \Closure::fromCallable([
+        __CLASS__,
+        'resolveTypes',
+      ]));
     $this->resolvePageFields();
-
-    $this->registry->addTypeResolver('Media',
-      \Closure::fromCallable([
-        __CLASS__,
-        'resolveMediaTypes',
-      ])
-    );
     $this->resolveMediaFields();
-
-    $this->registry->addTypeResolver('Paragraph',
-      \Closure::fromCallable([
-        __CLASS__,
-        'resolveParagraphTypes',
-      ])
-    );
     $this->resolveParagraphFields();
   }
 
@@ -80,11 +73,17 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
   }
 
+  /**
+   * Resolve the media fields.
+   */
   protected function resolveMediaFields() {
     $this->resolveMediaImageFields();
     $this->resolveMediaVideoFields();
   }
 
+  /**
+   * Resolve the article fields.
+   */
   protected function resolveArticleFields() {
     $this->resolvePageInterfaceFields('Article', 'node');
     $this->resolvePageInterfaceQueryFields('article', 'node');
@@ -115,6 +114,9 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
   }
 
+  /**
+   * Resolve the basic page fields.
+   */
   protected function resolveBasicPageFields() {
     $this->resolvePageInterfaceFields('BasicPage', 'node');
 
@@ -123,6 +125,9 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
   }
 
+  /**
+   * Resolve the tag fields.
+   */
   protected function resolveTagFields() {
     $this->resolvePageInterfaceFields('Tags', 'taxonomy_term');
     $this->resolvePageInterfaceQueryFields('tags', 'taxonomy_term');
@@ -149,6 +154,9 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
   }
 
+  /**
+   * Resolve the channel fields.
+   */
   protected function resolveChannelFields() {
     $this->resolvePageInterfaceFields('Channel', 'taxonomy_term');
     $this->resolvePageInterfaceQueryFields('channel', 'taxonomy_term');
@@ -180,6 +188,9 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
   }
 
+  /**
+   * Resolve the user fields.
+   */
   protected function resolveUserFields() {
     $this->resolvePageInterfaceFields('User', 'user');
     $this->resolvePageInterfaceQueryFields('user', 'node');
@@ -189,6 +200,9 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
   }
 
+  /**
+   * Resolve the media image fields.
+   */
   protected function resolveMediaImageFields() {
     $this->resolveMediaInterfaceFields('MediaImage');
     $this->addFieldResolverIfNotExists('MediaImage', 'copyright',
@@ -252,6 +266,9 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
   }
 
+  /**
+   * Resolve the media video fields.
+   */
   protected function resolveMediaVideoFields() {
     $this->resolveMediaInterfaceFields('MediaVideo');
 
@@ -384,48 +401,18 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
    * @return string
    *   Response type.
    */
-  protected function resolvePageTypes($value, ResolveContext $context, ResolveInfo $info): string {
+  protected function resolveTypes($value, ResolveContext $context, ResolveInfo $info): string {
     if ($value instanceof NodeInterface || $value instanceof TermInterface || $value instanceof UserInterface) {
       if ($value->bundle() === 'page') {
         return 'BasicPage';
       }
       return $this->mapBundleToSchemaName($value->bundle());
     }
-  }
 
-  /**
-   * Resolves media types.
-   *
-   * @param mixed $value
-   *   The current value.
-   * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
-   *   The resolve context.
-   * @param \GraphQL\Type\Definition\ResolveInfo $info
-   *   The resolve information.
-   *
-   * @return string
-   *   Response type.
-   */
-  protected function resolveMediaTypes($value, ResolveContext $context, ResolveInfo $info): string {
     if ($value instanceof MediaInterface) {
       return 'Media' . $this->mapBundleToSchemaName($value->bundle());
     }
-  }
 
-  /**
-   * Resolves page types.
-   *
-   * @param mixed $value
-   *   The current value.
-   * @param \Drupal\graphql\GraphQL\Execution\ResolveContext $context
-   *   The resolve context.
-   * @param \GraphQL\Type\Definition\ResolveInfo $info
-   *   The resolve information.
-   *
-   * @return string
-   *   Response type.
-   */
-  protected function resolveParagraphTypes($value, ResolveContext $context, ResolveInfo $info): string {
     if ($value instanceof ParagraphInterface) {
       return 'Paragraph' . $this->mapBundleToSchemaName($value->bundle());
     }
