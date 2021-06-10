@@ -2,13 +2,16 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 
+use Drupal\Core\Entity\EntityPublishedInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Url;
 use Drupal\graphql\GraphQL\Resolver\ResolverInterface;
-use Drupal\graphql\GraphQL\ResolverBuilder;
+use Drupal\thunder_gqls\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\graphql\Plugin\DataProducerPluginManager;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy;
 use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
+use Drupal\user\EntityOwnerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -26,7 +29,7 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   /**
    * ResolverBuilder.
    *
-   * @var \Drupal\graphql\GraphQL\ResolverBuilder
+   * @var \Drupal\thunder_gqls\ResolverBuilder
    */
   protected $builder;
 
@@ -38,12 +41,20 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   protected $dataProducerManager;
 
   /**
+   * The entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $plugin = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $plugin->createResolverBuilder();
     $plugin->setDataProducerManager($container->get('plugin.manager.graphql.data_producer'));
+    $plugin->setEntityTypeManager($container->get('entity_type.manager'));
     return $plugin;
   }
 
@@ -62,6 +73,16 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    */
   protected function setDataProducerManager(DataProducerPluginManager $pluginManager) {
     $this->dataProducerManager = $pluginManager;
+  }
+
+  /**
+   * Set the entity type manager.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager service.
+   */
+  protected function setEntityTypeManager(EntityTypeManagerInterface $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -153,8 +174,10 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    *
    * @param string $type
    *   The type name.
+   * @param string $entity_type_id
+   *   The entity type ID.
    */
-  protected function resolvePageInterfaceFields(string $type) {
+  protected function resolvePageInterfaceFields(string $type, string $entity_type_id) {
     $this->resolveBaseFields($type);
 
     $this->addFieldResolverIfNotExists($type, 'url',
@@ -190,6 +213,21 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
       $this->builder->produce('entity_links')
         ->map('entity', $this->builder->fromParent())
     );
+
+    $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
+    if ($entity_type->entityClassImplements(EntityPublishedInterface::class)) {
+      $this->addFieldResolverIfNotExists($type, 'published',
+        $this->builder->produce('entity_published')
+          ->map('entity', $this->builder->fromParent())
+      );
+    }
+
+    if ($entity_type->entityClassImplements(EntityOwnerInterface::class)) {
+      $this->addFieldResolverIfNotExists($type, 'author',
+        $this->builder->produce('entity_owner')
+          ->map('entity', $this->builder->fromParent())
+      );
+    }
   }
 
   /**
@@ -226,13 +264,13 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    *
    * @param string $page_type
    *   The page type name.
-   * @param string $entity_type
-   *   The entity type name.
+   * @param string $entity_type_id
+   *   The entity type ID.
    */
-  protected function resolvePageInterfaceQueryFields(string $page_type, string $entity_type) {
+  protected function resolvePageInterfaceQueryFields(string $page_type, string $entity_type_id) {
     $this->addFieldResolverIfNotExists('Query', $page_type,
       $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue($entity_type))
+        ->map('type', $this->builder->fromValue($entity_type_id))
         ->map('bundles', $this->builder->fromValue([$page_type]))
         ->map('id', $this->builder->fromArgument('id'))
     );
