@@ -152,6 +152,15 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
       $this->builder->fromPath('entity', 'langcode.value')
     );
 
+    $this->addFieldResolverIfNotExists($type, 'url',
+      $this->builder->compose(
+        $this->builder->produce('entity_url')
+          ->map('entity', $this->builder->fromParent()),
+        $this->builder->produce('url_path')
+          ->map('url', $this->builder->fromParent())
+      )
+    );
+
     $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
     if ($entity_type->entityClassImplements(EntityChangedInterface::class)) {
       $this->addFieldResolverIfNotExists($type, 'changed',
@@ -208,15 +217,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    */
   protected function resolvePageInterfaceFields(string $type, string $entity_type_id) {
     $this->resolveBaseFields($type, $entity_type_id);
-
-    $this->addFieldResolverIfNotExists($type, 'url',
-      $this->builder->compose(
-        $this->builder->produce('entity_url')
-          ->map('entity', $this->builder->fromParent()),
-        $this->builder->produce('url_path')
-          ->map('url', $this->builder->fromParent())
-      )
-    );
 
     $this->addFieldResolverIfNotExists($type, 'metatags',
       $this->builder->produce('thunder_metatags')
