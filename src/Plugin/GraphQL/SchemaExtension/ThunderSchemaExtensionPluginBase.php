@@ -2,6 +2,7 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 
+use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Url;
@@ -110,8 +111,10 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    *
    * @param string $type
    *   The type name.
+   * @param string $entity_type_id
+   *   The entity type ID.
    */
-  protected function resolveBaseFields(string $type) {
+  protected function resolveBaseFields(string $type, string $entity_type_id) {
     $this->addFieldResolverIfNotExists(
       $type,
       'uuid',
@@ -139,6 +142,37 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
       $this->builder->produce('entity_label')
         ->map('entity', $this->builder->fromParent())
     );
+
+    $this->addFieldResolverIfNotExists($type, 'created',
+      $this->builder->produce('entity_created')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->addFieldResolverIfNotExists($type, 'language',
+      $this->builder->fromPath('entity', 'langcode.value')
+    );
+
+    $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
+    if ($entity_type->entityClassImplements(EntityChangedInterface::class)) {
+      $this->addFieldResolverIfNotExists($type, 'changed',
+        $this->builder->produce('entity_changed')
+          ->map('entity', $this->builder->fromParent())
+      );
+    }
+
+    if ($entity_type->entityClassImplements(EntityPublishedInterface::class)) {
+      $this->addFieldResolverIfNotExists($type, 'published',
+        $this->builder->produce('entity_published')
+          ->map('entity', $this->builder->fromParent())
+      );
+    }
+
+    if ($entity_type->entityClassImplements(EntityOwnerInterface::class)) {
+      $this->addFieldResolverIfNotExists($type, 'author',
+        $this->builder->produce('entity_owner')
+          ->map('entity', $this->builder->fromParent())
+      );
+    }
   }
 
   /**
@@ -148,16 +182,11 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    *   The type name.
    */
   protected function resolveMediaInterfaceFields(string $type) {
-    $this->resolveBaseFields($type);
+    $this->resolveBaseFields($type, 'media');
 
     $this->addFieldResolverIfNotExists($type, 'thumbnail',
       $this->builder->produce('thunder_image')
         ->map('entity', $this->builder->fromPath('entity', 'thumbnail.entity'))
-    );
-
-    $this->addFieldResolverIfNotExists($type, 'published',
-      $this->builder->produce('entity_published')
-        ->map('entity', $this->builder->fromParent())
     );
 
     if ($this->dataProducerManager->hasDefinition('media_expire_fallback_entity')) {
@@ -178,7 +207,7 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    *   The entity type ID.
    */
   protected function resolvePageInterfaceFields(string $type, string $entity_type_id) {
-    $this->resolveBaseFields($type);
+    $this->resolveBaseFields($type, $entity_type_id);
 
     $this->addFieldResolverIfNotExists($type, 'url',
       $this->builder->compose(
@@ -187,20 +216,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
         $this->builder->produce('url_path')
           ->map('url', $this->builder->fromParent())
       )
-    );
-
-    $this->addFieldResolverIfNotExists($type, 'created',
-      $this->builder->produce('entity_created')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->addFieldResolverIfNotExists($type, 'changed',
-      $this->builder->produce('entity_changed')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->addFieldResolverIfNotExists($type, 'language',
-      $this->builder->fromPath('entity', 'langcode.value')
     );
 
     $this->addFieldResolverIfNotExists($type, 'metatags',
@@ -213,21 +228,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
       $this->builder->produce('entity_links')
         ->map('entity', $this->builder->fromParent())
     );
-
-    $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
-    if ($entity_type->entityClassImplements(EntityPublishedInterface::class)) {
-      $this->addFieldResolverIfNotExists($type, 'published',
-        $this->builder->produce('entity_published')
-          ->map('entity', $this->builder->fromParent())
-      );
-    }
-
-    if ($entity_type->entityClassImplements(EntityOwnerInterface::class)) {
-      $this->addFieldResolverIfNotExists($type, 'author',
-        $this->builder->produce('entity_owner')
-          ->map('entity', $this->builder->fromParent())
-      );
-    }
   }
 
   /**
