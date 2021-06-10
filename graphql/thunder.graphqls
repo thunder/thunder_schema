@@ -4,11 +4,6 @@ type Schema {
 
 type Query
 
-type Teaser {
-  image: MediaImage
-  text: String
-}
-
 type Link {
   url: String!
   title: String!

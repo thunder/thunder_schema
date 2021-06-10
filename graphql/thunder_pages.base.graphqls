@@ -15,6 +15,11 @@ type EntityList {
   items: [Page!]
 }
 
+type Teaser {
+  image: MediaImage
+  text: String
+}
+
 type EntityLinks {
   canonical: String
   deleteForm: String
