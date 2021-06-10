@@ -2,6 +2,7 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\Schema;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\graphql\GraphQL\ResolverRegistry;
 use Drupal\graphql\Plugin\GraphQL\Schema\ComposableSchema;
@@ -20,6 +21,12 @@ class ThunderSchema extends ComposableSchema {
 
   use ResolverHelperTrait;
 
+  const REQUIRED_EXTENSIONS = [
+    'thunder_pages',
+    'thunder_media',
+    'thunder_paragraphs',
+  ];
+
   /**
    * {@inheritdoc}
    */
@@ -30,6 +37,31 @@ class ThunderSchema extends ComposableSchema {
     $this->resolveBaseTypes();
 
     return $this->registry;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getExtensions() {
+    return array_map(function ($id) {
+      return $this->extensionManager->createInstance($id);
+    }, array_unique(array_filter($this->getConfiguration()['extensions']) + static::REQUIRED_EXTENSIONS));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
+    $extensions = $this->extensionManager->getDefinitions();
+
+    foreach ($extensions as $key => $extension) {
+      if (in_array($extension['id'], static::REQUIRED_EXTENSIONS)) {
+        $form['extensions'][$key]['#disabled'] = TRUE;
+        $form['extensions'][$key]['#default_value'] = TRUE;
+      }
+    }
+    return $form;
   }
 
   /**
