@@ -22,19 +22,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   ),
  *   consumes = {
  *     "path" = @ContextDefinition("string",
- *       label = @Translation("Redirect"),
+ *       label = @Translation("Path to redirect"),
  *       required = TRUE,
  *       default_value = ""
- *     ),
- *     "language" = @ContextDefinition("string",
- *       label = @Translation("Language"),
- *       required = FALSE,
- *       default_value = NULL
  *     ),
  *   }
  * )
  */
-class RedirectProducer extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
+class ThunderRedirect extends DataProducerPluginBase implements ContainerFactoryPluginInterface {
 
   /**
    * Optional redirect module repository.
@@ -98,37 +93,30 @@ class RedirectProducer extends DataProducerPluginBase implements ContainerFactor
    *
    * @param string $path
    *   The url path.
-   * @param string|null $language
-   *   The redirect language.
    * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $metadata
    *   The metadata.
    *
-   * @return string[]
+   * @return array
    */
-  public function resolve(string $path, ?string $language, RefinableCacheableDependencyInterface $metadata) {
-    $response = [
-      'url' => '',
-      'status' => '',
-    ];
-
-    if (!$language) {
-      $language =  $this->languageManager->getCurrentLanguage()->getId();
+  public function resolve(string $path, RefinableCacheableDependencyInterface $metadata) {
+    if (!$this->redirectRepository) {
+      return [];
     }
+    $language =  $this->languageManager->getCurrentLanguage()->getId();
 
-    if ($this->redirectRepository) {
-      /** @var \Drupal\redirect\Entity\Redirect|null $redirect */
-      $redirect = $this->redirectRepository->findMatchingRedirect($path, [], $language);
-      if ($redirect instanceof Redirect) {
-        $urlObject = $redirect->getRedirectUrl();
+    /** @var \Drupal\redirect\Entity\Redirect|null $redirect */
+    $redirect = $this->redirectRepository->findMatchingRedirect($path, [], $language);
+    if ($redirect instanceof Redirect) {
+      $urlObject = $redirect->getRedirectUrl();
+      $metadata->addCacheTags(
+        array_merge($redirect->getCacheTags(), ['redirect_list'])
+      );
 
-        $response['url'] = $urlObject->toString(TRUE)->getGeneratedUrl();
-        $response['status'] = $redirect->getStatusCode();
-
-        return $response;
-      }
+      return [
+        'url' => $urlObject->toString(TRUE)->getGeneratedUrl(),
+        'status' => $redirect->getStatusCode()
+      ];
     }
-
-    return $response;
   }
 
 }
