@@ -56,11 +56,11 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->addFieldResolverIfNotExists('Article', 'tags',
-      $this->builder->fromEntityReference('field_tags')
+      $this->fromEntityReference('field_tags')
     );
 
     $this->addFieldResolverIfNotExists('Article', 'content',
-      $this->builder->fromEntityReferenceRevisions('field_paragraphs')
+      $this->fromEntityReferenceRevisions('field_paragraphs')
     );
 
     $this->addFieldResolverIfNotExists('Article', 'teaser',
@@ -84,7 +84,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     $this->resolvePageInterfaceQueryFields('tags', 'taxonomy_term');
 
     $this->addFieldResolverIfNotExists('Tags', 'content',
-      $this->builder->fromEntityReferenceRevisions('field_paragraphs')
+      $this->fromEntityReferenceRevisions('field_paragraphs')
     );
 
     $this->addFieldResolverIfNotExists('Tags', 'articles',
@@ -109,7 +109,7 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
     $this->resolvePageInterfaceQueryFields('channel', 'taxonomy_term');
 
     $this->addFieldResolverIfNotExists('Channel', 'content',
-      $this->builder->fromEntityReferenceRevisions('field_paragraphs')
+      $this->fromEntityReferenceRevisions('field_paragraphs')
     );
 
     $this->addFieldResolverIfNotExists('Channel', 'parent',

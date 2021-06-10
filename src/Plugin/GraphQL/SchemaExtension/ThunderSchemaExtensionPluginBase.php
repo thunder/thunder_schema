@@ -74,13 +74,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   }
 
   /**
-   * Create the ResolverBuilder.
-   */
-  protected function createResolverBuilder() {
-    $this->builder = new ResolverBuilder();
-  }
-
-  /**
    * Takes the bundle name and returns the schema name.
    *
    * @param string $bundleName

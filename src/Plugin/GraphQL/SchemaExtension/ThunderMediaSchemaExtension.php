@@ -94,7 +94,7 @@ class ThunderMediaSchemaExtension extends ThunderSchemaExtensionPluginBase {
     );
 
     $this->addFieldResolverIfNotExists('MediaImage', 'tags',
-      $this->builder->fromEntityReference('field_tags')
+      $this->fromEntityReference('field_tags')
     );
 
     $this->addFieldResolverIfNotExists('MediaImage', 'source',

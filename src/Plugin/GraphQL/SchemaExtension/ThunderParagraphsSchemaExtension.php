@@ -101,7 +101,7 @@ class ThunderParagraphsSchemaExtension extends ThunderSchemaExtensionPluginBase 
     $this->addFieldResolverIfNotExists('ParagraphGallery', 'images',
       $this->builder->compose(
         $mediaEntityProducer,
-        $this->builder->fromEntityReference('field_media_images')
+        $this->fromEntityReference('field_media_images')
       )
     );
 
