@@ -5,7 +5,6 @@ namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\thunder_gqls\ResolverBuilder;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\graphql\Plugin\DataProducerPluginManager;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy;
