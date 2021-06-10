@@ -60,8 +60,8 @@ trait ResolverHelperTrait {
    */
   public function fromEntityReference(string $field, ResolverInterface $entity = NULL) {
     return $this->builder->produce('entity_reference')
-      ->map('field', $this->fromValue($field))
-      ->map('entity', $entity ?: $this->fromParent());
+      ->map('field', $this->builder->fromValue($field))
+      ->map('entity', $entity ?: $this->builder->fromParent());
   }
 
   /**
@@ -77,8 +77,8 @@ trait ResolverHelperTrait {
    */
   public function fromEntityReferenceRevisions(string $field, $entity = NULL) {
     return $this->builder->produce('entity_reference_revisions')
-      ->map('field', $this->fromValue($field))
-      ->map('entity', $entity ?: $this->fromParent());
+      ->map('field', $this->builder->fromValue($field))
+      ->map('entity', $entity ?: $this->builder->fromParent());
   }
 
 }
