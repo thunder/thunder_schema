@@ -97,12 +97,13 @@ class ThunderRedirect extends DataProducerPluginBase implements ContainerFactory
    *   The metadata.
    *
    * @return array
+   *   The redirect data.
    */
   public function resolve(string $path, RefinableCacheableDependencyInterface $metadata) {
     if (!$this->redirectRepository) {
       return [];
     }
-    $language =  $this->languageManager->getCurrentLanguage()->getId();
+    $language = $this->languageManager->getCurrentLanguage()->getId();
 
     /** @var \Drupal\redirect\Entity\Redirect|null $redirect */
     $redirect = $this->redirectRepository->findMatchingRedirect($path, [], $language);
@@ -114,7 +115,7 @@ class ThunderRedirect extends DataProducerPluginBase implements ContainerFactory
 
       return [
         'url' => $urlObject->toString(TRUE)->getGeneratedUrl(),
-        'status' => $redirect->getStatusCode()
+        'status' => $redirect->getStatusCode(),
       ];
     }
   }
