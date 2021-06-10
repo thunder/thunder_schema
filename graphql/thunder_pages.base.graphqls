@@ -115,3 +115,143 @@ type User implements Page {
 
   mail: String
 }
+
+
+interface Media {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+  thumbnail: Thumbnail
+  published: Boolean
+  fallbackMedia: Media
+}
+
+type MediaImage implements Media & Image {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+  thumbnail: Thumbnail
+  published: Boolean
+  fallbackMedia: MediaImage
+
+  src: String
+  width: Int
+  height: Int
+  derivative(style: String!): ImageDerivative
+  focalPoint: FocalPoint
+
+  title: String
+  alt: String
+  copyright: String
+  description: String
+  tags: [Tags]
+  source: String
+}
+
+type MediaVideo implements Media {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+  thumbnail: Thumbnail
+  published: Boolean
+  fallbackMedia: MediaVideo
+
+  src: String
+  author: String
+  caption: String
+  copyright: String
+  description: String
+  source: String
+}
+
+interface Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+}
+
+type ParagraphImage implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  image: MediaImage
+}
+
+type ParagraphTwitter implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  url: String
+}
+
+type ParagraphInstagram implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  url: String
+}
+
+type ParagraphPinterest implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  url: String
+}
+
+type ParagraphText implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  text: String
+}
+
+type ParagraphGallery implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  images: [MediaImage]
+}
+
+type ParagraphLink implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  links: [Link]
+}
+
+type ParagraphVideo implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  video: MediaVideo
+}
+
+type ParagraphQuote implements Paragraph {
+  id: Int!
+  uuid: String!
+  entity: String!
+  name: String
+
+  text: String
+}
+
