@@ -152,16 +152,18 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
       $this->builder->fromPath('entity', 'langcode.value')
     );
 
-    $this->addFieldResolverIfNotExists($type, 'url',
-      $this->builder->compose(
-        $this->builder->produce('entity_url')
-          ->map('entity', $this->builder->fromParent()),
-        $this->builder->produce('url_path')
-          ->map('url', $this->builder->fromParent())
-      )
-    );
-
     $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
+    if ($entity_type->hasLinkTemplate('canonical')) {
+      $this->addFieldResolverIfNotExists($type, 'url',
+        $this->builder->compose(
+          $this->builder->produce('entity_url')
+            ->map('entity', $this->builder->fromParent()),
+          $this->builder->produce('url_path')
+            ->map('url', $this->builder->fromParent())
+        )
+      );
+    }
+
     if ($entity_type->entityClassImplements(EntityChangedInterface::class)) {
       $this->addFieldResolverIfNotExists($type, 'changed',
         $this->builder->produce('entity_changed')
