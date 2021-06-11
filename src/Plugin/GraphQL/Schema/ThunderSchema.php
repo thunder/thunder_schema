@@ -34,7 +34,6 @@ class ThunderSchema extends ComposableSchema {
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $schema = parent::create($container, $configuration, $plugin_id, $plugin_definition);
-    $schema->createResolverBuilder();
     $schema->setDataProducerManager($container->get('plugin.manager.graphql.data_producer'));
     return $schema;
   }
