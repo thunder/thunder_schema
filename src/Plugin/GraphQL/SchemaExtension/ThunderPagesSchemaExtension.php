@@ -45,19 +45,12 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
   protected function resolveFields() {
 
     // Page.
-    $args = [
-      $this->builder->produce('route_load')->map('path', $this->builder->fromArgument('path')),
-      $this->builder->produce('route_entity')->map('url', $this->builder->fromParent()),
-    ];
-
-    if ($this->dataProducerManager->hasDefinition('access_unpublished_token_set')) {
-      array_unshift($args, $this->builder->compose(
-        $this->builder->produce('access_unpublished_token_set')
-          ->map('token', $this->builder->fromArgument('auHash')),
+    $this->addFieldResolverIfNotExists('Query', 'page',
+      $this->builder->compose(
+        $this->builder->produce('route_load')->map('path', $this->builder->fromArgument('path')),
+        $this->builder->produce('route_entity')->map('url', $this->builder->fromParent()),
       )
-      );
-    }
-    $this->addFieldResolverIfNotExists('Query', 'page', $this->builder->compose(...$args));
+    );
 
     // Article.
     $this->resolvePageInterfaceFields('Article', 'node');
