@@ -1,0 +1,41 @@
+type Schema {
+  query: Query
+}
+
+type Query {
+  redirect(path: String!): Redirect
+}
+
+type Link {
+  url: String!
+  title: String!
+}
+
+interface Image {
+  src: String
+  width: Int
+  height: Int
+}
+
+type ImageDerivative implements Image {
+  src: String
+  width: Int
+  height: Int
+}
+
+type Thumbnail implements Image {
+  src: String
+  width: Int
+  height: Int
+}
+
+type FocalPoint {
+  x: Int
+  y: Int
+}
+
+type Redirect {
+  url: String
+  status: Int
+}
+

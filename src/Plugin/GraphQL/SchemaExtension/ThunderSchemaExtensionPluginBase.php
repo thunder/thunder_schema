@@ -2,13 +2,15 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\SchemaExtension;
 
-use Drupal\Core\Url;
-use Drupal\graphql\GraphQL\Resolver\ResolverInterface;
-use Drupal\graphql\GraphQL\ResolverBuilder;
+use Drupal\Core\Entity\EntityChangedInterface;
+use Drupal\Core\Entity\EntityPublishedInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\graphql\Plugin\DataProducerPluginManager;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy;
 use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
+use Drupal\user\EntityOwnerInterface;
+use Drupal\thunder_gqls\Traits\ResolverHelperTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -16,19 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPluginBase {
 
-  /**
-   * ResolverRegistryInterface.
-   *
-   * @var \Drupal\graphql\GraphQL\ResolverRegistryInterface
-   */
-  protected $registry;
-
-  /**
-   * ResolverBuilder.
-   *
-   * @var \Drupal\graphql\GraphQL\ResolverBuilder
-   */
-  protected $builder;
+  use ResolverHelperTrait;
 
   /**
    * The data producer plugin manager.
@@ -38,12 +28,20 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   protected $dataProducerManager;
 
   /**
+   * The entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $plugin = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $plugin->createResolverBuilder();
     $plugin->setDataProducerManager($container->get('plugin.manager.graphql.data_producer'));
+    $plugin->setEntityTypeManager($container->get('entity_type.manager'));
     return $plugin;
   }
 
@@ -65,10 +63,13 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   }
 
   /**
-   * Create the ResolverBuilder.
+   * Set the entity type manager.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager service.
    */
-  protected function createResolverBuilder() {
-    $this->builder = new ResolverBuilder();
+  protected function setEntityTypeManager(EntityTypeManagerInterface $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -89,8 +90,10 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    *
    * @param string $type
    *   The type name.
+   * @param string $entity_type_id
+   *   The entity type ID.
    */
-  protected function resolveBaseFields(string $type) {
+  protected function resolveBaseFields(string $type, string $entity_type_id) {
     $this->addFieldResolverIfNotExists(
       $type,
       'uuid',
@@ -118,6 +121,48 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
       $this->builder->produce('entity_label')
         ->map('entity', $this->builder->fromParent())
     );
+
+    $this->addFieldResolverIfNotExists($type, 'created',
+      $this->builder->produce('entity_created')
+        ->map('entity', $this->builder->fromParent())
+    );
+
+    $this->addFieldResolverIfNotExists($type, 'language',
+      $this->builder->fromPath('entity', 'langcode.value')
+    );
+
+    $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
+    if ($entity_type->hasLinkTemplate('canonical')) {
+      $this->addFieldResolverIfNotExists($type, 'url',
+        $this->builder->compose(
+          $this->builder->produce('entity_url')
+            ->map('entity', $this->builder->fromParent()),
+          $this->builder->produce('url_path')
+            ->map('url', $this->builder->fromParent())
+        )
+      );
+    }
+
+    if ($entity_type->entityClassImplements(EntityChangedInterface::class)) {
+      $this->addFieldResolverIfNotExists($type, 'changed',
+        $this->builder->produce('entity_changed')
+          ->map('entity', $this->builder->fromParent())
+      );
+    }
+
+    if ($entity_type->entityClassImplements(EntityPublishedInterface::class)) {
+      $this->addFieldResolverIfNotExists($type, 'published',
+        $this->builder->produce('entity_published')
+          ->map('entity', $this->builder->fromParent())
+      );
+    }
+
+    if ($entity_type->entityClassImplements(EntityOwnerInterface::class)) {
+      $this->addFieldResolverIfNotExists($type, 'author',
+        $this->builder->produce('entity_owner')
+          ->map('entity', $this->builder->fromParent())
+      );
+    }
   }
 
   /**
@@ -127,16 +172,11 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    *   The type name.
    */
   protected function resolveMediaInterfaceFields(string $type) {
-    $this->resolveBaseFields($type);
+    $this->resolveBaseFields($type, 'media');
 
     $this->addFieldResolverIfNotExists($type, 'thumbnail',
       $this->builder->produce('thunder_image')
         ->map('entity', $this->builder->fromPath('entity', 'thumbnail.entity'))
-    );
-
-    $this->addFieldResolverIfNotExists($type, 'published',
-      $this->builder->produce('entity_published')
-        ->map('entity', $this->builder->fromParent())
     );
 
     if ($this->dataProducerManager->hasDefinition('media_expire_fallback_entity')) {
@@ -145,7 +185,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
           ->map('entity', $this->builder->fromParent())
       );
     }
-    $this->resolveBaseTypes();
   }
 
   /**
@@ -153,32 +192,11 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
    *
    * @param string $type
    *   The type name.
+   * @param string $entity_type_id
+   *   The entity type ID.
    */
-  protected function resolvePageInterfaceFields(string $type) {
-    $this->resolveBaseFields($type);
-
-    $this->addFieldResolverIfNotExists($type, 'url',
-      $this->builder->compose(
-        $this->builder->produce('entity_url')
-          ->map('entity', $this->builder->fromParent()),
-        $this->builder->produce('url_path')
-          ->map('url', $this->builder->fromParent())
-      )
-    );
-
-    $this->addFieldResolverIfNotExists($type, 'created',
-      $this->builder->produce('entity_created')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->addFieldResolverIfNotExists($type, 'changed',
-      $this->builder->produce('entity_changed')
-        ->map('entity', $this->builder->fromParent())
-    );
-
-    $this->addFieldResolverIfNotExists($type, 'language',
-      $this->builder->fromPath('entity', 'langcode.value')
-    );
+  protected function resolvePageInterfaceFields(string $type, string $entity_type_id) {
+    $this->resolveBaseFields($type, $entity_type_id);
 
     $this->addFieldResolverIfNotExists($type, 'metatags',
       $this->builder->produce('thunder_metatags')
@@ -206,56 +224,19 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   }
 
   /**
-   * Add field resolver to registry, if it does not already exist.
-   *
-   * @param string $type
-   *   The type name.
-   * @param string $field
-   *   The field name.
-   * @param \Drupal\graphql\GraphQL\Resolver\ResolverInterface $resolver
-   *   The field resolver.
-   */
-  protected function addFieldResolverIfNotExists(string $type, string $field, ResolverInterface $resolver) {
-    if (!$this->registry->getFieldResolver($type, $field)) {
-      $this->registry->addFieldResolver($type, $field, $resolver);
-    }
-  }
-
-  /**
    * Add content query field resolvers.
    *
    * @param string $page_type
    *   The page type name.
-   * @param string $entity_type
-   *   The entity type name.
+   * @param string $entity_type_id
+   *   The entity type ID.
    */
-  protected function resolvePageInterfaceQueryFields(string $page_type, string $entity_type) {
+  protected function resolvePageInterfaceQueryFields(string $page_type, string $entity_type_id) {
     $this->addFieldResolverIfNotExists('Query', $page_type,
       $this->builder->produce('entity_load')
-        ->map('type', $this->builder->fromValue($entity_type))
+        ->map('type', $this->builder->fromValue($entity_type_id))
         ->map('bundles', $this->builder->fromValue([$page_type]))
         ->map('id', $this->builder->fromArgument('id'))
-    );
-  }
-
-  /**
-   * Resolve custom types, that are used in multiple places.
-   */
-  private function resolveBaseTypes() {
-    $this->addFieldResolverIfNotExists('Link', 'url',
-      $this->builder->callback(function ($parent) {
-        if (!empty($parent) && isset($parent['uri'])) {
-          $urlObject = Url::fromUri($parent['uri']);
-          $url = $urlObject->toString(TRUE)->getGeneratedUrl();
-        }
-        return $url ?? '';
-      })
-    );
-
-    $this->addFieldResolverIfNotExists('Link', 'title',
-      $this->builder->callback(function ($parent) {
-        return $parent['title'];
-      })
     );
   }
 

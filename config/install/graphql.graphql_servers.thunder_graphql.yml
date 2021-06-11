@@ -3,17 +3,17 @@ status: true
 dependencies: {  }
 name: thunder_graphql
 label: 'Thunder - GraphQL Server'
-schema: composable
+schema: thunder
 schema_configuration:
-  composable:
+  thunder:
     extensions:
       thunder_breadcrumb: thunder_breadcrumb
       thunder_paragraphs: thunder_paragraphs
       thunder_metatags: thunder_metatags
       thunder_media: thunder_media
       thunder_menu: thunder_menu
-      thunder_routing: thunder_routing
       thunder_pages: thunder_pages
+      thunder_jsonld: 0
 persisted_queries_settings: {  }
 endpoint: /graphql
 debug_flag: 0
