@@ -111,4 +111,7 @@ type User implements Page {
   entityLinks: EntityLinks
 
   mail: String
+  published: Boolean!
+  language: String!
+  access: String!
 }

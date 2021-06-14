@@ -1,0 +1,6 @@
+query ($uuid: String!) {
+  user(uuid: $uuid) {
+    name
+    id
+  }
+}
