@@ -3,6 +3,7 @@
 namespace Drupal\thunder_gqls\Plugin\GraphQL\Schema;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
 use Drupal\Core\Url;
 use Drupal\graphql\GraphQL\ResolverRegistry;
 use Drupal\graphql\Plugin\DataProducerPluginManager;
@@ -93,12 +94,10 @@ class ThunderSchema extends ComposableSchema {
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
-    $extensions = $this->extensionManager->getDefinitions();
-
-    foreach ($extensions as $key => $extension) {
-      if (in_array($extension['id'], static::REQUIRED_EXTENSIONS)) {
-        $form['extensions'][$key]['#access'] = FALSE;
-        unset($form['extensions']['#options'][$key]);
+    foreach (Element::children($form['extensions']) as $extension) {
+      if (in_array($extension, static::REQUIRED_EXTENSIONS)) {
+        $form['extensions'][$extension]['#access'] = FALSE;
+        unset($form['extensions']['#options'][$extension]);
       }
     }
     return $form;
