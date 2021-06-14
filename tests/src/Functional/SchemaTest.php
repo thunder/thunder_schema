@@ -91,10 +91,10 @@ GQL;
 
     $query = <<<GQL
       query (\$path: String!, \$token: String!) {
-        accessUnpublishedToken (auHash: \$token)
         page(path: \$path) {
           name
         }
+        accessUnpublishedToken (auHash: \$token)
       }
 GQL;
 
