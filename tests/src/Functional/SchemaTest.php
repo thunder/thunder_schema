@@ -48,6 +48,9 @@ class SchemaTest extends ThunderGqlsTestBase {
       [
         'breadcrumb',
       ],
+      [
+        'redirect',
+      ],
     ];
   }
 
@@ -88,7 +91,8 @@ GQL;
 
     $query = <<<GQL
       query (\$path: String!, \$token: String!) {
-        page(path: \$path, auHash: \$token) {
+        accessUnpublishedToken (auHash: \$token)
+        page(path: \$path) {
           name
         }
       }
