@@ -97,8 +97,8 @@ class ThunderSchema extends ComposableSchema {
 
     foreach ($extensions as $key => $extension) {
       if (in_array($extension['id'], static::REQUIRED_EXTENSIONS)) {
-        $form['extensions'][$key]['#disabled'] = TRUE;
-        $form['extensions'][$key]['#default_value'] = TRUE;
+        $form['extensions'][$key]['#access'] = FALSE;
+        unset($form['extensions']['#options'][$key]);
       }
     }
     return $form;
