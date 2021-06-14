@@ -6,7 +6,6 @@ interface Page {
   url: String!
   changed: String!
   language: String
-  published: Boolean!
   entityLinks: EntityLinks
 }
 
@@ -40,10 +39,10 @@ type Article implements Page {
   created: String!
   changed: String!
   language: String
-  published: Boolean!
   entityLinks: EntityLinks
 
   author: User
+  published: Boolean!
   channel: Channel
   tags: [Tags]
   seoTitle: String!
@@ -60,10 +59,10 @@ type BasicPage implements Page {
   created: String!
   changed: String!
   language: String
-  published: Boolean!
   entityLinks: EntityLinks
 
   author: User
+  published: Boolean!
   content: String
 }
 
@@ -75,10 +74,10 @@ type Tags implements Page {
   url: String!
   changed: String!
   language: String
-  published: Boolean!
   entityLinks: EntityLinks
 
   author: User
+  published: Boolean!
   content: [Paragraph]
   articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
 }
@@ -91,11 +90,11 @@ type Channel implements Page {
   url: String!
   changed: String!
   language: String
-  published: Boolean!
   entityLinks: EntityLinks
 
   parent: Channel
   author: User
+  published: Boolean!
   content: [Paragraph]
   articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
 }
@@ -109,10 +108,10 @@ type User implements Page {
   created: String!
   changed: String!
   language: String
-  published: Boolean!
   entityLinks: EntityLinks
 
   mail: String
+  published: Boolean!
   language: String!
   access: String!
 }
