@@ -1,6 +1,11 @@
 query ($uuid: String!) {
   user(uuid: $uuid) {
     name
-    id
+    ... on User {
+      mail
+      language
+      published
+      access
+    }
   }
 }
