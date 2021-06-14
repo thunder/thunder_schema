@@ -440,7 +440,7 @@ to the query conditions.
 
 ## Access unpublished
 
-With the access unpublished module, you can hand out links to unpublished nodes to e person, that would usually not
+With the access unpublished module, you can hand out links to unpublished nodes to a person, that would usually not
 have the permission to view unpublished articles.
 
 The module creates a temporary link with an arbitrary hash token. This hash has to be added to the query in the
