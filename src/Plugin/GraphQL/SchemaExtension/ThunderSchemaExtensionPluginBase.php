@@ -177,6 +177,7 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
     $this->addFieldResolverIfNotExists($type, 'thumbnail',
       $this->builder->produce('thunder_image')
         ->map('entity', $this->builder->fromPath('entity', 'thumbnail.entity'))
+        ->map('field', $this->builder->fromPath('entity', 'thumbnail'))
     );
 
     if ($this->dataProducerManager->hasDefinition('media_expire_fallback_entity')) {

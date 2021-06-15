@@ -24,6 +24,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   consumes = {
  *     "entity" = @ContextDefinition("entity",
  *       label = @Translation("Entity")
+ *     ),
+ *    "field" = @ContextDefinition("any",
+ *       label = @Translation("Field")
  *     )
  *   }
  * )
@@ -98,20 +101,23 @@ class ThunderImage extends DataProducerPluginBase implements ContainerFactoryPlu
    * @return array
    *   The image meta data
    */
-  public function resolve(FileInterface $entity, RefinableCacheableDependencyInterface $metadata) {
+  public function resolve(FileInterface $entity, array $field, RefinableCacheableDependencyInterface $metadata) {
     $access = $entity->access('view', NULL, TRUE);
     $metadata->addCacheableDependency($access);
     if ($access->isAllowed()) {
       $context = new RenderContext();
       $imageFactory = $this->imageFactory;
 
-      $data = $this->renderer->executeInRenderContext($context, function () use ($entity, $imageFactory) {
+      $data = $this->renderer->executeInRenderContext($context, function () use ($entity, $imageFactory, $field) {
         $uri = $entity->getFileUri();
         $image = $imageFactory->get($uri);
+        $current_field = reset($field);
         return [
           'src' => file_create_url($uri),
           'width' => $image->getWidth(),
           'height' => $image->getHeight(),
+          'alt' => $current_field['alt'],
+          'title' => $current_field['title'],
         ];
       });
 
