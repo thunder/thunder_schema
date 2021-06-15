@@ -1,58 +1,62 @@
 interface Paragraph {
-  summary: String
+  summary: ParagraphSummary
+}
+
+type ParagraphSummary {
+  content: [String]
 }
 
 type ParagraphImage implements Paragraph {
-  summary: String
+  summary: ParagraphSummary
 
   image: MediaImage
 }
 
 type ParagraphTwitter implements Paragraph {
-  summary: String
+  summary: ParagraphSummary
 
   url: String
 }
 
 type ParagraphInstagram implements Paragraph {
-  summary: String
+  summary: ParagraphSummary
 
   url: String
 }
 
 type ParagraphPinterest implements Paragraph {
-  summary: String
+  summary: ParagraphSummary
 
   url: String
 }
 
 type ParagraphText implements Paragraph {
-  summary: String
+  summary: ParagraphSummary
 
   text: String
 }
 
 type ParagraphGallery implements Paragraph {
-  summary: String
+  summary: ParagraphSummary
 
   name: String!
   images: [MediaImage]
 }
 
 type ParagraphLink implements Paragraph {
-  summary: String
+  summary: ParagraphSummary
 
   links: [Link]
 }
 
 type ParagraphVideo implements Paragraph {
-  summary: String
+  summary: ParagraphSummary
 
   video: MediaVideo
 }
 
 type ParagraphQuote implements Paragraph {
-  summary: String
+  summary: ParagraphSummary
 
   text: String
 }

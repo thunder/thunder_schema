@@ -194,6 +194,19 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
   }
 
   /**
+   * Add fields common to all media types.
+   *
+   * @param string $type
+   *   The type name.
+   */
+  protected function resolveParagraphInterfaceFields(string $type) {
+    $this->addFieldResolverIfNotExists($type, 'summary',
+      $this->builder->produce('paragraph_summary')
+        ->map('paragraph', $this->builder->fromParent())
+    );
+  }
+
+  /**
    * Add fields common to all page types.
    *
    * @param string $type
@@ -208,19 +221,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
       $this->builder->produce('entity_links')
         ->map('entity', $this->builder->fromParent())
     );
-  }
-
-  /**
-   * Get the data producer for a referenced entity.
-   *
-   * @param string $referenceFieldName
-   *   The reference field name.
-   *
-   * @return \Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy
-   *   The data producer proxy.
-   */
-  protected function referencedEntityProducer(string $referenceFieldName) : DataProducerProxy {
-    return $this->builder->fromPath('entity', $referenceFieldName . '.entity');
   }
 
   /**

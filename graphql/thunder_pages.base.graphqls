@@ -76,7 +76,6 @@ type Tags implements Page & Entity {
   entityLinks: EntityLinks
 
   changed: String!
-  author: User
   published: Boolean!
   content: [Paragraph]
   articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
@@ -93,7 +92,6 @@ type Channel implements Page & Entity {
 
   changed: String!
   parent: Channel
-  author: User
   published: Boolean!
   content: [Paragraph]
   articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
