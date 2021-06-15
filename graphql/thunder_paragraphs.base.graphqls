@@ -1,147 +1,58 @@
-interface Paragraph implements Entity{
-  id: Int!
-  uuid: String!
-  entity: String!
-  language: String
-  name: String!
-  url: String!
-
-  created: String!
-  author: User
-  published: Boolean!
+interface Paragraph {
+  summary: String
 }
 
-type ParagraphImage implements Paragraph & Entity {
-  id: Int!
-  uuid: String!
-  entity: String!
-  language: String
-  name: String!
-  url: String!
-
-  created: String!
-  author: User
-  published: Boolean!
+type ParagraphImage implements Paragraph {
+  summary: String
 
   image: MediaImage
 }
 
-type ParagraphTwitter implements Paragraph & Entity {
-  id: Int!
-  uuid: String!
-  entity: String!
-  language: String
-  name: String!
-  url: String!
+type ParagraphTwitter implements Paragraph {
+  summary: String
 
-  created: String!
-  author: User
-  published: Boolean!
-
-  #url: String
+  url: String
 }
 
-type ParagraphInstagram implements Paragraph & Entity {
-  id: Int!
-  uuid: String!
-  entity: String!
-  language: String
-  name: String!
-  url: String!
+type ParagraphInstagram implements Paragraph {
+  summary: String
 
-  created: String!
-  author: User
-  published: Boolean!
-
-  #url: String
+  url: String
 }
 
-type ParagraphPinterest implements Paragraph & Entity {
-  id: Int!
-  uuid: String!
-  entity: String!
-  language: String
-  name: String!
-  url: String!
+type ParagraphPinterest implements Paragraph {
+  summary: String
 
-  created: String!
-  author: User
-  published: Boolean!
-
-  #url: String
+  url: String
 }
 
-type ParagraphText implements Paragraph & Entity {
-  id: Int!
-  uuid: String!
-  entity: String!
-  language: String
-  name: String!
-  url: String!
-
-  created: String!
-  author: User
-  published: Boolean!
+type ParagraphText implements Paragraph {
+  summary: String
 
   text: String
 }
 
-type ParagraphGallery implements Paragraph & Entity {
-  id: Int!
-  uuid: String!
-  entity: String!
-  language: String
+type ParagraphGallery implements Paragraph {
+  summary: String
+
   name: String!
-  url: String!
-
-  created: String!
-  author: User
-  published: Boolean!
-
   images: [MediaImage]
 }
 
-type ParagraphLink implements Paragraph & Entity {
-  id: Int!
-  uuid: String!
-  entity: String!
-  language: String
-  name: String!
-  url: String!
-
-  created: String!
-  author: User
-  published: Boolean!
+type ParagraphLink implements Paragraph {
+  summary: String
 
   links: [Link]
 }
 
-type ParagraphVideo implements Paragraph & Entity {
-  id: Int!
-  uuid: String!
-  entity: String!
-  language: String
-  name: String!
-  url: String!
-
-  created: String!
-  author: User
-  published: Boolean!
+type ParagraphVideo implements Paragraph {
+  summary: String
 
   video: MediaVideo
 }
 
-type ParagraphQuote implements Paragraph & Entity {
-  id: Int!
-  uuid: String!
-  entity: String!
-  language: String
-  name: String!
-  url: String!
-
-  created: String!
-  author: User
-  published: Boolean!
+type ParagraphQuote implements Paragraph {
+  summary: String
 
   text: String
 }
