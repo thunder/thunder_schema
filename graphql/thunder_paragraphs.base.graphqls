@@ -5,6 +5,10 @@ interface Paragraph implements Entity{
   language: String
   name: String!
   url: String!
+
+  created: String!
+  author: User
+  published: Boolean!
 }
 
 type ParagraphImage implements Paragraph & Entity {
@@ -14,6 +18,10 @@ type ParagraphImage implements Paragraph & Entity {
   language: String
   name: String!
   url: String!
+
+  created: String!
+  author: User
+  published: Boolean!
 
   image: MediaImage
 }
@@ -26,6 +34,10 @@ type ParagraphTwitter implements Paragraph & Entity {
   name: String!
   url: String!
 
+  created: String!
+  author: User
+  published: Boolean!
+
   #url: String
 }
 
@@ -36,6 +48,10 @@ type ParagraphInstagram implements Paragraph & Entity {
   language: String
   name: String!
   url: String!
+
+  created: String!
+  author: User
+  published: Boolean!
 
   #url: String
 }
@@ -48,6 +64,10 @@ type ParagraphPinterest implements Paragraph & Entity {
   name: String!
   url: String!
 
+  created: String!
+  author: User
+  published: Boolean!
+
   #url: String
 }
 
@@ -58,6 +78,11 @@ type ParagraphText implements Paragraph & Entity {
   language: String
   name: String!
   url: String!
+
+  created: String!
+  author: User
+  published: Boolean!
+
   text: String
 }
 
@@ -68,6 +93,10 @@ type ParagraphGallery implements Paragraph & Entity {
   language: String
   name: String!
   url: String!
+
+  created: String!
+  author: User
+  published: Boolean!
 
   images: [MediaImage]
 }
@@ -80,6 +109,10 @@ type ParagraphLink implements Paragraph & Entity {
   name: String!
   url: String!
 
+  created: String!
+  author: User
+  published: Boolean!
+
   links: [Link]
 }
 
@@ -91,6 +124,10 @@ type ParagraphVideo implements Paragraph & Entity {
   name: String!
   url: String!
 
+  created: String!
+  author: User
+  published: Boolean!
+
   video: MediaVideo
 }
 
@@ -101,6 +138,10 @@ type ParagraphQuote implements Paragraph & Entity {
   language: String
   name: String!
   url: String!
+
+  created: String!
+  author: User
+  published: Boolean!
 
   text: String
 }
