@@ -113,4 +113,5 @@ type User implements Page {
   published: Boolean!
   language: String!
   access: String!
+  picture: Thumbnail
 }

@@ -159,6 +159,11 @@ class ThunderPagesSchemaExtension extends ThunderSchemaExtensionPluginBase {
       $this->builder->fromPath('entity', 'status.value')
     );
 
+    $this->addFieldResolverIfNotExists('User', 'picture',
+      $this->builder->produce('thunder_image')
+        ->map('entity', $this->builder->fromPath('entity', 'user_picture.entity'))
+    );
+
     // Entity List.
     $this->addFieldResolverIfNotExists('EntityList', 'total',
       $this->builder->callback(function (EntityListResponse $entityList) {
