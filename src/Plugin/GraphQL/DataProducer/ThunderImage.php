@@ -95,6 +95,8 @@ class ThunderImage extends DataProducerPluginBase implements ContainerFactoryPlu
    *
    * @param \Drupal\file\FileInterface $entity
    *   The file entity.
+   * @param array $field
+   *   Values of the field.
    * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $metadata
    *   The cacheable dependency interface.
    *
