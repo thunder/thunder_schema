@@ -56,7 +56,7 @@ type MediaVideo implements Media & Entity {
   fallbackMedia: MediaVideo
 
   src: String
-#  author: String
+  username: String
   caption: String
   copyright: String
   description: String
