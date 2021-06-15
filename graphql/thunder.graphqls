@@ -7,6 +7,15 @@ type Query {
   accessUnpublishedToken(auHash: String): String
 }
 
+interface Entity {
+  id: Int!
+  uuid: String!
+  entity: String!
+  language: String
+  name: String!
+  url: String!
+}
+
 type Link {
   url: String!
   title: String!

@@ -1,10 +1,4 @@
 interface Page {
-  id: Int!
-  uuid: String!
-  name: String!
-  entity: String!
-  url: String!
-  language: String
   entityLinks: EntityLinks
 }
 
@@ -29,7 +23,7 @@ type EntityLinks {
   latestVersion: String
 }
 
-type Article implements Page {
+type Article implements Entity & Page {
   id: Int!
   uuid: String!
   name: String!
@@ -49,7 +43,7 @@ type Article implements Page {
   teaser: Teaser
 }
 
-type BasicPage implements Page {
+type BasicPage implements Entity & Page {
   id: Int!
   uuid: String!
   name: String!
@@ -65,7 +59,7 @@ type BasicPage implements Page {
   content: String
 }
 
-type Tags implements Page {
+type Tags implements Entity & Page {
   id: Int!
   uuid: String!
   name: String!
@@ -81,7 +75,7 @@ type Tags implements Page {
   articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
 }
 
-type Channel implements Page {
+type Channel implements Entity & Page {
   id: Int!
   uuid: String!
   name: String!
@@ -98,7 +92,7 @@ type Channel implements Page {
   articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
 }
 
-type User implements Page {
+type User implements Entity & Page {
   id: Int!
   uuid: String!
   name: String!

@@ -142,6 +142,11 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
         )
       );
     }
+    else {
+      $this->addFieldResolverIfNotExists($type, 'url',
+        $this->builder->fromValue(NULL)
+      );
+    }
 
     if ($entity_type->entityClassImplements(EntityChangedInterface::class)) {
       $this->addFieldResolverIfNotExists($type, 'changed',

@@ -1,87 +1,101 @@
 interface Paragraph {
   id: Int!
-  uuid: String!
-  entity: String!
-  name: String
 }
 
-type ParagraphImage implements Paragraph {
+type ParagraphImage implements Paragraph & Entity {
   id: Int!
   uuid: String!
   entity: String!
-  name: String
+  language: String
+  name: String!
+  url: String!
 
   image: MediaImage
 }
 
-type ParagraphTwitter implements Paragraph {
+type ParagraphTwitter implements Paragraph & Entity {
   id: Int!
   uuid: String!
   entity: String!
-  name: String
+  language: String
+  name: String!
+  url: String!
 
-  url: String
+  #url: String
 }
 
-type ParagraphInstagram implements Paragraph {
+type ParagraphInstagram implements Paragraph & Entity {
   id: Int!
   uuid: String!
   entity: String!
-  name: String
+  language: String
+  name: String!
+  url: String!
 
-  url: String
+  #url: String
 }
 
-type ParagraphPinterest implements Paragraph {
+type ParagraphPinterest implements Paragraph & Entity {
   id: Int!
   uuid: String!
   entity: String!
-  name: String
+  language: String
+  name: String!
+  url: String!
 
-  url: String
+  #url: String
 }
 
-type ParagraphText implements Paragraph {
+type ParagraphText implements Paragraph & Entity {
   id: Int!
   uuid: String!
   entity: String!
-  name: String
-
+  language: String
+  name: String!
+  url: String!
   text: String
 }
 
-type ParagraphGallery implements Paragraph {
+type ParagraphGallery implements Paragraph & Entity {
   id: Int!
   uuid: String!
   entity: String!
-  name: String
+  language: String
+  name: String!
+  url: String!
 
   images: [MediaImage]
 }
 
-type ParagraphLink implements Paragraph {
+type ParagraphLink implements Paragraph & Entity {
   id: Int!
   uuid: String!
   entity: String!
-  name: String
+  language: String
+  name: String!
+  url: String!
 
   links: [Link]
 }
 
-type ParagraphVideo implements Paragraph {
+type ParagraphVideo implements Paragraph & Entity {
   id: Int!
   uuid: String!
   entity: String!
-  name: String
+  language: String
+  name: String!
+  url: String!
 
   video: MediaVideo
 }
 
-type ParagraphQuote implements Paragraph {
+type ParagraphQuote implements Paragraph & Entity {
   id: Int!
   uuid: String!
   entity: String!
-  name: String
+  language: String
+  name: String!
+  url: String!
 
   text: String
 }

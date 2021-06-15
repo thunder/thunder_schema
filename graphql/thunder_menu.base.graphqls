@@ -1,6 +1,11 @@
-type Menu {
-  id: String!
+type Menu implements Entity {
+  id: Int!
+  uuid: String!
+  entity: String!
+  language: String
   name: String!
+  url: String!
+
   items: [MenuItem]
 }
 
