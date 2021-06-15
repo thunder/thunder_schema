@@ -1,10 +1,10 @@
-interface Media {
+interface Media implements Entity{
   thumbnail: Thumbnail
   published: Boolean
   fallbackMedia: Media
 }
 
-type MediaImage implements Entity & Media & Image {
+type MediaImage implements Media & Image {
   id: Int!
   uuid: String!
   entity: String!
@@ -29,7 +29,7 @@ type MediaImage implements Entity & Media & Image {
   source: String
 }
 
-type MediaVideo implements Entity & Media {
+type MediaVideo implements Media {
   id: Int!
   uuid: String!
   entity: String!

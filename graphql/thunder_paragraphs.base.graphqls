@@ -1,8 +1,8 @@
-interface Paragraph {
+interface Paragraph implements Entity{
   id: Int!
 }
 
-type ParagraphImage implements Paragraph & Entity {
+type ParagraphImage implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!
@@ -13,7 +13,7 @@ type ParagraphImage implements Paragraph & Entity {
   image: MediaImage
 }
 
-type ParagraphTwitter implements Paragraph & Entity {
+type ParagraphTwitter implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!
@@ -24,7 +24,7 @@ type ParagraphTwitter implements Paragraph & Entity {
   #url: String
 }
 
-type ParagraphInstagram implements Paragraph & Entity {
+type ParagraphInstagram implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!
@@ -35,7 +35,7 @@ type ParagraphInstagram implements Paragraph & Entity {
   #url: String
 }
 
-type ParagraphPinterest implements Paragraph & Entity {
+type ParagraphPinterest implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!
@@ -46,7 +46,7 @@ type ParagraphPinterest implements Paragraph & Entity {
   #url: String
 }
 
-type ParagraphText implements Paragraph & Entity {
+type ParagraphText implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!
@@ -56,7 +56,7 @@ type ParagraphText implements Paragraph & Entity {
   text: String
 }
 
-type ParagraphGallery implements Paragraph & Entity {
+type ParagraphGallery implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!
@@ -67,7 +67,7 @@ type ParagraphGallery implements Paragraph & Entity {
   images: [MediaImage]
 }
 
-type ParagraphLink implements Paragraph & Entity {
+type ParagraphLink implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!
@@ -78,7 +78,7 @@ type ParagraphLink implements Paragraph & Entity {
   links: [Link]
 }
 
-type ParagraphVideo implements Paragraph & Entity {
+type ParagraphVideo implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!
@@ -89,7 +89,7 @@ type ParagraphVideo implements Paragraph & Entity {
   video: MediaVideo
 }
 
-type ParagraphQuote implements Paragraph & Entity {
+type ParagraphQuote implements Paragraph {
   id: Int!
   uuid: String!
   entity: String!

@@ -1,4 +1,11 @@
-interface Page {
+interface Page implements Entity {
+  id: Int!
+  uuid: String!
+  entity: String!
+  language: String
+  name: String!
+  url: String!
+
   entityLinks: EntityLinks
 }
 
@@ -23,7 +30,7 @@ type EntityLinks {
   latestVersion: String
 }
 
-type Article implements Entity & Page {
+type Article implements Page & Entity {
   id: Int!
   uuid: String!
   name: String!
@@ -43,7 +50,7 @@ type Article implements Entity & Page {
   teaser: Teaser
 }
 
-type BasicPage implements Entity & Page {
+type BasicPage implements Page & Entity {
   id: Int!
   uuid: String!
   name: String!
@@ -59,7 +66,7 @@ type BasicPage implements Entity & Page {
   content: String
 }
 
-type Tags implements Entity & Page {
+type Tags implements Page & Entity {
   id: Int!
   uuid: String!
   name: String!
@@ -75,7 +82,7 @@ type Tags implements Entity & Page {
   articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
 }
 
-type Channel implements Entity & Page {
+type Channel implements Page & Entity {
   id: Int!
   uuid: String!
   name: String!
@@ -92,7 +99,7 @@ type Channel implements Entity & Page {
   articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
 }
 
-type User implements Entity & Page {
+type User implements Page & Entity {
   id: Int!
   uuid: String!
   name: String!
@@ -105,7 +112,6 @@ type User implements Entity & Page {
   changed: String!
   mail: String
   published: Boolean!
-  language: String!
   access: String!
   picture: Thumbnail
 }
