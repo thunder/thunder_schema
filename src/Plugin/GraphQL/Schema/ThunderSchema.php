@@ -124,23 +124,42 @@ class ThunderSchema extends ComposableSchema {
       })
     );
 
-    $this->addFieldResolverIfNotExists('Link', 'title',
-      $this->builder->callback(function ($parent) {
-        return $parent['title'];
-      })
-    );
+    $this->addSimpleCallbackFields('Link', ['title']);
+    $this->addSimpleCallbackFields('FocalPoint', ['x', 'y']);
+    $this->addSimpleCallbackFields('Redirect', ['url', 'status']);
+    $this->addSimpleCallbackFields('Ivw', [
+      'st', 'cp', 'sv', 'sc', 'co', 'mobile_cp', 'mobile_st', 'mobile_sv',
+      'mobile_width',
+    ]);
+    $this->addSimpleCallbackFields('MetaTag', ['tag', 'attributes']);
+    $this->addSimpleCallbackFields('EntityLinks', [
+      'canonical', 'deleteForm', 'deleteMultipleForm', 'editForm',
+      'versionHistory', 'revision', 'create', 'latestVersion',
+    ]);
+    $this->addSimpleCallbackFields('Thumbnail', [
+      'src', 'width', 'height', 'alt', 'title',
+    ]);
+    $this->addSimpleCallbackFields('Teaser', ['image', 'text']);
+    $this->addSimpleCallbackFields('ImageDerivative', ['src', 'width', 'height']);
+    $this->addSimpleCallbackFields('Schema', ['query']);
+  }
 
-    $this->addFieldResolverIfNotExists('FocalPoint', 'x',
-      $this->builder->callback(function ($arr) {
-        return $arr['x'];
-      })
-    );
-
-    $this->addFieldResolverIfNotExists('FocalPoint', 'y',
-      $this->builder->callback(function ($arr) {
-        return $arr['y'];
-      })
-    );
+  /**
+   * Define callback field resolver for a type.
+   *
+   * @param string $type
+   *   Type to add fields.
+   * @param array $fields
+   *   The fields.
+   */
+  protected function addSimpleCallbackFields(string $type, array $fields) {
+    foreach ($fields as $field) {
+      $this->addFieldResolverIfNotExists($type, $field,
+        $this->builder->callback(function ($arr) use ($field) {
+          return $arr[$field];
+        })
+      );
+    }
   }
 
 }

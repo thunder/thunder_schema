@@ -170,9 +170,9 @@ GQL;
     /** @var \Drupal\graphql\Entity\ServerInterface $server */
     $server = \Drupal::entityTypeManager()->getStorage('graphql_server')->load('thunder_graphql');
 
-    $this->assertEmpty($validator->validateSchema($server));
-    $this->assertEmpty($validator->getOrphanedResolvers($server));
-    $this->assertEmpty($validator->getMissingResolvers($server));
+    $this->assertEmpty($validator->validateSchema($server), "The schema 'thunder_graphql' is not valid.");
+    $this->assertEmpty($validator->getOrphanedResolvers($server), "The schema 'thunder_graphql' contains orphaned resolvers.");
+    $this->assertEmpty($validator->getMissingResolvers($server), "The schema 'thunder_graphql' contains types without a resolver.");
   }
 
 }
