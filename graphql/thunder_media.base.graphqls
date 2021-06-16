@@ -6,6 +6,7 @@ interface Media implements Entity{
   name: String!
   url: String!
 
+  created: String!
   changed: String!
   author: User
   thumbnail: Thumbnail
@@ -21,6 +22,7 @@ type MediaImage implements Media & Image & Entity {
   name: String!
   url: String!
 
+  created: String!
   changed: String!
   author: User
   thumbnail: Thumbnail
@@ -49,6 +51,7 @@ type MediaVideo implements Media & Entity {
   name: String!
   url: String!
 
+  created: String!
   changed: String!
   author: User
   thumbnail: Thumbnail

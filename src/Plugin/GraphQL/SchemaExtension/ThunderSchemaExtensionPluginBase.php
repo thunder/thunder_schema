@@ -121,11 +121,6 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
         ->map('entity', $this->builder->fromParent())
     );
 
-    $this->addFieldResolverIfNotExists($type, 'created',
-      $this->builder->produce('entity_created')
-        ->map('entity', $this->builder->fromParent())
-    );
-
     $this->addFieldResolverIfNotExists($type, 'language',
       $this->builder->fromPath('entity', 'langcode.value')
     );
@@ -144,6 +139,13 @@ abstract class ThunderSchemaExtensionPluginBase extends SdlSchemaExtensionPlugin
     else {
       $this->addFieldResolverIfNotExists($type, 'url',
         $this->builder->fromValue(NULL)
+      );
+    }
+
+    if (method_exists($entity_type->getClass(), 'getCreatedTime')) {
+      $this->addFieldResolverIfNotExists($type, 'created',
+        $this->builder->produce('entity_created')
+          ->map('entity', $this->builder->fromParent())
       );
     }
 
