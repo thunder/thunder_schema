@@ -2,24 +2,18 @@
 
 namespace Drupal\thunder_gqls\Plugin\GraphQL\DataProducer;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\file\FileInterface;
-use Drupal\focal_point\FocalPointManagerInterface;
 use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerPluginBase;
 use Drupal\paragraphs\Entity\Paragraph;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Resolves the focal point positions for a file.
+ * Resolves the paragraphs summary.
  *
  * @DataProducer(
  *   id = "paragraph_summary",
- *   name = @Translation("FocalPoint"),
- *   description = @Translation("Resolves the focal point positions for a file."),
+ *   name = @Translation("Paragraphs Summary"),
+ *   description = @Translation("Resolves the paragraphs summary."),
  *   produces = @ContextDefinition("any",
- *     label = @Translation("Focal point positions")
+ *     label = @Translation("Summary")
  *   ),
  *   consumes = {
  *     "paragraph" = @ContextDefinition("entity",
@@ -31,13 +25,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ParagraphSummary extends DataProducerPluginBase {
 
   /**
-   * Resolve the focal point positions.
+   * Resolves the paragraphs summary.
    *
-   * @param \Drupal\file\FileInterface $file
+   * @param \Drupal\paragraphs\Entity\Paragraph $paragraph
    *   The entity.
    *
    * @return mixed
-   *   The focal point position tag.
+   *   The paragraphs summary.
    */
   public function resolve(Paragraph $paragraph) {
     return $paragraph->getSummaryItems();

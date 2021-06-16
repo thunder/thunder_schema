@@ -7,7 +7,6 @@ use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\graphql\GraphQL\ResolverRegistryInterface;
 use Drupal\graphql\Plugin\DataProducerPluginManager;
-use Drupal\graphql\Plugin\GraphQL\DataProducer\DataProducerProxy;
 use Drupal\graphql\Plugin\GraphQL\SchemaExtension\SdlSchemaExtensionPluginBase;
 use Drupal\user\EntityOwnerInterface;
 use Drupal\thunder_gqls\Traits\ResolverHelperTrait;
