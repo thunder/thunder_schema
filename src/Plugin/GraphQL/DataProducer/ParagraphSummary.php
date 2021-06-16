@@ -34,7 +34,7 @@ class ParagraphSummary extends DataProducerPluginBase {
    *   The paragraphs summary.
    */
   public function resolve(Paragraph $paragraph) {
-    return $paragraph->getSummaryItems();
+    return $paragraph->getSummaryItems()['content'];
   }
 
 }
