@@ -5,6 +5,7 @@ interface Media implements Entity{
   language: String
   name: String!
   url: String!
+  entityLinks: EntityLinks
 
   created: String!
   changed: String!
@@ -21,6 +22,7 @@ type MediaImage implements Media & Image & Entity {
   language: String
   name: String!
   url: String!
+  entityLinks: EntityLinks
 
   created: String!
   changed: String!
@@ -50,6 +52,7 @@ type MediaVideo implements Media & Entity {
   language: String
   name: String!
   url: String!
+  entityLinks: EntityLinks
 
   created: String!
   changed: String!

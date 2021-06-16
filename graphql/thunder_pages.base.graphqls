@@ -5,8 +5,10 @@ interface Page implements Entity {
   language: String
   name: String!
   url: String!
-
   entityLinks: EntityLinks
+
+  published: Boolean!
+  changed: String!
 }
 
 type EntityList {
@@ -19,17 +21,6 @@ type Teaser {
   text: String
 }
 
-type EntityLinks {
-  canonical: String
-  deleteForm: String
-  deleteMultipleForm: String
-  editForm: String
-  versionHistory: String
-  revision: String
-  create: String
-  latestVersion: String
-}
-
 type Article implements Page & Entity {
   id: Int!
   uuid: String!
@@ -39,10 +30,11 @@ type Article implements Page & Entity {
   language: String
   entityLinks: EntityLinks
 
-  created: String!
-  changed: String!
-  author: User
   published: Boolean!
+  changed: String!
+
+  created: String!
+  author: User
   channel: Channel
   tags: [Tags]
   seoTitle: String!
@@ -59,10 +51,11 @@ type BasicPage implements Page & Entity {
   language: String
   entityLinks: EntityLinks
 
-  created: String!
-  changed: String!
-  author: User
   published: Boolean!
+  changed: String!
+
+  created: String!
+  author: User
   content: String
 }
 
@@ -75,8 +68,9 @@ type Tags implements Page & Entity {
   language: String
   entityLinks: EntityLinks
 
-  changed: String!
   published: Boolean!
+  changed: String!
+
   content: [Paragraph]
   articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
 }
@@ -90,9 +84,10 @@ type Channel implements Page & Entity {
   language: String
   entityLinks: EntityLinks
 
-  changed: String!
-  parent: Channel
   published: Boolean!
+  changed: String!
+
+  parent: Channel
   content: [Paragraph]
   articles(offset: Int = 0, limit: Int, languages: [String]): EntityList
 }
@@ -106,10 +101,11 @@ type User implements Page & Entity {
   language: String
   entityLinks: EntityLinks
 
-  created: String!
-  changed: String!
-  mail: String
   published: Boolean!
+  changed: String!
+
+  created: String!
+  mail: String
   access: String!
   picture: Thumbnail
 }
