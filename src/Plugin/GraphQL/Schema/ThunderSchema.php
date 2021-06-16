@@ -127,7 +127,6 @@ class ThunderSchema extends ComposableSchema {
     $this->addSimpleCallbackFields('Link', ['title']);
     $this->addSimpleCallbackFields('FocalPoint', ['x', 'y']);
     $this->addSimpleCallbackFields('Redirect', ['url', 'status']);
-    $this->addSimpleCallbackFields('MetaTag', ['tag', 'attributes']);
     $this->addSimpleCallbackFields('EntityLinks', [
       'canonical', 'deleteForm', 'deleteMultipleForm', 'editForm',
       'versionHistory', 'revision', 'create', 'latestVersion',
@@ -135,27 +134,8 @@ class ThunderSchema extends ComposableSchema {
     $this->addSimpleCallbackFields('Thumbnail', [
       'src', 'width', 'height', 'alt', 'title',
     ]);
-    $this->addSimpleCallbackFields('Teaser', ['image', 'text']);
     $this->addSimpleCallbackFields('ImageDerivative', ['src', 'width', 'height']);
     $this->addSimpleCallbackFields('Schema', ['query']);
-  }
-
-  /**
-   * Define callback field resolver for a type.
-   *
-   * @param string $type
-   *   Type to add fields.
-   * @param array $fields
-   *   The fields.
-   */
-  protected function addSimpleCallbackFields(string $type, array $fields) {
-    foreach ($fields as $field) {
-      $this->addFieldResolverIfNotExists($type, $field,
-        $this->builder->callback(function ($arr) use ($field) {
-          return $arr[$field];
-        })
-      );
-    }
   }
 
 }
