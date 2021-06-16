@@ -160,4 +160,19 @@ GQL;
     ], json_decode($response->getBody(), TRUE)['data']['page']);
   }
 
+  /**
+   * Validates the thunder schema.
+   */
+  public function testValidSchema() {
+    /** @var \Drupal\graphql\GraphQL\ValidatorInterface $validator */
+    $validator = \Drupal::service('graphql.validator');
+
+    /** @var \Drupal\graphql\Entity\ServerInterface $server */
+    $server = \Drupal::entityTypeManager()->getStorage('graphql_server')->load('thunder_graphql');
+
+    $this->assertEmpty($validator->validateSchema($server));
+    $this->assertEmpty($validator->getOrphanedResolvers($server));
+    $this->assertEmpty($validator->getMissingResolvers($server));
+  }
+
 }

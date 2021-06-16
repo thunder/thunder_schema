@@ -129,6 +129,18 @@ class ThunderSchema extends ComposableSchema {
         return $parent['title'];
       })
     );
+
+    $this->addFieldResolverIfNotExists('FocalPoint', 'x',
+      $this->builder->callback(function ($arr) {
+        return $arr['x'];
+      })
+    );
+
+    $this->addFieldResolverIfNotExists('FocalPoint', 'y',
+      $this->builder->callback(function ($arr) {
+        return $arr['y'];
+      })
+    );
   }
 
 }
