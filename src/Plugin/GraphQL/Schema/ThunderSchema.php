@@ -127,10 +127,6 @@ class ThunderSchema extends ComposableSchema {
     $this->addSimpleCallbackFields('Link', ['title']);
     $this->addSimpleCallbackFields('FocalPoint', ['x', 'y']);
     $this->addSimpleCallbackFields('Redirect', ['url', 'status']);
-    $this->addSimpleCallbackFields('Ivw', [
-      'st', 'cp', 'sv', 'sc', 'co', 'mobile_cp', 'mobile_st', 'mobile_sv',
-      'mobile_width',
-    ]);
     $this->addSimpleCallbackFields('MetaTag', ['tag', 'attributes']);
     $this->addSimpleCallbackFields('EntityLinks', [
       'canonical', 'deleteForm', 'deleteMultipleForm', 'editForm',
